@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v1';
+const CACHE_NAME = 'lifecount-cache-v2'; // Bumped version to ensure new page is cached immediately
 const urlsToCache =[
     './',
     './index.html',
@@ -6,6 +6,8 @@ const urlsToCache =[
     './app.js',
     './manifest.json',
     './pages/purchasing.html',
+    './pages/time-menu.html',
+    './pages/stopwatch.html',
     './pages/duration.html',
     './pages/end-time.html',
     './pages/expiry.html'
@@ -45,7 +47,7 @@ self.addEventListener('fetch', event => {
 
 // Activate event: Cleanup old caches when a new version is installed
 self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
+    const cacheWhitelist =[CACHE_NAME];
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
