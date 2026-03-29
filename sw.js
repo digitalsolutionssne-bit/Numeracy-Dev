@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v1'; 
+const CACHE_NAME = 'lifecount-cache-v1';
 const urlsToCache =[
     './',
     './index.html',
@@ -9,18 +9,19 @@ const urlsToCache =[
     './pages/duration.html',
     './pages/end-time.html',
     './pages/expiry.html'
+    // Add icon paths here once generated
 ];
 
 // Install event: cache initial files
 self.addEventListener('install', event => {
-    self.skipWaiting();
+    self.skipWaiting(); // Force the waiting service worker to become the active service worker
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => cache.addAll(urlsToCache))
     );
 });
 
-// Fetch event: Stale-While-Revalidate strategy
+// Fetch event: Stale-While-Revalidate strategy for offline-first and background updates
 self.addEventListener('fetch', event => {
     event.respondWith(
         caches.match(event.request).then(cachedResponse => {
@@ -33,11 +34,27 @@ self.addEventListener('fetch', event => {
                 }
                 return networkResponse;
             }).catch(() => {
-                // Ignore network errors (user is offline)
+                // Ignore network errors (user is offline). App will load from cachedResponse.
             });
 
             // Return cached response immediately if available, otherwise wait for network
             return cachedResponse || fetchPromise;
+        })
+    );
+});
+
+// Activate event: Cleanup old caches when a new version is installed
+self.addEventListener('activate', event => {
+    const cacheWhitelist = [CACHE_NAME];
+    event.waitUntil(
+        caches.keys().then(cacheNames => {
+            return Promise.all(
+                cacheNames.map(cacheName => {
+                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                        return caches.delete(cacheName);
+                    }
+                })
+            );
         })
     );
 });
