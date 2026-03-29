@@ -1,1 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Duration | LifeCount</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="top-bar">
+        <a href="time-menu.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+        </a>
+        <h1>Duration ⏳</h1>
+        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
+    </header>
 
+    <main class="page-content" style="padding: 1.5rem;">
+        <div class="input-group">
+            <label>Start Time:</label>
+            <input type="time" class="large-input" id="start-time">
+        </div>
+
+        <div class="input-group">
+            <label>End Time (Finished):</label>
+            <input type="time" class="large-input" id="end-time">
+        </div>
+
+        <!-- Using native <select> completely solves the dropdown blocking issue mentioned on Page 50 -->
+        <div class="input-group">
+            <label>Activity:</label>
+            <select class="large-input">
+                <option value="travel">Traveling</option>
+                <option value="lunch">Lunch / Dinner</option>
+                <option value="other">Other activity</option>
+            </select>
+        </div>
+
+        <button class="primary-btn" onclick="calculateDuration()">Calculate Duration</button>
+
+        <div style="margin-top: 1.5rem; background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px;">
+            <p style="margin: 0 0 0.5rem 0; font-weight:bold;">Time spent:</p>
+            <h2 id="duration-result" style="margin: 0; font-size: 1.8rem; color: var(--primary-color);">--</h2>
+        </div>
+    </main>
+
+    <script src="../app.js"></script>
+    <script>
+        function calculateDuration() {
+            const start = document.getElementById('start-time').value;
+            const end = document.getElementById('end-time').value;
+            if(!start || !end) return alert("Please enter both times.");
+
+            const startD = new Date(`1970-01-01T${start}:00`);
+            let endD = new Date(`1970-01-01T${end}:00`);
+            
+            if (endD < startD) endD.setDate(endD.getDate() + 1); // Handle passing midnight
+            
+            const diffMs = endD - startD;
+            const diffHrs = Math.floor(diffMs / 3600000);
+            const diffMins = Math.floor((diffMs % 3600000) / 60000);
+            
+            document.getElementById('duration-result').innerText = `${diffHrs} hour(s) ${diffMins} minute(s)`;
+        }
+    </script>
+</body>
+</html>
