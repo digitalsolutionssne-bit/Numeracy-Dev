@@ -116,16 +116,17 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block;
 }
 
-/* AI Camera Button Style */
+/* AI Camera Button Style - Added Box-Sizing to prevent overflow */
 .ai-scan-btn {
     background-color: #9C27B0;
     color: white; border: none; border-radius: 8px;
     padding: 1rem; font-size: 1.2rem; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
     gap: 10px; width: 100%; cursor: pointer;
+    box-sizing: border-box;
 }
 
-/* Time Blocks (PDF Change for Visual Clarity) */
+/* Time Blocks */
 .time-block-container {
     display: flex; gap: 1rem;
 }
@@ -143,7 +144,7 @@ body {
 }
 .time-block input::placeholder { color: rgba(255,255,255,0.7); }
 
-/* Expiry Result Popups (Giant Blocks from PDF) */
+/* Expiry Result Popups */
 .expiry-result {
     display: none; padding: 2rem; border-radius: 16px; text-align: center; margin-top: 2rem; color: white;
 }
