@@ -1,4 +1,4 @@
-const CACHE_NAME = 'easyday-cache-v1';
+const CACHE_NAME = 'lifecount-cache-v1'; 
 const urlsToCache =[
     './',
     './index.html',
@@ -9,7 +9,6 @@ const urlsToCache =[
     './pages/duration.html',
     './pages/end-time.html',
     './pages/expiry.html'
-    // Add icon paths here
 ];
 
 // Install event: cache initial files
