@@ -5,6 +5,8 @@
     --card-bg: #ffffff;
     --card-border: #e0e0e0;
     --primary-color: #4a90e2;
+    --success-color: #4CAF50; /* Green for Correct Change */
+    --error-color: #F44336;   /* Red for Wrong Change */
 }
 
 [data-theme="dark"] {
@@ -13,6 +15,8 @@
     --card-bg: #1e1e1e;
     --card-border: #333333;
     --primary-color: #64b5f6;
+    --success-color: #81C784;
+    --error-color: #E57373;
 }
 
 body {
@@ -36,6 +40,26 @@ body {
 .top-bar h1 {
     margin: 0;
     font-size: 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+}
+
+/* Modernized Back Button */
+.back-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 600;
+    font-size: 1.1rem;
+    transition: opacity 0.2s;
+    /* Prevents the text from wrapping awkwardly on small screens */
+    white-space: nowrap; 
+}
+
+.back-btn:active {
+    opacity: 0.6;
 }
 
 .menu-container {
@@ -46,7 +70,7 @@ body {
 }
 
 /* Large, high-contrast touch targets */
-.menu-card {
+.menu-card, .action-btn {
     display: flex;
     align-items: center;
     padding: 1.5rem;
@@ -57,9 +81,10 @@ body {
     color: var(--text-color);
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     transition: transform 0.1s;
+    cursor: pointer;
 }
 
-.menu-card:active {
+.menu-card:active, .action-btn:active {
     transform: scale(0.98);
 }
 
@@ -73,7 +98,95 @@ body {
     font-size: 1.3rem;
 }
 
-/* Example styling for specific features proposed in PDF */
-.money-card { border-left: 8px solid #4CAF50; }
-.time-card { border-left: 8px solid #2196F3; }
+/* Feature specific borders */
+.money-card { border-left: 8px solid var(--success-color); }
+.time-card { border-left: 8px solid var(--primary-color); }
 .other-card { border-left: 8px solid #FF9800; }
+
+/* Form inputs for MID/ASD best practices */
+.input-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.input-group label {
+    font-size: 1.2rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.input-row {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.large-input {
+    font-size: 1.5rem;
+    padding: 0.75rem;
+    flex-grow: 1;
+    border: 2px solid var(--card-border);
+    border-radius: 8px;
+    background-color: var(--card-bg);
+    color: var(--text-color);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.large-input:disabled, .large-input[readonly] {
+    background-color: rgba(0,0,0,0.05);
+    color: var(--text-color);
+    opacity: 1; /* Override iOS default disabled opacity */
+}
+
+[data-theme="dark"] .large-input:disabled,[data-theme="dark"] .large-input[readonly] {
+    background-color: rgba(255,255,255,0.05);
+}
+
+.primary-btn {
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.secondary-btn {
+    background-color: #FF9800;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* Popup Indicators */
+.popup-indicator {
+    display: none;
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    margin-top: 1.5rem;
+    font-weight: bold;
+    font-size: 1.2rem;
+    color: white;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.popup-correct {
+    background-color: var(--success-color);
+}
+
+.popup-wrong {
+    background-color: var(--error-color);
+}
