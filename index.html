@@ -3,32 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <!-- Updated Title -->
     <title>LifeCount</title>
     <link rel="manifest" href="manifest.json">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="top-bar">
-        <!-- Updated App Header -->
         <h1>LifeCount</h1>
-        <!-- Dark Mode Toggle -->
-        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
+        <button id="theme-toggle" aria-label="Toggle Dark Mode" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
     </header>
 
     <main class="menu-container">
-        <!-- Sub-functions link to separate files -->
         <a href="pages/purchasing.html" class="menu-card money-card">
             <span class="icon">🛒</span>
             <h2>Purchasing</h2>
         </a>
-        <a href="pages/duration.html" class="menu-card time-card">
-            <span class="icon">⏳</span>
-            <h2>Duration</h2>
-        </a>
-        <a href="pages/end-time.html" class="menu-card time-card">
-            <span class="icon">🕒</span>
-            <h2>End Time</h2>
+        <!-- PDF Change: Consolidated Time Menu -->
+        <a href="pages/time-menu.html" class="menu-card time-card">
+            <span class="icon">⌚</span>
+            <h2>Time</h2>
         </a>
         <a href="pages/expiry.html" class="menu-card other-card">
             <span class="icon">📅</span>
