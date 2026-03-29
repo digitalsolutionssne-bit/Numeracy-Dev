@@ -5,8 +5,9 @@
     --card-bg: #ffffff;
     --card-border: #e0e0e0;
     --primary-color: #4a90e2;
-    --success-color: #4CAF50; /* Green for Correct Change */
-    --error-color: #F44336;   /* Red for Wrong Change */
+    --success-color: #4CAF50; /* Green */
+    --error-color: #F44336;   /* Red */
+    --time-block-bg: #E06666; /* Red distinct block for time */
 }
 
 [data-theme="dark"] {
@@ -17,6 +18,7 @@
     --primary-color: #64b5f6;
     --success-color: #81C784;
     --error-color: #E57373;
+    --time-block-bg: #D32F2F;
 }
 
 body {
@@ -53,13 +55,7 @@ body {
     color: var(--primary-color);
     font-weight: 600;
     font-size: 1.1rem;
-    transition: opacity 0.2s;
-    /* Prevents the text from wrapping awkwardly on small screens */
     white-space: nowrap; 
-}
-
-.back-btn:active {
-    opacity: 0.6;
 }
 
 .menu-container {
@@ -69,7 +65,6 @@ body {
     padding: 1.5rem;
 }
 
-/* Large, high-contrast touch targets */
 .menu-card, .action-btn {
     display: flex;
     align-items: center;
@@ -80,30 +75,15 @@ body {
     text-decoration: none;
     color: var(--text-color);
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: transform 0.1s;
-    cursor: pointer;
 }
 
-.menu-card:active, .action-btn:active {
-    transform: scale(0.98);
-}
+.menu-card .icon { font-size: 2.5rem; margin-right: 1.5rem; }
+.menu-card h2 { margin: 0; font-size: 1.3rem; }
 
-.menu-card .icon {
-    font-size: 2.5rem;
-    margin-right: 1.5rem;
-}
-
-.menu-card h2 {
-    margin: 0;
-    font-size: 1.3rem;
-}
-
-/* Feature specific borders */
 .money-card { border-left: 8px solid var(--success-color); }
 .time-card { border-left: 8px solid var(--primary-color); }
 .other-card { border-left: 8px solid #FF9800; }
 
-/* Form inputs for MID/ASD best practices */
 .input-group {
     margin-bottom: 1.5rem;
     display: flex;
@@ -114,14 +94,6 @@ body {
 .input-group label {
     font-size: 1.2rem;
     font-weight: 600;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.input-row {
-    display: flex;
-    gap: 0.5rem;
 }
 
 .large-input {
@@ -136,57 +108,48 @@ body {
     box-sizing: border-box;
 }
 
-.large-input:disabled, .large-input[readonly] {
-    background-color: rgba(0,0,0,0.05);
-    color: var(--text-color);
-    opacity: 1; /* Override iOS default disabled opacity */
-}
-
-[data-theme="dark"] .large-input:disabled,[data-theme="dark"] .large-input[readonly] {
-    background-color: rgba(255,255,255,0.05);
-}
-
 .primary-btn {
     background-color: var(--primary-color);
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    color: white; border: none; border-radius: 8px;
+    padding: 0.75rem 1rem; font-size: 1.1rem; font-weight: 600;
+    width: 100%; box-sizing: border-box; text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block;
 }
 
-.secondary-btn {
-    background-color: #FF9800;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    padding: 0.75rem 1rem;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+/* AI Camera Button Style */
+.ai-scan-btn {
+    background-color: #9C27B0;
+    color: white; border: none; border-radius: 8px;
+    padding: 1rem; font-size: 1.2rem; font-weight: bold;
+    display: flex; align-items: center; justify-content: center;
+    gap: 10px; width: 100%; cursor: pointer;
 }
 
-/* Popup Indicators */
-.popup-indicator {
-    display: none;
-    padding: 1.5rem;
-    border-radius: 12px;
-    text-align: center;
-    margin-top: 1.5rem;
-    font-weight: bold;
-    font-size: 1.2rem;
-    color: white;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+/* Time Blocks (PDF Change for Visual Clarity) */
+.time-block-container {
+    display: flex; gap: 1rem;
 }
 
-.popup-correct {
-    background-color: var(--success-color);
+.time-block {
+    flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px;
 }
 
-.popup-wrong {
-    background-color: var(--error-color);
+.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
+
+.time-block input {
+    background-color: var(--time-block-bg); color: white; border: none;
+    border-radius: 8px; padding: 1rem; font-size: 1.5rem;
+    text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
 }
+.time-block input::placeholder { color: rgba(255,255,255,0.7); }
+
+/* Expiry Result Popups (Giant Blocks from PDF) */
+.expiry-result {
+    display: none; padding: 2rem; border-radius: 16px; text-align: center; margin-top: 2rem; color: white;
+}
+.expiry-result .icon { font-size: 4rem; display: block; margin-bottom: 10px; }
+.expiry-result h2 { margin: 0; font-size: 2rem; }
+.expiry-result p { margin: 5px 0 0 0; font-size: 1.5rem; }
+
+.expiry-good { background-color: var(--success-color); }
+.expiry-bad { background-color: var(--error-color); }
