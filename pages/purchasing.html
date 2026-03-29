@@ -1,1 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Purchasing | LifeCount</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="top-bar">
+        <!-- Modernized Back Button using SVG Chevron -->
+        <a href="../index.html" class="back-btn" aria-label="Go back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            Back
+        </a>
+        <h1>Purchasing</h1>
+        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;" aria-label="Toggle Dark Mode">🌗</button>
+    </header>
 
+    <main class="page-content" style="padding: 1.5rem;">
+        
+        <!-- Step 1: I Have (PDF Change: Disabled manual entry) -->
+        <div class="input-group">
+            <label for="wallet-input">💳 I have:</label>
+            <div class="input-row">
+                <!-- 'readonly' forces them to click the 'View Wallet' button, preventing confusion -->
+                <input type="text" id="wallet-input" class="large-input" value="$0.00" readonly aria-readonly="true">
+                <button class="primary-btn" id="view-wallet-btn">View Wallet</button>
+            </div>
+        </div>
+
+        <!-- Step 2: Cost of Items -->
+        <div class="input-group">
+            <label for="cost-input">🛒 I want to buy (cost):</label>
+            <!-- Students can manually enter the price they see on the shelf -->
+            <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
+        </div>
+
+        <!-- Calculated Outcome Area -->
+        <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+            <p style="margin: 0 0 0.5rem 0; font-size: 1.1rem;">Amount to pay cashier:</p>
+            <h2 id="pay-amount" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
+        </div>
+
+        <!-- Step 3: Check Change (PDF Change: Renamed from Check Money, integrated into workflow) -->
+        <div class="input-group">
+            <label for="change-input">💵 Change Cashier Gave Me:</label>
+            <div class="input-row">
+                <input type="text" id="change-input" class="large-input" value="$0.00" readonly aria-readonly="true">
+                <button class="secondary-btn" id="check-change-btn">Input Change</button>
+            </div>
+        </div>
+
+        <!-- PDF Change: Clear pop-ups indicating Correct or Wrong change -->
+        <div id="correct-change-popup" class="popup-indicator popup-correct">
+            ✅ You have received the correct change!
+        </div>
+
+        <div id="wrong-change-popup" class="popup-indicator popup-wrong">
+            ❌ You received the wrong change. Please inform the cashier.
+        </div>
+
+    </main>
+
+    <!-- Essential: script to manage dark mode state on sub-pages -->
+    <script src="../app.js"></script>
+    <script>
+        // Placeholder interactions for the Purchasing logic
+        // In a full build, the View Wallet button would open a modal with Singaporean notes and coins.
+        
+        const viewWalletBtn = document.getElementById('view-wallet-btn');
+        const checkChangeBtn = document.getElementById('check-change-btn');
+        const correctPopup = document.getElementById('correct-change-popup');
+        const wrongPopup = document.getElementById('wrong-change-popup');
+
+        viewWalletBtn.addEventListener('click', () => {
+            alert('This will open the visual coin/note selector to count "I Have".');
+        });
+
+        checkChangeBtn.addEventListener('click', () => {
+            // Placeholder logic to demonstrate the Correct/Wrong popup workflow requested in PDF
+            const isCorrect = confirm("Simulate: Did the student input the correct change?");
+            
+            correctPopup.style.display = 'none';
+            wrongPopup.style.display = 'none';
+
+            if(isCorrect) {
+                correctPopup.style.display = 'block';
+            } else {
+                wrongPopup.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
