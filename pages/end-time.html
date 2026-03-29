@@ -1,1 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>End Time | LifeCount</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="top-bar">
+        <a href="time-menu.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+        </a>
+        <h1>End Time 🕒</h1>
+        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
+    </header>
 
+    <main class="page-content" style="padding: 1.5rem;">
+        <div class="input-group">
+            <label>Start Time:</label>
+            <input type="time" class="large-input" id="start-time">
+        </div>
+
+        <div class="input-group">
+            <label>Duration (Time spent on):</label>
+            <!-- PDF Change: Distinct visual blocks for Hour and Minute to prevent confusion -->
+            <div class="time-block-container">
+                <div class="time-block">
+                    <label>Hour</label>
+                    <input type="number" id="dur-hours" placeholder="0" min="0">
+                </div>
+                <div class="time-block">
+                    <label>Minute</label>
+                    <input type="number" id="dur-mins" placeholder="0" min="0" max="59">
+                </div>
+            </div>
+        </div>
+
+        <button class="primary-btn" style="margin-top:1rem;" onclick="calculateEndTime()">Calculate End Time</button>
+
+        <div style="margin-top: 1.5rem; text-align: center;">
+            <p style="margin: 0 0 0.5rem 0; font-weight:bold;">You will finish at:</p>
+            <h2 id="end-time-result" style="margin: 0; font-size: 2.5rem; color: var(--primary-color);">--:--</h2>
+        </div>
+    </main>
+
+    <script src="../app.js"></script>
+    <script>
+        function calculateEndTime() {
+            const start = document.getElementById('start-time').value;
+            const hours = parseInt(document.getElementById('dur-hours').value) || 0;
+            const mins = parseInt(document.getElementById('dur-mins').value) || 0;
+            
+            if(!start) return alert("Please enter a Start Time.");
+
+            const startD = new Date(`1970-01-01T${start}:00`);
+            startD.setHours(startD.getHours() + hours);
+            startD.setMinutes(startD.getMinutes() + mins);
+
+            // Format to 12-hour AM/PM for easier reading
+            let hr = startD.getHours();
+            let mn = startD.getMinutes();
+            const ampm = hr >= 12 ? 'PM' : 'AM';
+            hr = hr % 12;
+            hr = hr ? hr : 12; 
+            mn = mn < 10 ? '0' + mn : mn;
+
+            document.getElementById('end-time-result').innerText = `${hr}:${mn} ${ampm}`;
+        }
+    </script>
+</body>
+</html>
