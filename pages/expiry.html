@@ -1,1 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Expiration | LifeCount</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="top-bar">
+        <a href="../index.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+        </a>
+        <h1>Expiration Date</h1>
+        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
+    </header>
 
+    <main class="page-content" style="padding: 1.5rem;">
+        
+        <div class="input-group">
+            <label>Today is:</label>
+            <input type="date" class="large-input" id="today-date" readonly>
+        </div>
+
+        <p style="text-align:center; font-weight:bold; margin-bottom: 5px;">Product Expiration Date:</p>
+        
+        <!-- PDF Change: AI Integration Button. 
+             Using capture="environment" forces the mobile browser to open the rear camera directly -->
+        <label class="ai-scan-btn">
+            <span>📷 Scan Date with AI</span>
+            <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
+        </label>
+        
+        <!-- Giant popups requested from PDF Page 15 -->
+        <div id="result-good" class="expiry-result expiry-good">
+            <span class="icon">✅</span>
+            <h2>Still good</h2>
+            <p>CAN eat/use.</p>
+        </div>
+
+        <div id="result-bad" class="expiry-result expiry-bad">
+            <span class="icon">❌</span>
+            <h2>Expired</h2>
+            <p>CANNOT eat/use.</p>
+        </div>
+
+    </main>
+
+    <script src="../app.js"></script>
+    <script>
+        // Set today's date automatically
+        document.getElementById('today-date').valueAsDate = new Date();
+
+        // Simulate AI Scanning behavior
+        document.getElementById('camera-input').addEventListener('change', function(e) {
+            if(e.target.files.length > 0) {
+                // Hide existing popups
+                document.getElementById('result-good').style.display = 'none';
+                document.getElementById('result-bad').style.display = 'none';
+                
+                // Simulate processing delay
+                const originalText = e.target.previousElementSibling.innerText;
+                e.target.previousElementSibling.innerText = "⏳ Processing AI Scan...";
+                
+                setTimeout(() => {
+                    e.target.previousElementSibling.innerText = originalText;
+                    
+                    // Mock Logic: 50% chance of being good or expired for demonstration
+                    if(Math.random() > 0.5) {
+                        document.getElementById('result-good').style.display = 'block';
+                    } else {
+                        document.getElementById('result-bad').style.display = 'block';
+                    }
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>
