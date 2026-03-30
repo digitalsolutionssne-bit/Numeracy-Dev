@@ -20,15 +20,19 @@ if (themeToggle) {
     });
 }
 
-// Service Worker Registration for PWA
+// Service Worker Registration for 100% Offline PWA functionality
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
-        navigator.serviceWorker.register('/sw.js') // Adjust path if deploying to a subfolder on GH Pages
+        // Dynamically resolve the path to sw.js depending on if we are in the root or /pages/ folder
+        const isSubdir = window.location.pathname.includes('/pages/');
+        const swPath = isSubdir ? '../sw.js' : './sw.js';
+
+        navigator.serviceWorker.register(swPath)
             .then(registration => {
-                console.log('SW registered with scope:', registration.scope);
+                console.log('Service Worker successfully registered with scope:', registration.scope);
             })
             .catch(err => {
-                console.error('SW registration failed:', err);
+                console.error('Service Worker registration failed:', err);
             });
     });
 }
