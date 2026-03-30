@@ -6,36 +6,27 @@
     <title>Stop Watch | LifeCount</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
-        /* Fix for mobile browser height cut-off */
-        body {
-            display: flex; 
-            flex-direction: column; 
-            min-height: 100vh; 
-            min-height: 100dvh; /* Adapts to mobile navigation bars */
-            margin: 0;
-        }
-        
         .page-content {
             display: flex;
             flex-direction: column;
-            flex-grow: 1;
             padding: 1.5rem;
-            /* Ensures button isn't squashed against the phone screen edge/home bar */
+            /* Respects the phone's bottom physical safe area (like iPhone Home Indicator) */
             padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); 
             box-sizing: border-box;
         }
 
         .stopwatch-container {
+            flex: 1; /* Automatically takes all available leftover vertical space */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            flex-grow: 1; /* Pushes the start button to the bottom naturally */
+            justify-content: center; /* Perfectly centers the digits in the remaining space */
+            min-height: 150px; /* Prevents overlap if screen is extremely tiny */
         }
         
         .time-display {
             display: flex;
-            align-items: flex-start; /* Aligns the numbers and colons perfectly at the top */
+            align-items: flex-start;
             justify-content: center;
             gap: 8px;
         }
@@ -44,15 +35,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 85px; /* Ensures numbers don't jump around */
+            width: 85px; 
         }
         
         .digits {
-            font-size: 4.5rem; /* Slightly larger */
+            font-size: 4.5rem; 
             color: var(--primary-color);
             font-weight: 300;
             line-height: 1;
-            font-variant-numeric: tabular-nums; /* Keeps numbers equal width */
+            font-variant-numeric: tabular-nums; 
         }
 
         .colon {
@@ -60,7 +51,7 @@
             font-size: 4.5rem;
             font-weight: 300;
             line-height: 1;
-            transform: translateY(-4px); /* Optical adjustment so dots perfectly center with numbers */
+            transform: translateY(-4px); 
         }
         
         .time-label {
@@ -71,11 +62,11 @@
         }
 
         .controls {
+            flex-shrink: 0; /* Ensures the buttons never compress or disappear */
             display: flex;
             flex-direction: column;
             gap: 15px;
             width: 100%;
-            margin-top: auto; /* Pins the controls safely to the bottom area */
         }
         
         .reset-btn {
