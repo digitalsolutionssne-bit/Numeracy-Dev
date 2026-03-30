@@ -6,46 +6,78 @@
     <title>Stop Watch | LifeCount</title>
     <link rel="stylesheet" href="../styles.css">
     <style>
+        /* Fix for mobile browser height cut-off */
+        body {
+            display: flex; 
+            flex-direction: column; 
+            min-height: 100vh; 
+            min-height: 100dvh; /* Adapts to mobile navigation bars */
+            margin: 0;
+        }
+        
+        .page-content {
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            padding: 1.5rem;
+            /* Ensures button isn't squashed against the phone screen edge/home bar */
+            padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); 
+            box-sizing: border-box;
+        }
+
         .stopwatch-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            flex-grow: 1;
-            margin-top: 3rem;
-            margin-bottom: 3rem;
+            flex-grow: 1; /* Pushes the start button to the bottom naturally */
         }
+        
         .time-display {
             display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 4rem;
-            color: var(--primary-color);
-            font-weight: 300;
+            align-items: flex-start; /* Aligns the numbers and colons perfectly at the top */
+            justify-content: center;
+            gap: 8px;
         }
-        .colon {
-            color: var(--primary-color);
-            margin-top: -10px; /* Aligns colon visually */
-        }
+        
         .time-segment {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 80px;
+            width: 85px; /* Ensures numbers don't jump around */
         }
+        
+        .digits {
+            font-size: 4.5rem; /* Slightly larger */
+            color: var(--primary-color);
+            font-weight: 300;
+            line-height: 1;
+            font-variant-numeric: tabular-nums; /* Keeps numbers equal width */
+        }
+
+        .colon {
+            color: var(--primary-color);
+            font-size: 4.5rem;
+            font-weight: 300;
+            line-height: 1;
+            transform: translateY(-4px); /* Optical adjustment so dots perfectly center with numbers */
+        }
+        
         .time-label {
-            font-size: 0.9rem;
+            font-size: 1rem;
             color: #888;
-            margin-top: 5px;
+            margin-top: 8px;
             font-weight: normal;
         }
+
         .controls {
             display: flex;
             flex-direction: column;
             gap: 15px;
             width: 100%;
+            margin-top: auto; /* Pins the controls safely to the bottom area */
         }
-        /* Extra reset button to make it functional for daily use */
+        
         .reset-btn {
             background-color: transparent;
             color: var(--text-color);
@@ -58,11 +90,11 @@
             width: 100%;
             box-sizing: border-box;
             text-align: center;
-            display: none; /* Hidden until timer is paused */
+            display: none;
         }
     </style>
 </head>
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
+<body>
     <header class="top-bar">
         <a href="time-menu.html" class="back-btn" aria-label="Go back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -74,22 +106,22 @@
         <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem; display: flex; flex-direction: column; flex-grow: 1;">
+    <main class="page-content">
         
         <div class="stopwatch-container">
             <div class="time-display">
                 <div class="time-segment">
-                    <span id="sw-hours">00</span>
+                    <span id="sw-hours" class="digits">00</span>
                     <span class="time-label">hours</span>
                 </div>
                 <span class="colon">:</span>
                 <div class="time-segment">
-                    <span id="sw-minutes">00</span>
+                    <span id="sw-minutes" class="digits">00</span>
                     <span class="time-label">minutes</span>
                 </div>
                 <span class="colon">:</span>
                 <div class="time-segment">
-                    <span id="sw-seconds">00</span>
+                    <span id="sw-seconds" class="digits">00</span>
                     <span class="time-label">seconds</span>
                 </div>
             </div>
@@ -129,7 +161,7 @@
                 clearInterval(timerInterval);
                 startStopBtn.innerHTML = "▷ START";
                 startStopBtn.style.backgroundColor = "var(--primary-color)";
-                resetBtn.style.display = "block"; // Show reset when paused
+                resetBtn.style.display = "block"; 
             } else {
                 // Start Timer
                 timerInterval = setInterval(() => {
@@ -137,7 +169,7 @@
                     updateDisplay();
                 }, 1000);
                 startStopBtn.innerHTML = "⏸ STOP";
-                startStopBtn.style.backgroundColor = "var(--error-color)"; // Red for stop to make it clear
+                startStopBtn.style.backgroundColor = "var(--error-color)"; 
                 resetBtn.style.display = "none";
             }
             isRunning = !isRunning;
