@@ -1,3 +1,34 @@
+// ==========================================
+// ENVIRONMENT CONFIGURATION
+// Toggle this between 'testing' and 'production'
+// ==========================================
+const ENVIRONMENT = 'testing'; 
+
+// Inject Test Environment Banner
+if (ENVIRONMENT === 'testing') {
+    window.addEventListener('DOMContentLoaded', () => {
+        const testBanner = document.createElement('div');
+        testBanner.textContent = 'Test Environment';
+        testBanner.style.backgroundColor = '#d32f2f'; // Distinct Red
+        testBanner.style.color = '#ffffff';
+        testBanner.style.textAlign = 'center';
+        testBanner.style.padding = '4px';
+        testBanner.style.fontWeight = 'bold';
+        testBanner.style.fontSize = '0.85rem';
+        testBanner.style.letterSpacing = '1px';
+        testBanner.style.textTransform = 'uppercase';
+        testBanner.style.flexShrink = '0'; // Ensures it doesn't get squished by flexbox
+        testBanner.style.zIndex = '9999';
+        
+        // Insert at the very top of the body
+        document.body.insertBefore(testBanner, document.body.firstChild);
+    });
+}
+
+// ==========================================
+// APP LOGIC
+// ==========================================
+
 // Toggle Dark/Light Mode
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
