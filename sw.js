@@ -1,4 +1,6 @@
-const CACHE_NAME = 'lifecount-cache-v2'; // Bumped version to ensure new page is cached immediately
+const CACHE_NAME = 'lifecount-cache-v3';
+
+// All the core files needed for the app to function 100% offline
 const urlsToCache =[
     './',
     './index.html',
@@ -11,52 +13,80 @@ const urlsToCache =[
     './pages/duration.html',
     './pages/end-time.html',
     './pages/expiry.html'
-    // Add icon paths here once generated
+    // Ensure you add your icon paths here once generated (e.g., './assets/icon-192.png')
 ];
 
-// Install event: cache initial files
+// Install event: Cache all vital files immediately upon app installation
 self.addEventListener('install', event => {
-    self.skipWaiting(); // Force the waiting service worker to become the active service worker
+    self.skipWaiting(); // Force the waiting service worker to become active immediately
     event.waitUntil(
         caches.open(CACHE_NAME)
-            .then(cache => cache.addAll(urlsToCache))
+            .then(cache => {
+                console.log('Opened cache and saving files for offline use');
+                return cache.addAll(urlsToCache);
+            })
+            .catch(err => console.error('Failed to cache files on install:', err))
     );
 });
 
-// Fetch event: Stale-While-Revalidate strategy for offline-first and background updates
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request).then(cachedResponse => {
-            const fetchPromise = fetch(event.request).then(networkResponse => {
-                // If network is available, update the cache in the background
-                if (networkResponse && networkResponse.status === 200) {
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, networkResponse.clone());
-                    });
-                }
-                return networkResponse;
-            }).catch(() => {
-                // Ignore network errors (user is offline). App will load from cachedResponse.
-            });
-
-            // Return cached response immediately if available, otherwise wait for network
-            return cachedResponse || fetchPromise;
-        })
-    );
-});
-
-// Activate event: Cleanup old caches when a new version is installed
+// Activate event: Cleanup old caches when we push a new version (v4, v5, etc.)
 self.addEventListener('activate', event => {
-    const cacheWhitelist =[CACHE_NAME];
     event.waitUntil(
         caches.keys().then(cacheNames => {
             return Promise.all(
                 cacheNames.map(cacheName => {
-                    if (cacheWhitelist.indexOf(cacheName) === -1) {
+                    if (cacheName !== CACHE_NAME) {
+                        console.log('Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
             );
+        })
+    );
+    // Ensure the Service Worker takes control of the page immediately
+    return self.clients.claim(); 
+});
+
+// Fetch event: Rock-solid Offline-First strategy (Cache First, Background Update)
+self.addEventListener('fetch', event => {
+    // We only want to intercept GET requests (ignore POSTs or external APIs if added later)
+    if (event.request.method !== 'GET') return;
+
+    event.respondWith(
+        caches.match(event.request, { ignoreSearch: true }).then(cachedResponse => {
+            
+            // 1. If we have the file in cache, RETURN IT IMMEDIATELY (App works offline)
+            if (cachedResponse) {
+                
+                // 2. Silently check the network in the background to update the cache for next time
+                event.waitUntil(
+                    fetch(event.request).then(networkResponse => {
+                        if (networkResponse && networkResponse.status === 200) {
+                            caches.open(CACHE_NAME).then(cache => {
+                                cache.put(event.request, networkResponse.clone());
+                            });
+                        }
+                    }).catch(() => {
+                        // Background update failed (user is offline). Do nothing, app still works!
+                    })
+                );
+                
+                return cachedResponse;
+            }
+
+            // 3. If file is NOT in cache, try fetching from the network (first-time loads of new pages)
+            return fetch(event.request).then(networkResponse => {
+                if (networkResponse && networkResponse.status === 200) {
+                    const responseToCache = networkResponse.clone();
+                    caches.open(CACHE_NAME).then(cache => {
+                        cache.put(event.request, responseToCache);
+                    });
+                }
+                return networkResponse;
+            }).catch(() => {
+                // Completely Offline and file not in cache. 
+                console.error('Offline and file not cached:', event.request.url);
+            });
         })
     );
 });
