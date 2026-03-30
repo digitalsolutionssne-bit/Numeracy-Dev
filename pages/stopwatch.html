@@ -10,18 +10,17 @@
             display: flex;
             flex-direction: column;
             padding: 1.5rem;
-            /* Respects the phone's bottom physical safe area (like iPhone Home Indicator) */
-            padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); 
-            box-sizing: border-box;
+            /* Ensures bottom padding accounts for iOS safe area indicator line */
+            padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); 
         }
 
         .stopwatch-container {
-            flex: 1; /* Automatically takes all available leftover vertical space */
+            flex: 1; 
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center; /* Perfectly centers the digits in the remaining space */
-            min-height: 150px; /* Prevents overlap if screen is extremely tiny */
+            justify-content: center; 
+            min-height: 0; /* Prevents overflow */
         }
         
         .time-display {
@@ -62,7 +61,7 @@
         }
 
         .controls {
-            flex-shrink: 0; /* Ensures the buttons never compress or disappear */
+            flex-shrink: 0; /* CRITICAL: Never allows the buttons to be crushed or pushed off screen */
             display: flex;
             flex-direction: column;
             gap: 15px;
