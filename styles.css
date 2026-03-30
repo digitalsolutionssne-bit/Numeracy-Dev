@@ -8,9 +8,7 @@
     --success-color: #4CAF50; 
     --error-color: #F44336;   
     --time-block-bg: #E06666; 
-}
-
-[data-theme="dark"] {
+}[data-theme="dark"] {
     --bg-color: #121212;
     --text-color: #e0e0e0;
     --card-bg: #1e1e1e;
@@ -21,12 +19,18 @@
     --time-block-bg: #D32F2F;
 }
 
+/* 
+  Native App Viewport Lock:
+  Completely disables bouncing, overscrolling, and physical body stretching.
+*/
 html, body {
     margin: 0;
     padding: 0;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     height: 100dvh; 
     overflow: hidden; 
+    position: fixed; /* Locks app completely to the screen bounds */
 }
 
 body {
@@ -68,14 +72,8 @@ body {
 }
 
 /* --- ANIMATIONS & TOAST MESSAGES --- */
-
-@keyframes spin {
-    100% { transform: rotate(360deg); }
-}
-
-.spin {
-    animation: spin 1s linear infinite;
-}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
 
 .toast {
     visibility: hidden;
@@ -88,7 +86,7 @@ body {
     position: fixed;
     z-index: 10000;
     left: 50%;
-    bottom: max(30px, env(safe-area-inset-bottom)); /* Respects bottom home bar */
+    bottom: max(30px, env(safe-area-inset-bottom));
     transform: translateX(-50%) translateY(20px);
     font-size: 1.1rem;
     font-weight: 600;
@@ -96,19 +94,15 @@ body {
     opacity: 0;
     transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 }
+.toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
-.toast.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateX(-50%) translateY(0);
-}
-
-/* --- END NEW ADDITIONS --- */
-
+/* --- CONTENT CONTAINERS --- */
 .menu-container, .page-content {
     flex: 1;
+    min-height: 0; /* CRITICAL FIX: Stops children from stretching the flexbox off-screen */
     overflow-y: auto;
     -webkit-overflow-scrolling: touch; 
+    box-sizing: border-box;
 }
 
 .menu-container {
@@ -137,57 +131,33 @@ body {
 .time-card { border-left: 8px solid var(--primary-color); }
 .other-card { border-left: 8px solid #FF9800; }
 
-.input-group {
-    margin-bottom: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.input-group label {
-    font-size: 1.2rem;
-    font-weight: 600;
-}
+.input-group { margin-bottom: 1.5rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.input-group label { font-size: 1.2rem; font-weight: 600; }
 
 .large-input {
-    font-size: 1.5rem;
-    padding: 0.75rem;
-    flex-grow: 1;
-    border: 2px solid var(--card-border);
-    border-radius: 8px;
-    background-color: var(--card-bg);
-    color: var(--text-color);
-    width: 100%;
-    box-sizing: border-box;
+    font-size: 1.5rem; padding: 0.75rem; flex-grow: 1;
+    border: 2px solid var(--card-border); border-radius: 8px;
+    background-color: var(--card-bg); color: var(--text-color);
+    width: 100%; box-sizing: border-box;
 }
 
 .primary-btn {
-    background-color: var(--primary-color);
-    color: white; border: none; border-radius: 8px;
+    background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
     padding: 0.75rem 1rem; font-size: 1.1rem; font-weight: 600;
     width: 100%; box-sizing: border-box; text-align: center;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block;
 }
 
 .ai-scan-btn {
-    background-color: #9C27B0;
-    color: white; border: none; border-radius: 8px;
+    background-color: #9C27B0; color: white; border: none; border-radius: 8px;
     padding: 1rem; font-size: 1.2rem; font-weight: bold;
     display: flex; align-items: center; justify-content: center;
-    gap: 10px; width: 100%; cursor: pointer;
-    box-sizing: border-box;
+    gap: 10px; width: 100%; cursor: pointer; box-sizing: border-box;
 }
 
-.time-block-container {
-    display: flex; gap: 1rem;
-}
-
-.time-block {
-    flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px;
-}
-
+.time-block-container { display: flex; gap: 1rem; }
+.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
 .time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
-
 .time-block input {
     background-color: var(--time-block-bg); color: white; border: none;
     border-radius: 8px; padding: 1rem; font-size: 1.5rem;
@@ -195,9 +165,7 @@ body {
 }
 .time-block input::placeholder { color: rgba(255,255,255,0.7); }
 
-.expiry-result {
-    display: none; padding: 2rem; border-radius: 16px; text-align: center; margin-top: 2rem; color: white;
-}
+.expiry-result { display: none; padding: 2rem; border-radius: 16px; text-align: center; margin-top: 2rem; color: white; }
 .expiry-result .icon { font-size: 4rem; display: block; margin-bottom: 10px; }
 .expiry-result h2 { margin: 0; font-size: 2rem; }
 .expiry-result p { margin: 5px 0 0 0; font-size: 1.5rem; }
