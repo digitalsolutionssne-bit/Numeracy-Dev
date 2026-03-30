@@ -5,9 +5,9 @@
     --card-bg: #ffffff;
     --card-border: #e0e0e0;
     --primary-color: #4a90e2;
-    --success-color: #4CAF50; /* Green */
-    --error-color: #F44336;   /* Red */
-    --time-block-bg: #E06666; /* Red distinct block for time */
+    --success-color: #4CAF50; 
+    --error-color: #F44336;   
+    --time-block-bg: #E06666; 
 }
 
 [data-theme="dark"] {
@@ -21,15 +21,11 @@
     --time-block-bg: #D32F2F;
 }
 
-/* 
-  Native App Layout Fix: 
-  Locks the viewport and prevents the entire page from scrolling/bouncing 
-*/
 html, body {
     margin: 0;
     padding: 0;
     height: 100%;
-    height: 100dvh; /* Adapts dynamically to mobile browser URL bars */
+    height: 100dvh; 
     overflow: hidden; 
 }
 
@@ -49,7 +45,7 @@ body {
     padding: 1rem 1.5rem;
     background-color: var(--card-bg);
     border-bottom: 2px solid var(--card-border);
-    flex-shrink: 0; /* Ensures the header never gets squished */
+    flex-shrink: 0; 
     z-index: 10;
 }
 
@@ -60,7 +56,6 @@ body {
     flex-grow: 1;
 }
 
-/* Modernized Back Button */
 .back-btn {
     display: flex;
     align-items: center;
@@ -72,14 +67,48 @@ body {
     white-space: nowrap; 
 }
 
-/* 
-  Content areas handle their own scrolling only if necessary.
-  This ensures UI elements are naturally anchored to the screen bounds.
-*/
+/* --- ANIMATIONS & TOAST MESSAGES --- */
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+.toast {
+    visibility: hidden;
+    min-width: 250px;
+    background-color: var(--success-color);
+    color: #fff;
+    text-align: center;
+    border-radius: 8px;
+    padding: 16px;
+    position: fixed;
+    z-index: 10000;
+    left: 50%;
+    bottom: max(30px, env(safe-area-inset-bottom)); /* Respects bottom home bar */
+    transform: translateX(-50%) translateY(20px);
+    font-size: 1.1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+
+.toast.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
+/* --- END NEW ADDITIONS --- */
+
 .menu-container, .page-content {
     flex: 1;
     overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* Smooth momentum scrolling on iOS */
+    -webkit-overflow-scrolling: touch; 
 }
 
 .menu-container {
@@ -140,7 +169,6 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block;
 }
 
-/* AI Camera Button Style */
 .ai-scan-btn {
     background-color: #9C27B0;
     color: white; border: none; border-radius: 8px;
@@ -150,7 +178,6 @@ body {
     box-sizing: border-box;
 }
 
-/* Time Blocks */
 .time-block-container {
     display: flex; gap: 1rem;
 }
@@ -168,7 +195,6 @@ body {
 }
 .time-block input::placeholder { color: rgba(255,255,255,0.7); }
 
-/* Expiry Result Popups */
 .expiry-result {
     display: none; padding: 2rem; border-radius: 16px; text-align: center; margin-top: 2rem; color: white;
 }
