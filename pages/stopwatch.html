@@ -10,7 +10,6 @@
             display: flex;
             flex-direction: column;
             padding: 1.5rem;
-            /* Ensures bottom padding accounts for iOS safe area indicator line */
             padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); 
         }
 
@@ -20,7 +19,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center; 
-            min-height: 0; /* Prevents overflow */
+            min-height: 0; 
+            /* Added gap to create perfect spacing between the timer and the buttons below it */
+            gap: 2.5rem; 
         }
         
         .time-display {
@@ -61,11 +62,13 @@
         }
 
         .controls {
-            flex-shrink: 0; /* CRITICAL: Never allows the buttons to be crushed or pushed off screen */
+            flex-shrink: 0; 
             display: flex;
             flex-direction: column;
             gap: 15px;
             width: 100%;
+            /* Constraining the max-width makes it look much better when centered */
+            max-width: 320px; 
         }
         
         .reset-btn {
@@ -80,7 +83,8 @@
             width: 100%;
             box-sizing: border-box;
             text-align: center;
-            display: none;
+            /* CRITICAL: visibility: hidden keeps the physical space reserved so the UI never jumps */
+            visibility: hidden; 
         }
     </style>
 </head>
@@ -115,12 +119,14 @@
                     <span class="time-label">seconds</span>
                 </div>
             </div>
-        </div>
 
-        <div class="controls">
-            <button class="primary-btn" id="start-stop-btn">▷ START</button>
-            <button class="reset-btn" id="reset-btn">↺ RESET</button>
+            <!-- Moved controls inside the center container -->
+            <div class="controls">
+                <button class="primary-btn" id="start-stop-btn">▷ START</button>
+                <button class="reset-btn" id="reset-btn">↺ RESET</button>
+            </div>
         </div>
+        
     </main>
 
     <script src="../app.js"></script>
@@ -151,7 +157,8 @@
                 clearInterval(timerInterval);
                 startStopBtn.innerHTML = "▷ START";
                 startStopBtn.style.backgroundColor = "var(--primary-color)";
-                resetBtn.style.display = "block"; 
+                // Use visibility instead of display to prevent jumping
+                resetBtn.style.visibility = "visible"; 
             } else {
                 // Start Timer
                 timerInterval = setInterval(() => {
@@ -160,7 +167,7 @@
                 }, 1000);
                 startStopBtn.innerHTML = "⏸ STOP";
                 startStopBtn.style.backgroundColor = "var(--error-color)"; 
-                resetBtn.style.display = "none";
+                resetBtn.style.visibility = "hidden";
             }
             isRunning = !isRunning;
         }
@@ -172,7 +179,7 @@
             updateDisplay();
             startStopBtn.innerHTML = "▷ START";
             startStopBtn.style.backgroundColor = "var(--primary-color)";
-            resetBtn.style.display = "none";
+            resetBtn.style.visibility = "hidden";
         }
 
         startStopBtn.addEventListener('click', toggleTimer);
