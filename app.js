@@ -50,11 +50,53 @@ function showToast(message, isError = false) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Check if app just reloaded from a successful update
     if (sessionStorage.getItem('appUpdated') === 'true') {
         sessionStorage.removeItem('appUpdated'); 
         setTimeout(() => showToast('App updated successfully! 🎉'), 300); 
     }
+
+    // ==========================================
+    // "STRAIGHT TO CAMERA" LOGIC
+    // ==========================================
+    const scanInput = document.getElementById('direct-scan-input');
+    if (scanInput) {
+        scanInput.addEventListener('change', function(e) {
+            // This fires the exact moment the user finishes taking the photo
+            if(e.target.files.length > 0) {
+                const processingScreen = document.getElementById('processing-screen');
+                const goodOverlay = document.getElementById('obnoxious-good');
+                const badOverlay = document.getElementById('obnoxious-bad');
+
+                // 1. Show processing blocker over the main menu
+                processingScreen.style.display = 'flex';
+                
+                // 2. Simulate AI processing time
+                setTimeout(() => {
+                    processingScreen.style.display = 'none';
+                    
+                    // 3. Throw the obnoxious overlay
+                    if(Math.random() > 0.5) {
+                        goodOverlay.style.display = 'flex';
+                    } else {
+                        badOverlay.style.display = 'flex';
+                    }
+                    
+                    // Reset the file input so they can scan again immediately
+                    scanInput.value = ''; 
+                }, 2000);
+            }
+        });
+    }
 });
+
+// Global function to close the obnoxious overlays
+window.closeOverlay = function() {
+    const goodOverlay = document.getElementById('obnoxious-good');
+    const badOverlay = document.getElementById('obnoxious-bad');
+    if(goodOverlay) goodOverlay.style.display = 'none';
+    if(badOverlay) badOverlay.style.display = 'none';
+};
 
 
 // ==========================================
@@ -64,7 +106,6 @@ const forceUpdateBtn = document.getElementById('force-update-btn');
 if (forceUpdateBtn) {
     forceUpdateBtn.addEventListener('click', async () => {
         
-        // --- NEW: Offline Check ---
         if (!navigator.onLine) {
             showToast("Currently Offline. Try again when Online", true);
             return;
@@ -76,13 +117,11 @@ if (forceUpdateBtn) {
         try {
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            // 1. Wipe PWA offline cache
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
             }
 
-            // 2. Unregister Service Worker
             if ('serviceWorker' in navigator) {
                 const registrations = await navigator.serviceWorker.getRegistrations();
                 await Promise.all(registrations.map(reg => reg.unregister()));
@@ -90,7 +129,6 @@ if (forceUpdateBtn) {
 
             sessionStorage.setItem('appUpdated', 'true');
             
-            // 3. HARD RELOAD FIX: Appending a timestamp query forces the browser to bypass the HTTP cache
             const cacheBuster = '?update=' + new Date().getTime();
             window.location.href = window.location.pathname + cacheBuster;
             
@@ -103,7 +141,7 @@ if (forceUpdateBtn) {
 }
 
 // ==========================================
-// APP LOGIC
+// THEME & SERVICE WORKER LOGIC
 // ==========================================
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
