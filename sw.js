@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v7';
+const CACHE_NAME = 'lifecount-cache-v8';
 
 // All the core files needed for the app to function 100% offline
 const urlsToCache =[
@@ -13,17 +13,14 @@ const urlsToCache =[
     './pages/duration.html',
     './pages/end-time.html',
     './pages/expiry.html'
-    // Note: scan-expiry.html removed as the flow is now entirely on index.html
 ];
 
-// Install event
 self.addEventListener('install', event => {
     self.skipWaiting(); 
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
                 console.log('Opened cache and fetching strictly fresh files for offline use');
-                
                 const cacheBustedUrls = urlsToCache.map(url => new Request(url, { cache: 'reload' }));
                 return cache.addAll(cacheBustedUrls);
             })
@@ -31,7 +28,6 @@ self.addEventListener('install', event => {
     );
 });
 
-// Activate event
 self.addEventListener('activate', event => {
     event.waitUntil(
         caches.keys().then(cacheNames => {
@@ -48,7 +44,6 @@ self.addEventListener('activate', event => {
     return self.clients.claim(); 
 });
 
-// Fetch event: Rock-solid Offline-First strategy
 self.addEventListener('fetch', event => {
     if (event.request.method !== 'GET') return;
 
