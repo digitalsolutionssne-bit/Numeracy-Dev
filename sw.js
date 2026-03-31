@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v4';
+const CACHE_NAME = 'lifecount-cache-v5';
 
 // All the core files needed for the app to function 100% offline
 const urlsToCache =[
@@ -21,8 +21,11 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache and saving files for offline use');
-                return cache.addAll(urlsToCache);
+                console.log('Opened cache and fetching strictly fresh files for offline use');
+                
+                // CRITICAL FIX: Forces the browser to ignore HTTP caches and fetch directly from server
+                const cacheBustedUrls = urlsToCache.map(url => new Request(url, { cache: 'reload' }));
+                return cache.addAll(cacheBustedUrls);
             })
             .catch(err => console.error('Failed to cache files on install:', err))
     );
