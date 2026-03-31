@@ -30,7 +30,6 @@ if (ENVIRONMENT === 'testing') {
 function showToast(message, isError = false) {
     let toast = document.getElementById('toast-container');
     
-    // Create toast dynamically if it doesn't exist on the page
     if (!toast) {
         toast = document.createElement('div');
         toast.id = 'toast-container';
@@ -41,22 +40,18 @@ function showToast(message, isError = false) {
     toast.textContent = message;
     toast.style.backgroundColor = isError ? 'var(--error-color)' : 'var(--success-color)';
     
-    // Trigger animation
     requestAnimationFrame(() => {
         toast.classList.add('show');
     });
 
-    // Hide after 3.5 seconds
     setTimeout(() => {
         toast.classList.remove('show');
     }, 3500);
 }
 
-// Check if app just reloaded from a successful update
 document.addEventListener('DOMContentLoaded', () => {
     if (sessionStorage.getItem('appUpdated') === 'true') {
-        sessionStorage.removeItem('appUpdated'); // Clear flag
-        // Slight delay so it feels like part of the page load flow
+        sessionStorage.removeItem('appUpdated'); 
         setTimeout(() => showToast('App updated successfully! 🎉'), 300); 
     }
 });
@@ -68,36 +63,40 @@ document.addEventListener('DOMContentLoaded', () => {
 const forceUpdateBtn = document.getElementById('force-update-btn');
 if (forceUpdateBtn) {
     forceUpdateBtn.addEventListener('click', async () => {
-        const icon = forceUpdateBtn.querySelector('.update-icon');
         
-        // Start spinning animation
+        // --- NEW: Offline Check ---
+        if (!navigator.onLine) {
+            showToast("Currently Offline. Try again when Online", true);
+            return;
+        }
+
+        const icon = forceUpdateBtn.querySelector('.update-icon');
         if (icon) icon.classList.add('spin');
         
         try {
-            // Give the user a tiny visual delay to realize the button was clicked
             await new Promise(resolve => setTimeout(resolve, 800));
 
-            // 1. Delete all offline caches to ensure old files are wiped
+            // 1. Wipe PWA offline cache
             if ('caches' in window) {
                 const cacheNames = await caches.keys();
                 await Promise.all(cacheNames.map(name => caches.delete(name)));
             }
 
-            // 2. Unregister the background Service Worker
+            // 2. Unregister Service Worker
             if ('serviceWorker' in navigator) {
                 const registrations = await navigator.serviceWorker.getRegistrations();
                 await Promise.all(registrations.map(reg => reg.unregister()));
             }
 
-            // 3. Set sessionStorage flag so the toast pops up AFTER the hard reload
             sessionStorage.setItem('appUpdated', 'true');
             
-            // 4. Hard reload to pull fresh from GitHub Pages
-            window.location.reload(true);
+            // 3. HARD RELOAD FIX: Appending a timestamp query forces the browser to bypass the HTTP cache
+            const cacheBuster = '?update=' + new Date().getTime();
+            window.location.href = window.location.pathname + cacheBuster;
             
         } catch (err) {
             console.error('Update failed:', err);
-            if (icon) icon.classList.remove('spin'); // Stop spinning on error
+            if (icon) icon.classList.remove('spin'); 
             showToast("Update failed. Check your connection.", true);
         }
     });
@@ -106,8 +105,6 @@ if (forceUpdateBtn) {
 // ==========================================
 // APP LOGIC
 // ==========================================
-
-// Toggle Dark/Light Mode
 const themeToggle = document.getElementById('theme-toggle');
 const currentTheme = localStorage.getItem('theme') || 'light';
 
@@ -128,7 +125,6 @@ if (themeToggle) {
     });
 }
 
-// Service Worker Registration for 100% Offline PWA functionality
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         const isSubdir = window.location.pathname.includes('/pages/');
