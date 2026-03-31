@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Scan Expiry | LifeCount</title>
+    <link rel="stylesheet" href="../styles.css">
+</head>
+<body>
+    <header class="top-bar">
+        <a href="../index.html" class="back-btn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+        </a>
+        <h1>Scan Expiry</h1>
+        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
+    </header>
+
+    <!-- Super simple UI: Just one massive button -->
+    <main class="page-content" style="display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 2rem;">
+        <label style="background-color: #9C27B0; color: white; padding: 3rem 2rem; border-radius: 20px; text-align: center; width: 100%; max-width: 400px; box-shadow: 0 8px 15px rgba(0,0,0,0.2); cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 15px;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+                <circle cx="12" cy="13" r="4"></circle>
+            </svg>
+            <span style="font-size: 2rem; font-weight: bold;">Tap to Scan Date</span>
+            <!-- Hidden native file input. 'capture="environment"' launches the rear camera instantly -->
+            <input type="file" accept="image/*" capture="environment" id="direct-camera-input" style="display:none;">
+        </label>
+    </main>
+
+    <!-- Processing State -->
+    <div id="processing-screen" class="processing-overlay">
+        <div class="processing-spinner">⏳</div>
+        <h2 style="font-size: 2rem;">AI is checking...</h2>
+    </div>
+
+    <!-- The Big Obnoxious Overlays -->
+    <div id="obnoxious-good" class="obnoxious-overlay good">
+        <div class="giant-icon">✅</div>
+        <h1>SAFE!</h1>
+        <p>You can eat/use this.</p>
+        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+    </div>
+
+    <div id="obnoxious-bad" class="obnoxious-overlay bad">
+        <div class="giant-icon">❌</div>
+        <h1>EXPIRED!</h1>
+        <p>DO NOT eat/use this!</p>
+        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+    </div>
+
+    <script src="../app.js"></script>
+    <script>
+        const cameraInput = document.getElementById('direct-camera-input');
+        const processingScreen = document.getElementById('processing-screen');
+        const goodOverlay = document.getElementById('obnoxious-good');
+        const badOverlay = document.getElementById('obnoxious-bad');
+
+        // Triggered immediately after the OS camera closes and returns the photo
+        cameraInput.addEventListener('change', function(e) {
+            if(e.target.files.length > 0) {
+                // 1. Show full-screen processing blocker
+                processingScreen.style.display = 'flex';
+                
+                // 2. Wait 2 seconds to simulate AI reading the image
+                setTimeout(() => {
+                    processingScreen.style.display = 'none';
+                    
+                    // 3. Throw the obnoxious overlay
+                    // (Using Math.random for demonstration. In a real app, AI result determines this)
+                    if(Math.random() > 0.5) {
+                        goodOverlay.style.display = 'flex';
+                    } else {
+                        badOverlay.style.display = 'flex';
+                    }
+                    
+                    // Reset the file input so they can scan again immediately if needed
+                    cameraInput.value = ''; 
+                }, 2000);
+            }
+        });
+
+        // Close the notification and return to normal
+        function closeOverlay() {
+            goodOverlay.style.display = 'none';
+            badOverlay.style.display = 'none';
+        }
+    </script>
+</body>
+</html>
