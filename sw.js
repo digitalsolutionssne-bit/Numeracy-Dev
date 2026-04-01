@@ -1,6 +1,5 @@
-const CACHE_NAME = 'lifecount-cache-v10';
+const CACHE_NAME = 'lifecount-cache-v11';
 
-// All the core files needed for the app to function 100% offline
 const urlsToCache =[
     './',
     './index.html',
@@ -20,7 +19,6 @@ self.addEventListener('install', event => {
     event.waitUntil(
         caches.open(CACHE_NAME)
             .then(cache => {
-                console.log('Opened cache and fetching strictly fresh files for offline use');
                 const cacheBustedUrls = urlsToCache.map(url => new Request(url, { cache: 'reload' }));
                 return cache.addAll(cacheBustedUrls);
             })
@@ -34,7 +32,6 @@ self.addEventListener('activate', event => {
             return Promise.all(
                 cacheNames.map(cacheName => {
                     if (cacheName !== CACHE_NAME) {
-                        console.log('Deleting old cache:', cacheName);
                         return caches.delete(cacheName);
                     }
                 })
@@ -49,7 +46,6 @@ self.addEventListener('fetch', event => {
 
     event.respondWith(
         caches.match(event.request, { ignoreSearch: true }).then(cachedResponse => {
-            
             if (cachedResponse) {
                 event.waitUntil(
                     fetch(event.request).then(networkResponse => {
@@ -58,9 +54,7 @@ self.addEventListener('fetch', event => {
                                 cache.put(event.request, networkResponse.clone());
                             });
                         }
-                    }).catch(() => {
-                        // Background update failed. Do nothing, app still works!
-                    })
+                    }).catch(() => {})
                 );
                 return cachedResponse;
             }
@@ -73,9 +67,7 @@ self.addEventListener('fetch', event => {
                     });
                 }
                 return networkResponse;
-            }).catch(() => {
-                console.error('Offline and file not cached:', event.request.url);
-            });
+            }).catch(() => {});
         })
     );
 });
