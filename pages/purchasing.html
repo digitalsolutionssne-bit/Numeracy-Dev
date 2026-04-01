@@ -8,90 +8,323 @@
 </head>
 <body>
     <header class="top-bar">
-        <!-- Modernized Back Button using SVG Chevron -->
+        <!-- Always available back button to main menu (Step 13) -->
         <a href="../index.html" class="back-btn" aria-label="Go back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
             Back
         </a>
-        <h1>Purchasing</h1>
-        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;" aria-label="Toggle Dark Mode">🌗</button>
+        <h1 id="header-title">Wallet</h1>
+        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem;">
-        
-        <!-- Step 1: I Have (PDF Change: Disabled manual entry) -->
-        <div class="input-group">
-            <label for="wallet-input">💳 I have:</label>
-            <div class="input-row">
-                <!-- 'readonly' forces them to click the 'View Wallet' button, preventing confusion -->
-                <input type="text" id="wallet-input" class="large-input" value="$0.00" readonly aria-readonly="true">
-                <button class="primary-btn" id="view-wallet-btn">View Wallet</button>
+    <main class="page-content">
+
+        <!-- STEP 1: WALLET SETUP -->
+        <div id="step-1" class="flow-step active">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p style="margin: 0; font-weight: bold; font-size: 1.2rem;">Total Amount</p>
+                <h1 style="margin: 0; font-size: 3.5rem;">$<span id="wallet-total">0.00</span></h1>
             </div>
-        </div>
-
-        <!-- Step 2: Cost of Items -->
-        <div class="input-group">
-            <label for="cost-input">🛒 I want to buy (cost):</label>
-            <!-- Students can manually enter the price they see on the shelf -->
-            <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
-        </div>
-
-        <!-- Calculated Outcome Area -->
-        <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
-            <p style="margin: 0 0 0.5rem 0; font-size: 1.1rem;">Amount to pay cashier:</p>
-            <h2 id="pay-amount" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
-        </div>
-
-        <!-- Step 3: Check Change (PDF Change: Renamed from Check Money, integrated into workflow) -->
-        <div class="input-group">
-            <label for="change-input">💵 Change Cashier Gave Me:</label>
-            <div class="input-row">
-                <input type="text" id="change-input" class="large-input" value="$0.00" readonly aria-readonly="true">
-                <button class="secondary-btn" id="check-change-btn">Input Change</button>
+            <div class="wallet-grid" id="wallet-grid-container">
+                <!-- Dynamically populated via JS -->
             </div>
+            <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
         </div>
 
-        <!-- PDF Change: Clear pop-ups indicating Correct or Wrong change -->
-        <div id="correct-change-popup" class="popup-indicator popup-correct">
-            ✅ You have received the correct change!
+
+        <!-- STEP 2: PAY CASHIER -->
+        <div id="step-2" class="flow-step">
+            <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
+                <p style="margin: 0; font-size: 1.1rem; opacity: 0.8;">I have in my wallet:</p>
+                <h2 style="margin: 0; font-size: 1.8rem;">$<span id="step2-wallet-total">0.00</span></h2>
+            </div>
+
+            <div class="input-group">
+                <label>🛒 I want to buy (cost):</label>
+                <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
+            </div>
+
+            <div style="margin-top: 1.5rem;">
+                <p style="margin: 0 0 5px 0; font-weight:bold; font-size: 1.2rem;">Amount to pay cashier:</p>
+                <h2 id="pay-amount-text" style="margin: 0; font-size: 2.5rem; color: var(--primary-color);">$0.00</h2>
+                
+                <!-- Graphics of what to give -->
+                <div class="payment-graphics-container" id="give-cashier-graphics">
+                    <!-- Populated via JS -->
+                    <p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>
+                </div>
+            </div>
+
+            <button class="primary-btn" id="btn-paid-cashier" style="margin-top: 2rem; background-color: var(--success-color);" onclick="goToStep3()" disabled>
+                I have paid Cashier
+            </button>
         </div>
 
-        <div id="wrong-change-popup" class="popup-indicator popup-wrong">
-            ❌ You received the wrong change. Please inform the cashier.
+
+        <!-- STEP 3: CHANGE RECEIVED -->
+        <div id="step-3" class="flow-step">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <p style="margin: 0; font-weight: bold; font-size: 1.2rem;">Change Cashier Gave Me</p>
+                <h1 style="margin: 0; font-size: 3.5rem;">$<span id="change-total">0.00</span></h1>
+            </div>
+            <div class="wallet-grid" id="change-grid-container">
+                <!-- Dynamically populated via JS -->
+            </div>
+            <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
         </div>
 
     </main>
 
-    <!-- Essential: script to manage dark mode state on sub-pages -->
+    <!-- STEP 4: BIG BOTTOM SHEET NOTIFICATION -->
+    <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
+    <div class="bottom-sheet" id="result-sheet">
+        <div id="sheet-content-correct" style="display:none; flex-direction: column; align-items: center;">
+            <div class="giant-icon">✅</div>
+            <h2>Correct Change!</h2>
+            <p>You received the right amount.</p>
+        </div>
+        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
+            <div class="giant-icon">❌</div>
+            <h2>Wrong Change</h2>
+            <p>Please inform the cashier.</p>
+        </div>
+        <div class="sheet-btn-group" style="margin-top: 20px;">
+            <button class="primary-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color);">Home</button>
+            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border);">Try Again</button>
+        </div>
+    </div>
+
     <script src="../app.js"></script>
     <script>
-        // Placeholder interactions for the Purchasing logic
-        // In a full build, the View Wallet button would open a modal with Singaporean notes and coins.
-        
-        const viewWalletBtn = document.getElementById('view-wallet-btn');
-        const checkChangeBtn = document.getElementById('check-change-btn');
-        const correctPopup = document.getElementById('correct-change-popup');
-        const wrongPopup = document.getElementById('wrong-change-popup');
+        // Currency Definitions & CSS Graphic Mappings
+        const denominations =[
+            { val: 50, css: 'sg-money sg-note sg-note-50', label: '$50' },
+            { val: 10, css: 'sg-money sg-note sg-note-10', label: '$10' },
+            { val: 5,  css: 'sg-money sg-note sg-note-5',  label: '$5' },
+            { val: 2,  css: 'sg-money sg-note sg-note-2',  label: '$2' },
+            { val: 1,  css: 'sg-money sg-coin sg-coin-1',  label: '$1' },
+            { val: 0.5,css: 'sg-money sg-coin sg-coin-silver', label: '50¢' },
+            { val: 0.2,css: 'sg-money sg-coin sg-coin-silver', label: '20¢' },
+            { val: 0.1,css: 'sg-money sg-coin sg-coin-silver', label: '10¢' },
+            { val: 0.05,css:'sg-money sg-coin sg-coin-gold', label: '5¢' }
+        ];
 
-        viewWalletBtn.addEventListener('click', () => {
-            alert('This will open the visual coin/note selector to count "I Have".');
-        });
+        // State Trackers
+        let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
+        let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
+        let totalWallet = 0;
+        let expectedChange = 0; // Calculated in Step 2
 
-        checkChangeBtn.addEventListener('click', () => {
-            // Placeholder logic to demonstrate the Correct/Wrong popup workflow requested in PDF
-            const isCorrect = confirm("Simulate: Did the student input the correct change?");
+        // Initialization: Render Grids
+        function renderGrid(containerId, countsObj, totalElemId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
             
-            correctPopup.style.display = 'none';
-            wrongPopup.style.display = 'none';
+            denominations.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'wallet-item';
+                
+                const graphic = `<div class="${d.css}">${d.label}</div>`;
+                
+                item.innerHTML = `
+                    ${graphic}
+                    <div class="wallet-controls">
+                        <button class="control-btn minus" onclick="updateCount(${d.val}, -1, '${containerId}', '${totalElemId}')">-</button>
+                        <span class="control-count" id="count-${containerId}-${d.val}">${countsObj[d.val]}</span>
+                        <button class="control-btn plus" onclick="updateCount(${d.val}, 1, '${containerId}', '${totalElemId}')">+</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
 
-            if(isCorrect) {
-                correctPopup.style.display = 'block';
-            } else {
-                wrongPopup.style.display = 'block';
+        // Handle +/- button clicks
+        function updateCount(val, delta, containerId, totalElemId) {
+            let countsObj = containerId === 'wallet-grid-container' ? walletCounts : changeCounts;
+            if (countsObj[val] + delta >= 0) {
+                countsObj[val] += delta;
+                document.getElementById(`count-${containerId}-${val}`).innerText = countsObj[val];
+                recalcTotal(countsObj, totalElemId);
             }
+        }
+
+        // Recalculate Totals (Done in cents to avoid Javascript decimal bugs like 0.1+0.2=0.300004)
+        function recalcTotal(countsObj, totalElemId) {
+            let totalCents = 0;
+            for (const [val, count] of Object.entries(countsObj)) {
+                totalCents += Math.round(parseFloat(val) * 100) * count;
+            }
+            const totalDollars = (totalCents / 100).toFixed(2);
+            document.getElementById(totalElemId).innerText = totalDollars;
+            
+            if (totalElemId === 'wallet-total') {
+                totalWallet = totalDollars;
+            }
+        }
+
+        // Setup Page Load
+        renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
+        renderGrid('change-grid-container', changeCounts, 'change-total');
+
+        // --- NAVIGATION LOGIC ---
+        function switchStep(stepNum, title) {
+            document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+            document.getElementById('header-title').innerText = title;
+        }
+
+        function goToStep2() {
+            if (parseFloat(totalWallet) === 0) {
+                alert("Your wallet is empty! Please add money first.");
+                return;
+            }
+            document.getElementById('step2-wallet-total').innerText = totalWallet;
+            document.getElementById('cost-input').value = '';
+            document.getElementById('pay-amount-text').innerText = '$0.00';
+            document.getElementById('give-cashier-graphics').innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>';
+            document.getElementById('btn-paid-cashier').disabled = true;
+            
+            switchStep(2, "Pay Cashier");
+        }
+
+        function goToStep3() {
+            switchStep(3, "Check Change");
+        }
+
+
+        // --- PAYMENT ALGORITHM (STEP 2 LOGIC) ---
+        document.getElementById('cost-input').addEventListener('input', function(e) {
+            const costStr = e.target.value;
+            const costCents = Math.round(parseFloat(costStr || 0) * 100);
+            const walletCents = Math.round(parseFloat(totalWallet) * 100);
+            
+            const graphicsContainer = document.getElementById('give-cashier-graphics');
+            const payText = document.getElementById('pay-amount-text');
+            const paidBtn = document.getElementById('btn-paid-cashier');
+
+            if (costCents <= 0) {
+                payText.innerText = '$0.00';
+                payText.style.color = "var(--primary-color)";
+                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>';
+                paidBtn.disabled = true;
+                return;
+            }
+
+            if (costCents > walletCents) {
+                payText.innerText = "Not enough money!";
+                payText.style.color = "var(--error-color)";
+                graphicsContainer.innerHTML = '';
+                paidBtn.disabled = true;
+                return;
+            }
+
+            // Algorithm: Find smallest combination of available money >= cost
+            const bestPaymentArray = calculateOptimalPayment(costCents);
+            
+            if (bestPaymentArray.length === 0) {
+                // Failsafe if weird combination issue
+                payText.innerText = "Cannot make exact payment";
+                payText.style.color = "var(--error-color)";
+                graphicsContainer.innerHTML = '';
+                paidBtn.disabled = true;
+                return;
+            }
+
+            // Success: Display what to give cashier
+            let paymentSumCents = 0;
+            graphicsContainer.innerHTML = '';
+            
+            bestPaymentArray.forEach(valCents => {
+                paymentSumCents += valCents;
+                const denomObj = denominations.find(d => Math.round(d.val * 100) === valCents);
+                graphicsContainer.innerHTML += `<div class="${denomObj.css}">${denomObj.label}</div>`;
+            });
+
+            payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
+            payText.style.color = "var(--success-color)";
+            paidBtn.disabled = false;
+
+            // Save the expected change for Step 3/4
+            expectedChange = paymentSumCents - costCents;
         });
+
+        // Knapsack/DFS Logic to find the best bills/coins to hand over
+        function calculateOptimalPayment(costCents) {
+            let inventory =[];
+            denominations.forEach(d => {
+                let valCents = Math.round(d.val * 100);
+                for (let i = 0; i < walletCounts[d.val]; i++) {
+                    inventory.push(valCents);
+                }
+            });
+            // Sort largest to smallest
+            inventory.sort((a,b) => b - a);
+
+            let bestSum = Infinity;
+            let bestSubset =[];
+
+            function dfs(index, currentSubset, currentSum) {
+                if (currentSum >= costCents) {
+                    if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
+                        bestSum = currentSum;
+                        bestSubset = [...currentSubset];
+                    }
+                    return;
+                }
+                if (index >= inventory.length) return;
+                
+                // Try including the current bill/coin
+                currentSubset.push(inventory[index]);
+                dfs(index + 1, currentSubset, currentSum + inventory[index]);
+                currentSubset.pop();
+                
+                // Try skipping it
+                dfs(index + 1, currentSubset, currentSum);
+            }
+
+            // Run DFS. (If wallet has crazy > 20 items, use fallback to prevent freezing phone)
+            if (inventory.length <= 22) {
+                dfs(0,[], 0);
+            } else {
+                let sum = 0;
+                for (let v of inventory) {
+                    bestSubset.push(v);
+                    sum += v;
+                    if (sum >= costCents) break;
+                }
+            }
+            return bestSubset;
+        }
+
+        // --- STEP 4 NOTIFICATION LOGIC ---
+        function checkChange() {
+            let actualChangeCents = 0;
+            for (const [val, count] of Object.entries(changeCounts)) {
+                actualChangeCents += Math.round(parseFloat(val) * 100) * count;
+            }
+
+            const isCorrect = actualChangeCents === expectedChange;
+            
+            document.getElementById('sheet-backdrop').classList.add('show');
+            const sheet = document.getElementById('result-sheet');
+            
+            document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
+            document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
+            
+            // Hide retry button if they got it right
+            document.getElementById('retry-btn').style.display = isCorrect ? 'none' : 'block';
+            
+            sheet.classList.remove('correct', 'wrong');
+            sheet.classList.add(isCorrect ? 'correct' : 'wrong');
+            sheet.classList.add('show');
+        }
+
+        function retryChange() {
+            document.getElementById('sheet-backdrop').classList.remove('show');
+            document.getElementById('result-sheet').classList.remove('show');
+        }
     </script>
 </body>
 </html>
