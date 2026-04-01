@@ -15,68 +15,175 @@
         <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem;">
+    <main class="page-content" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; justify-content: space-evenly;">
         
-        <div class="input-group">
-            <label>Today is:</label>
-            <input type="date" class="large-input" id="today-date" readonly>
+        <!-- 1. Display Today's Date cleanly as plain text -->
+        <div style="text-align: center; flex-shrink: 0;">
+            <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
+            <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
         </div>
-
-        <p style="text-align:center; font-weight:bold; margin-bottom: 10px;">Product Expiration Date:</p>
         
-        <!-- Button UI Fix: SVG Icon separated from text span allowing perfect Flexbox alignment -->
-        <label class="ai-scan-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- 2. Scan Button -->
+        <label class="ai-scan-btn" style="flex-shrink: 0; padding: 1.5rem; font-size: 1.4rem;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                 <circle cx="12" cy="13" r="4"></circle>
             </svg>
-            <span id="scan-btn-text">Scan Date</span>
+            <span>Scan Expiration Date</span>
             <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
         </label>
-        
-        <!-- Result Popups -->
-        <div id="result-good" class="expiry-result expiry-good">
-            <span class="icon">✅</span>
-            <h2>Still good</h2>
-            <p>CAN eat/use.</p>
-        </div>
 
-        <div id="result-bad" class="expiry-result expiry-bad">
-            <span class="icon">❌</span>
-            <h2>Expired</h2>
-            <p>CANNOT eat/use.</p>
+        <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
+
+        <!-- 3. Manual Fallback -->
+        <div style="text-align: center; flex-shrink: 0;">
+            <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
+            <input type="date" id="manual-date" class="large-input" style="margin-bottom: 10px; text-align: center;">
+            <button class="primary-btn" id="manual-check-btn">Check Date</button>
         </div>
 
     </main>
 
+    <!-- Processing State Overlay (Hidden by default) -->
+    <div id="processing-screen" class="processing-overlay" style="display: none;">
+        <div class="processing-spinner">⏳</div>
+        <h2 style="font-size: 2rem;">AI is checking...</h2>
+    </div>
+
+    <!-- The Big Obnoxious Overlays (Hidden by default) -->
+    <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
+        <div class="giant-icon">✅</div>
+        <h1>SAFE!</h1>
+        <p>You can eat/use this.</p>
+        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+    </div>
+
+    <div id="obnoxious-bad" class="obnoxious-overlay bad" style="display: none;">
+        <div class="giant-icon">❌</div>
+        <h1>EXPIRED!</h1>
+        <p>DO NOT eat/use this!</p>
+        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+    </div>
+
     <script src="../app.js"></script>
     <script>
-        // Set today's date automatically
-        document.getElementById('today-date').valueAsDate = new Date();
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
+        
+        const cameraInput = document.getElementById('camera-input');
+        const manualCheckBtn = document.getElementById('manual-check-btn');
+        const manualDateInput = document.getElementById('manual-date');
+        
+        const processingScreen = document.getElementById('processing-screen');
+        const goodOverlay = document.getElementById('obnoxious-good');
+        const badOverlay = document.getElementById('obnoxious-bad');
 
-        // Simulate Scanning behavior
-        document.getElementById('camera-input').addEventListener('change', function(e) {
+        // 1. Set Today's Date dynamically on page load
+        const today = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
+
+        // ==========================================
+        // CAMERA AI FLOW
+        // ==========================================
+        cameraInput.addEventListener('change', async function(e) {
             if(e.target.files.length > 0) {
-                // Hide existing popups
-                document.getElementById('result-good').style.display = 'none';
-                document.getElementById('result-bad').style.display = 'none';
-                
-                // Target the specific span for text replacement
-                const textSpan = document.getElementById('scan-btn-text');
-                const originalText = textSpan.innerText;
-                textSpan.innerText = "Processing Scan...";
-                
-                setTimeout(() => {
-                    textSpan.innerText = originalText;
+                if (!navigator.onLine) {
+                    showToast("Currently Offline. Cannot use AI Scanner.", true);
+                    cameraInput.value = ''; 
+                    return;
+                }
+
+                const file = e.target.files[0];
+                processingScreen.style.display = 'flex';
+
+                try {
+                    const base64Image = await compressImage(file);
                     
-                    // Mock Logic
-                    if(Math.random() > 0.5) {
-                        document.getElementById('result-good').style.display = 'block';
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                        body: JSON.stringify({ image: base64Image })
+                    });
+
+                    const result = await response.json();
+                    processingScreen.style.display = 'none';
+
+                    if (result.error) {
+                        showToast("Failed to read date. Please try again.", true);
+                    } else if (result.foundDate === false) {
+                        showToast("No expiration date found in photo.", true);
                     } else {
-                        document.getElementById('result-bad').style.display = 'block';
+                        if (result.isExpired) {
+                            badOverlay.style.display = 'flex';
+                        } else {
+                            goodOverlay.style.display = 'flex';
+                        }
                     }
-                }, 1500);
+                } catch (err) {
+                    processingScreen.style.display = 'none';
+                    showToast("Connection error. Try again.", true);
+                } finally {
+                    cameraInput.value = ''; 
+                }
             }
+        });
+
+        // Image compression helper for AI
+        function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; 
+                        let scaleSize = 1;
+                        if (img.width > MAX_WIDTH) scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = img.width * scaleSize;
+                        canvas.height = img.height * scaleSize;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        resolve(dataUrl.split(',')[1]);
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
+        }
+
+        // ==========================================
+        // MANUAL ENTRY FLOW
+        // ==========================================
+        manualCheckBtn.addEventListener('click', () => {
+            const inputVal = manualDateInput.value;
+            if (!inputVal) {
+                showToast("Please enter a date first.", true);
+                return;
+            }
+
+            // Show processing screen briefly for consistent UX
+            processingScreen.style.display = 'flex';
+
+            setTimeout(() => {
+                processingScreen.style.display = 'none';
+
+                // Strip times to compare pure dates
+                const checkDate = new Date(inputVal);
+                checkDate.setHours(0,0,0,0);
+                const compareToday = new Date(today);
+                compareToday.setHours(0,0,0,0);
+
+                if (checkDate < compareToday) {
+                    badOverlay.style.display = 'flex'; // Expired
+                } else {
+                    goodOverlay.style.display = 'flex'; // Safe
+                }
+            }, 800); // 800ms UI delay
         });
     </script>
 </body>
