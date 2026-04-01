@@ -8,7 +8,6 @@
 </head>
 <body>
     <header class="top-bar">
-        <!-- Always available back button to main menu (Step 13) -->
         <a href="../index.html" class="back-btn" aria-label="Go back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
@@ -23,41 +22,43 @@
 
         <!-- STEP 1: WALLET SETUP -->
         <div id="step-1" class="flow-step active">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <p style="margin: 0; font-weight: bold; font-size: 1.2rem;">Total Amount</p>
-                <h1 style="margin: 0; font-size: 3.5rem;">$<span id="wallet-total">0.00</span></h1>
+            <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount</p>
+                <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
             </div>
+            
+            <!-- Reverted to 2 Column Grid via CSS -->
             <div class="wallet-grid" id="wallet-grid-container">
                 <!-- Dynamically populated via JS -->
             </div>
+            
             <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
         </div>
 
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
-            <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; margin-bottom: 1.5rem;">
-                <p style="margin: 0; font-size: 1.1rem; opacity: 0.8;">I have in my wallet:</p>
-                <h2 style="margin: 0; font-size: 1.8rem;">$<span id="step2-wallet-total">0.00</span></h2>
+            <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.6rem; border-radius: 12px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet:</p>
+                <h2 style="margin: 0; font-size: 1.5rem;">$<span id="step2-wallet-total">0.00</span></h2>
             </div>
 
-            <div class="input-group">
+            <div class="input-group" style="margin-bottom: 0.5rem;">
                 <label>🛒 I want to buy (cost):</label>
                 <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
             </div>
 
-            <div style="margin-top: 1.5rem;">
-                <p style="margin: 0 0 5px 0; font-weight:bold; font-size: 1.2rem;">Amount to pay cashier:</p>
-                <h2 id="pay-amount-text" style="margin: 0; font-size: 2.5rem; color: var(--primary-color);">$0.00</h2>
+            <div style="margin-top: 0.5rem; text-align: center; flex-shrink: 0; flex: 1;">
+                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1.1rem;">Amount to pay cashier:</p>
+                <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
                 
-                <!-- Graphics of what to give -->
                 <div class="payment-graphics-container" id="give-cashier-graphics">
                     <!-- Populated via JS -->
                     <p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>
                 </div>
             </div>
 
-            <button class="primary-btn" id="btn-paid-cashier" style="margin-top: 2rem; background-color: var(--success-color);" onclick="goToStep3()" disabled>
+            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
                 I have paid Cashier
             </button>
         </div>
@@ -65,13 +66,15 @@
 
         <!-- STEP 3: CHANGE RECEIVED -->
         <div id="step-3" class="flow-step">
-            <div style="text-align: center; margin-bottom: 20px;">
-                <p style="margin: 0; font-weight: bold; font-size: 1.2rem;">Change Cashier Gave Me</p>
-                <h1 style="margin: 0; font-size: 3.5rem;">$<span id="change-total">0.00</span></h1>
+            <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me</p>
+                <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
             </div>
+            
             <div class="wallet-grid" id="change-grid-container">
                 <!-- Dynamically populated via JS -->
             </div>
+            
             <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
         </div>
 
@@ -90,15 +93,15 @@
             <h2>Wrong Change</h2>
             <p>Please inform the cashier.</p>
         </div>
-        <div class="sheet-btn-group" style="margin-top: 20px;">
-            <button class="primary-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color);">Home</button>
-            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border);">Try Again</button>
+        <div class="sheet-btn-group" style="margin-top: 15px;">
+            <button class="primary-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0;">Home</button>
+            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); padding:0.8rem; margin:0;">Try Again</button>
         </div>
     </div>
 
     <script src="../app.js"></script>
     <script>
-        // Currency Definitions & CSS Graphic Mappings
+        // Currency Definitions
         const denominations =[
             { val: 50, css: 'sg-money sg-note sg-note-50', label: '$50' },
             { val: 10, css: 'sg-money sg-note sg-note-10', label: '$10' },
@@ -111,13 +114,11 @@
             { val: 0.05,css:'sg-money sg-coin sg-coin-gold', label: '5¢' }
         ];
 
-        // State Trackers
         let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
         let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
         let totalWallet = 0;
-        let expectedChange = 0; // Calculated in Step 2
+        let expectedChange = 0; 
 
-        // Initialization: Render Grids
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -140,7 +141,6 @@
             });
         }
 
-        // Handle +/- button clicks
         function updateCount(val, delta, containerId, totalElemId) {
             let countsObj = containerId === 'wallet-grid-container' ? walletCounts : changeCounts;
             if (countsObj[val] + delta >= 0) {
@@ -150,10 +150,9 @@
             }
         }
 
-        // Recalculate Totals (Done in cents to avoid Javascript decimal bugs like 0.1+0.2=0.300004)
         function recalcTotal(countsObj, totalElemId) {
             let totalCents = 0;
-            for (const [val, count] of Object.entries(countsObj)) {
+            for (const[val, count] of Object.entries(countsObj)) {
                 totalCents += Math.round(parseFloat(val) * 100) * count;
             }
             const totalDollars = (totalCents / 100).toFixed(2);
@@ -164,11 +163,9 @@
             }
         }
 
-        // Setup Page Load
         renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
         renderGrid('change-grid-container', changeCounts, 'change-total');
 
-        // --- NAVIGATION LOGIC ---
         function switchStep(stepNum, title) {
             document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${stepNum}`).classList.add('active');
@@ -193,8 +190,6 @@
             switchStep(3, "Check Change");
         }
 
-
-        // --- PAYMENT ALGORITHM (STEP 2 LOGIC) ---
         document.getElementById('cost-input').addEventListener('input', function(e) {
             const costStr = e.target.value;
             const costCents = Math.round(parseFloat(costStr || 0) * 100);
@@ -220,11 +215,9 @@
                 return;
             }
 
-            // Algorithm: Find smallest combination of available money >= cost
             const bestPaymentArray = calculateOptimalPayment(costCents);
             
             if (bestPaymentArray.length === 0) {
-                // Failsafe if weird combination issue
                 payText.innerText = "Cannot make exact payment";
                 payText.style.color = "var(--error-color)";
                 graphicsContainer.innerHTML = '';
@@ -232,7 +225,6 @@
                 return;
             }
 
-            // Success: Display what to give cashier
             let paymentSumCents = 0;
             graphicsContainer.innerHTML = '';
             
@@ -246,11 +238,9 @@
             payText.style.color = "var(--success-color)";
             paidBtn.disabled = false;
 
-            // Save the expected change for Step 3/4
             expectedChange = paymentSumCents - costCents;
         });
 
-        // Knapsack/DFS Logic to find the best bills/coins to hand over
         function calculateOptimalPayment(costCents) {
             let inventory =[];
             denominations.forEach(d => {
@@ -259,7 +249,6 @@
                     inventory.push(valCents);
                 }
             });
-            // Sort largest to smallest
             inventory.sort((a,b) => b - a);
 
             let bestSum = Infinity;
@@ -275,16 +264,12 @@
                 }
                 if (index >= inventory.length) return;
                 
-                // Try including the current bill/coin
                 currentSubset.push(inventory[index]);
                 dfs(index + 1, currentSubset, currentSum + inventory[index]);
                 currentSubset.pop();
-                
-                // Try skipping it
                 dfs(index + 1, currentSubset, currentSum);
             }
 
-            // Run DFS. (If wallet has crazy > 20 items, use fallback to prevent freezing phone)
             if (inventory.length <= 22) {
                 dfs(0,[], 0);
             } else {
@@ -298,10 +283,9 @@
             return bestSubset;
         }
 
-        // --- STEP 4 NOTIFICATION LOGIC ---
         function checkChange() {
             let actualChangeCents = 0;
-            for (const [val, count] of Object.entries(changeCounts)) {
+            for (const[val, count] of Object.entries(changeCounts)) {
                 actualChangeCents += Math.round(parseFloat(val) * 100) * count;
             }
 
@@ -313,7 +297,6 @@
             document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
             document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
             
-            // Hide retry button if they got it right
             document.getElementById('retry-btn').style.display = isCorrect ? 'none' : 'block';
             
             sheet.classList.remove('correct', 'wrong');
