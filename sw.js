@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v8';
+const CACHE_NAME = 'lifecount-cache-v9';
 
 // All the core files needed for the app to function 100% offline
 const urlsToCache =[
@@ -12,7 +12,9 @@ const urlsToCache =[
     './pages/stopwatch.html',
     './pages/duration.html',
     './pages/end-time.html',
-    './pages/expiry.html'
+    './pages/expiry.html',
+    './assets/icon-192.png',
+    './assets/icon-512.png'
 ];
 
 self.addEventListener('install', event => {
