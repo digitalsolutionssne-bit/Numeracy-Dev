@@ -23,13 +23,13 @@
             <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
         </div>
         
-        <!-- 2. Scan Button -->
-        <label class="ai-scan-btn" style="flex-shrink: 0; padding: 1.5rem; font-size: 1.4rem;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <!-- 2. Scan Button (FIXED UI: Explicit button styling) -->
+        <label style="background-color: #9C27B0; color: white; border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0;">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                 <circle cx="12" cy="13" r="4"></circle>
             </svg>
-            <span>Scan Expiration Date</span>
+            <span style="font-size: 1.4rem; font-weight: bold;">Scan Expiration Date</span>
             <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
         </label>
 
