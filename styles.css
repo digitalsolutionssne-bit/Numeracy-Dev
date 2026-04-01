@@ -8,9 +8,7 @@
     --success-color: #4CAF50; 
     --error-color: #F44336;   
     --time-block-bg: #E06666; 
-}
-
-[data-theme="dark"] {
+}[data-theme="dark"] {
     --bg-color: #121212;
     --text-color: #e0e0e0;
     --card-bg: #1e1e1e;
@@ -23,111 +21,53 @@
 
 /* Native App Viewport Lock */
 html, body {
-    margin: 0;
-    padding: 0;
-    width: 100vw;
-    height: 100vh;
-    height: 100dvh; 
-    overflow: hidden; 
-    position: fixed; 
+    margin: 0; padding: 0; width: 100vw; height: 100vh; height: 100dvh; 
+    overflow: hidden; position: fixed; 
 }
 
 body {
-    background-color: var(--bg-color);
-    color: var(--text-color);
+    background-color: var(--bg-color); color: var(--text-color);
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     transition: background-color 0.3s, color 0.3s;
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
 }
 
 .top-bar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 1.5rem;
-    background-color: var(--card-bg);
-    border-bottom: 2px solid var(--card-border);
-    flex-shrink: 0; 
-    z-index: 10;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 1rem 1.5rem; background-color: var(--card-bg);
+    border-bottom: 2px solid var(--card-border); flex-shrink: 0; z-index: 10;
 }
-
-.top-bar h1 {
-    margin: 0;
-    font-size: 1.5rem;
-    text-align: center;
-    flex-grow: 1;
-}
-
+.top-bar h1 { margin: 0; font-size: 1.5rem; text-align: center; flex-grow: 1; }
 .back-btn {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    text-decoration: none;
-    color: var(--primary-color);
-    font-weight: 600;
-    font-size: 1.1rem;
-    white-space: nowrap; 
+    display: flex; align-items: center; gap: 0.25rem; text-decoration: none;
+    color: var(--primary-color); font-weight: 600; font-size: 1.1rem; white-space: nowrap; 
 }
 
 /* --- ANIMATIONS & TOAST MESSAGES --- */
 @keyframes spin { 100% { transform: rotate(360deg); } }
 .spin { animation: spin 1s linear infinite; }
-
-@keyframes popIn {
-    0% { transform: scale(0.8); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
-}
+@keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
 .toast {
-    visibility: hidden;
-    min-width: 250px;
-    background-color: var(--success-color);
-    color: #fff;
-    text-align: center;
-    border-radius: 8px;
-    padding: 16px;
-    position: fixed;
-    z-index: 10000;
-    left: 50%;
-    bottom: max(30px, env(safe-area-inset-bottom));
-    transform: translateX(-50%) translateY(20px);
-    font-size: 1.1rem;
-    font-weight: 600;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-    opacity: 0;
-    transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+    visibility: hidden; min-width: 250px; background-color: var(--success-color); color: #fff;
+    text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 10000;
+    left: 50%; bottom: max(30px, env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
+    font-size: 1.1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
 }
 .toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
 /* --- CONTENT CONTAINERS --- */
 .menu-container, .page-content {
-    flex: 1;
-    min-height: 0; 
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; 
-    box-sizing: border-box;
+    flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; box-sizing: border-box;
 }
-
-.menu-container {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    padding: 1.5rem;
-}
+.menu-container { display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem; }
 
 .menu-card, .action-btn {
-    display: flex;
-    align-items: center;
-    padding: 1.5rem;
-    background-color: var(--card-bg);
-    border: 2px solid var(--card-border);
-    border-radius: 12px;
-    text-decoration: none;
-    color: var(--text-color);
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex; align-items: center; padding: 1.5rem; background-color: var(--card-bg);
+    border: 2px solid var(--card-border); border-radius: 12px; text-decoration: none;
+    color: var(--text-color); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
-
 .menu-card .icon { font-size: 2.5rem; margin-right: 1.5rem; }
 .menu-card h2 { margin: 0; font-size: 1.3rem; }
 
@@ -145,84 +85,105 @@ body {
     width: 100%; box-sizing: border-box;
 }
 
-/* --- 12-HOUR TIME FORMAT HACK --- */
-.time-picker-wrapper {
-    position: relative;
-    width: 100%;
-    display: flex;
-    align-items: center;
-}
-
-.time-picker-display {
-    cursor: pointer;
-    /* Styles mimic .large-input perfectly */
-}
-
+/* 12-HOUR TIME FORMAT HACK */
+.time-picker-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+.time-picker-display { cursor: pointer; }
 .time-picker-native {
-    position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0; /* Completely invisible but sits on top to catch taps */
-    z-index: 2;
-    cursor: pointer;
-    -webkit-appearance: none;
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; z-index: 2; cursor: pointer; -webkit-appearance: none;
 }
-/* --------------------------------- */
 
 .primary-btn {
     background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
-    padding: 0.75rem 1rem; font-size: 1.1rem; font-weight: 600;
-    width: 100%; box-sizing: border-box; text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer;
+    padding: 0.75rem 1rem; font-size: 1.1rem; font-weight: 600; width: 100%; box-sizing: border-box;
+    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer;
 }
+.primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
+/* AI Scan Button */
 .ai-scan-btn {
     background-color: #9C27B0; color: white; border: none; border-radius: 8px;
-    padding: 1rem; font-size: 1.2rem; font-weight: bold;
-    display: flex; align-items: center; justify-content: center;
-    gap: 10px; width: 100%; cursor: pointer; box-sizing: border-box;
+    padding: 1rem; font-size: 1.2rem; font-weight: bold; display: flex; align-items: center;
+    justify-content: center; gap: 10px; width: 100%; cursor: pointer; box-sizing: border-box;
 }
 
+/* Time Blocks */
 .time-block-container { display: flex; gap: 1rem; }
 .time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
 .time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
 .time-block input {
     background-color: var(--time-block-bg); color: white; border: none;
-    border-radius: 8px; padding: 1rem; font-size: 1.5rem;
-    text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
+    border-radius: 8px; padding: 1rem; font-size: 1.5rem; text-align: center;
+    font-weight: bold; width: 100%; box-sizing: border-box;
 }
 .time-block input::placeholder { color: rgba(255,255,255,0.7); }
 
-.expiry-result { display: none; padding: 2rem; border-radius: 16px; text-align: center; margin-top: 2rem; color: white; }
-.expiry-result .icon { font-size: 4rem; display: block; margin-bottom: 10px; }
-.expiry-result h2 { margin: 0; font-size: 2rem; }
-.expiry-result p { margin: 5px 0 0 0; font-size: 1.5rem; }
+/* --- SINGAPORE MONEY GRAPHICS (CSS GENERATED) --- */
+.wallet-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px;
+}
+.wallet-item {
+    border: 2px solid var(--card-border); border-radius: 8px; padding: 15px 10px;
+    display: flex; flex-direction: column; align-items: center; background-color: var(--card-bg);
+}
+.wallet-controls { display: flex; align-items: center; gap: 15px; margin-top: 15px; }
+.control-btn {
+    width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--primary-color);
+    background: transparent; color: var(--primary-color); font-size: 1.4rem; font-weight: bold;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+}
+.control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
+.control-count { font-size: 1.5rem; font-weight: bold; width: 25px; text-align: center; }
 
-.expiry-good { background-color: var(--success-color); }
-.expiry-bad { background-color: var(--error-color); }
+.sg-money {
+    display: flex; justify-content: center; align-items: center; font-weight: bold;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2); position: relative; overflow: hidden;
+}
+/* Notes */
+.sg-note { width: 100px; height: 50px; border-radius: 4px; color: white; font-size: 1.2rem; }
+.sg-note::after { content: 'SINGAPORE'; position: absolute; font-size: 0.35rem; top: 4px; left: 4px; opacity: 0.8; }
+.sg-note-50 { background: linear-gradient(135deg, #a3b5c8, #7d96a8); }
+.sg-note-10 { background: linear-gradient(135deg, #d87a7b, #c45b5c); }
+.sg-note-5 { background: linear-gradient(135deg, #82a879, #628f58); }
+.sg-note-2 { background: linear-gradient(135deg, #b69cc1, #9c7aa8); }
 
-.obnoxious-overlay {
+/* Coins */
+.sg-coin { border-radius: 50%; color: #333; }
+.sg-coin-1 { width: 50px; height: 50px; background: radial-gradient(circle, #e0e0e0 45%, #d4af37 50%); border: 3px solid #b8972e; }
+.sg-coin-silver { width: 45px; height: 45px; background: linear-gradient(135deg, #e0e0e0, #bdbdbd); border: 2px solid #999; }
+.sg-coin-gold { width: 40px; height: 40px; background: linear-gradient(135deg, #d4af37, #c5a017); border: 2px solid #b8972e; }
+
+/* Flow Views */
+.flow-step { display: none; padding: 1.5rem; padding-bottom: max(1.5rem, env(safe-area-inset-bottom)); }
+.flow-step.active { display: block; animation: popIn 0.3s ease-out; }
+
+/* Given Cashier Graphics Container */
+.payment-graphics-container {
+    display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px;
+    padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; min-height: 60px;
+}
+[data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
+
+/* --- BIG BOTTOM-HALF NOTIFICATION (Step 11 & 12) --- */
+.bottom-sheet-backdrop {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
-    z-index: 999999; display: none; flex-direction: column; justify-content: center;
-    align-items: center; text-align: center; padding: 1.5rem; box-sizing: border-box;
-    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
 }
-
-.obnoxious-overlay.good { background-color: #4CAF50; color: white; }
-.obnoxious-overlay.bad { background-color: #F44336; color: white; }
-.obnoxious-overlay .giant-icon { font-size: 10rem; margin-bottom: 1rem; line-height: 1; }
-.obnoxious-overlay h1 { font-size: 3.5rem; margin: 0 0 1rem 0; text-transform: uppercase; line-height: 1.1; }
-.obnoxious-overlay p { font-size: 1.8rem; margin: 0 0 3rem 0; font-weight: bold; }
-
-.obnoxious-btn {
-    background-color: rgba(255,255,255,0.3); border: 4px solid white; color: white;
-    font-size: 1.5rem; font-weight: bold; padding: 1.2rem 2rem; border-radius: 16px;
-    cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+.bottom-sheet {
+    position: fixed; bottom: 0; left: 0; width: 100%; height: 55dvh;
+    background: var(--card-bg); border-top-left-radius: 30px; border-top-right-radius: 30px;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.2); z-index: 10000;
+    transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 2rem; box-sizing: border-box; text-align: center;
 }
-.obnoxious-btn:active { transform: scale(0.95); }
+.bottom-sheet-backdrop.show { display: block; opacity: 1; }
+.bottom-sheet.show { transform: translateY(0); }
 
-.processing-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
-    background: rgba(0,0,0,0.8); z-index: 999990; display: none; flex-direction: column;
-    justify-content: center; align-items: center; color: white;
-}
-.processing-spinner { font-size: 5rem; animation: spin 1s linear infinite; margin-bottom: 20px; }
+.bottom-sheet .giant-icon { font-size: 6rem; line-height: 1; margin-bottom: 10px; }
+.bottom-sheet h2 { font-size: 2.5rem; margin: 0 0 10px 0; }
+.bottom-sheet p { font-size: 1.2rem; margin: 0 0 20px 0; color: var(--text-color); opacity: 0.8; }
+.bottom-sheet.correct h2 { color: var(--success-color); }
+.bottom-sheet.wrong h2 { color: var(--error-color); }
+
+.sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
