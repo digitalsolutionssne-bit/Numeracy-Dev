@@ -22,7 +22,6 @@
     </header>
 
     <main class="menu-container">
-        <!-- KEEP YOUR CUSTOM ICONS HERE -->
         <a href="pages/purchasing.html" class="menu-card money-card">
             <span class="icon">🛒</span>
             <h2>Purchasing</h2>
@@ -35,34 +34,7 @@
             <span class="icon">📅</span>
             <h2>Expiration Date</h2>
         </a>
-        
-        <label class="menu-card other-card" style="border-left-color: #9e9e9e; cursor: pointer;">
-            <span class="icon" style="filter: grayscale(100%);">📅</span>
-            <h2>Scan Expiration Date</h2>
-            <input type="file" accept="image/*" capture="environment" id="direct-scan-input" style="display:none;">
-        </label>
     </main>
-
-    <!-- Processing State Overlay (FOOLPROOF HIDDEN) -->
-    <div id="processing-screen" class="processing-overlay" style="display: none;">
-        <div class="processing-spinner">⏳</div>
-        <h2 style="font-size: 2rem;">AI is checking...</h2>
-    </div>
-
-    <!-- The Big Obnoxious Overlays (FOOLPROOF HIDDEN) -->
-    <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
-        <div class="giant-icon">✅</div>
-        <h1>SAFE!</h1>
-        <p>You can eat/use this.</p>
-        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
-    </div>
-
-    <div id="obnoxious-bad" class="obnoxious-overlay bad" style="display: none;">
-        <div class="giant-icon">❌</div>
-        <h1>EXPIRED!</h1>
-        <p>DO NOT eat/use this!</p>
-        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
-    </div>
 
     <script src="app.js"></script>
 </body>
