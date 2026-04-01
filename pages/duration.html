@@ -16,17 +16,23 @@
     </header>
 
     <main class="page-content" style="padding: 1.5rem;">
+        
         <div class="input-group">
             <label>Start Time:</label>
-            <input type="time" class="large-input" id="start-time">
+            <div class="time-picker-wrapper">
+                <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
+                <input type="time" id="start-time" class="time-picker-native">
+            </div>
         </div>
 
         <div class="input-group">
             <label>End Time (Finished):</label>
-            <input type="time" class="large-input" id="end-time">
+            <div class="time-picker-wrapper">
+                <input type="text" id="end-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
+                <input type="time" id="end-time" class="time-picker-native">
+            </div>
         </div>
 
-        <!-- Using native <select> completely solves the dropdown blocking issue mentioned on Page 50 -->
         <div class="input-group">
             <label>Activity:</label>
             <select class="large-input">
@@ -46,7 +52,31 @@
 
     <script src="../app.js"></script>
     <script>
+        // Global helper to convert 24h hidden values into 12h AM/PM strings
+        function format12Hour(time24) {
+            if (!time24) return "Tap to set time";
+            let [hours, minutes] = time24.split(':');
+            hours = parseInt(hours, 10);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; // '0' becomes '12'
+            
+            // Add leading zero for visual consistency (e.g. 06:15 PM)
+            const strHours = hours < 10 ? '0' + hours : hours;
+            return `${strHours}:${minutes} ${ampm}`;
+        }
+
+        // Event listeners to update the visual displays when user picks a time
+        document.getElementById('start-time').addEventListener('input', function(e) {
+            document.getElementById('start-time-display').value = format12Hour(e.target.value);
+        });
+
+        document.getElementById('end-time').addEventListener('input', function(e) {
+            document.getElementById('end-time-display').value = format12Hour(e.target.value);
+        });
+
         function calculateDuration() {
+            // We use the hidden native input value (always 24h) for easy math
             const start = document.getElementById('start-time').value;
             const end = document.getElementById('end-time').value;
             if(!start || !end) return alert("Please enter both times.");
@@ -54,7 +84,7 @@
             const startD = new Date(`1970-01-01T${start}:00`);
             let endD = new Date(`1970-01-01T${end}:00`);
             
-            if (endD < startD) endD.setDate(endD.getDate() + 1); // Handle passing midnight
+            if (endD < startD) endD.setDate(endD.getDate() + 1); 
             
             const diffMs = endD - startD;
             const diffHrs = Math.floor(diffMs / 3600000);
