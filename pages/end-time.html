@@ -16,14 +16,17 @@
     </header>
 
     <main class="page-content" style="padding: 1.5rem;">
+        
         <div class="input-group">
             <label>Start Time:</label>
-            <input type="time" class="large-input" id="start-time">
+            <div class="time-picker-wrapper">
+                <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
+                <input type="time" id="start-time" class="time-picker-native">
+            </div>
         </div>
 
         <div class="input-group">
             <label>Duration (Time spent on):</label>
-            <!-- PDF Change: Distinct visual blocks for Hour and Minute to prevent confusion -->
             <div class="time-block-container">
                 <div class="time-block">
                     <label>Hour</label>
@@ -46,7 +49,26 @@
 
     <script src="../app.js"></script>
     <script>
+        // Formatter for visual display
+        function format12Hour(time24) {
+            if (!time24) return "Tap to set time";
+            let[hours, minutes] = time24.split(':');
+            hours = parseInt(hours, 10);
+            const ampm = hours >= 12 ? 'PM' : 'AM';
+            hours = hours % 12;
+            hours = hours ? hours : 12; 
+            
+            const strHours = hours < 10 ? '0' + hours : hours;
+            return `${strHours}:${minutes} ${ampm}`;
+        }
+
+        // Update display when native picker is used
+        document.getElementById('start-time').addEventListener('input', function(e) {
+            document.getElementById('start-time-display').value = format12Hour(e.target.value);
+        });
+
         function calculateEndTime() {
+            // Using hidden 24h native input for math
             const start = document.getElementById('start-time').value;
             const hours = parseInt(document.getElementById('dur-hours').value) || 0;
             const mins = parseInt(document.getElementById('dur-mins').value) || 0;
@@ -57,15 +79,17 @@
             startD.setHours(startD.getHours() + hours);
             startD.setMinutes(startD.getMinutes() + mins);
 
-            // Format to 12-hour AM/PM for easier reading
+            // Output format guaranteed 12-hour AM/PM with leading zeros
             let hr = startD.getHours();
             let mn = startD.getMinutes();
             const ampm = hr >= 12 ? 'PM' : 'AM';
             hr = hr % 12;
             hr = hr ? hr : 12; 
+            
+            const strHr = hr < 10 ? '0' + hr : hr;
             mn = mn < 10 ? '0' + mn : mn;
 
-            document.getElementById('end-time-result').innerText = `${hr}:${mn} ${ampm}`;
+            document.getElementById('end-time-result').innerText = `${strHr}:${mn} ${ampm}`;
         }
     </script>
 </body>
