@@ -27,7 +27,6 @@
                 <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
             </div>
             
-            <!-- Reverted to 2 Column Grid via CSS -->
             <div class="wallet-grid" id="wallet-grid-container">
                 <!-- Dynamically populated via JS -->
             </div>
@@ -43,14 +42,14 @@
                 <h2 style="margin: 0; font-size: 1.5rem;">$<span id="step2-wallet-total">0.00</span></h2>
             </div>
 
-            <div class="input-group" style="margin-bottom: 0.5rem;">
+            <div class="input-group" style="margin-bottom: 0.5rem; flex-shrink: 0;">
                 <label>🛒 I want to buy (cost):</label>
                 <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
             </div>
 
-            <div style="margin-top: 0.5rem; text-align: center; flex-shrink: 0; flex: 1;">
-                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1.1rem;">Amount to pay cashier:</p>
-                <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
+            <div style="margin-top: 0.5rem; text-align: center; flex: 1; display: flex; flex-direction: column; min-height: 0;">
+                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1.1rem; flex-shrink: 0;">Amount to pay cashier:</p>
+                <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                 
                 <div class="payment-graphics-container" id="give-cashier-graphics">
                     <!-- Populated via JS -->
@@ -58,7 +57,7 @@
                 </div>
             </div>
 
-            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
+            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color); margin-top: 10px;" onclick="goToStep3()" disabled>
                 I have paid Cashier
             </button>
         </div>
