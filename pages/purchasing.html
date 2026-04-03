@@ -8,7 +8,6 @@
 </head>
 <body>
     <header class="top-bar">
-        <!-- CHANGED TO A BUTTON TO ALLOW DYNAMIC STEP-BACK NAVIGATION -->
         <button class="back-btn" onclick="goBack()" aria-label="Go back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
@@ -23,68 +22,63 @@
 
         <!-- STEP 1: WALLET SETUP -->
         <div id="step-1" class="flow-step active">
-            <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
-                <h1 style="margin: 0; font-size: 2rem;">$<span id="wallet-total">0.00</span></h1>
+            <div class="content-body">
+                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
+                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
+                </div>
+                <div class="wallet-grid" id="wallet-grid-container"></div>
             </div>
-            
-            <div class="wallet-grid" id="wallet-grid-container">
-                <!-- Dynamically populated via JS -->
-            </div>
-
+            <!-- BULLETPROOF FOOTER BUTTON -->
             <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
         </div>
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
-            <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
-                <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet 💳:</p>
-                <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
-            </div>
+            <div class="content-body">
+                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet 💳:</p>
+                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
+                </div>
 
-            <!-- DYNAMIC ITEMS CONTAINER (SCROLLABLE IF MANY ITEMS) -->
-            <div class="items-container">
-                <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem;">🛒 I want to buy:</label>
-                
-                <div id="items-list">
-                    <div class="item-row">
-                        <div class="currency-wrapper">
-                            <span class="currency-symbol">$</span>
-                            <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
+                <div class="items-container">
+                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">🛒 I want to buy:</label>
+                    <div id="items-list" style="flex-shrink: 0;">
+                        <div class="item-row">
+                            <div class="currency-wrapper">
+                                <span class="currency-symbol">$</span>
+                                <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
+                            </div>
+                            <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
                         </div>
-                        <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
+                    </div>
+                    <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
+                </div>
+
+                <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
+                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0;">Amount to pay cashier 🧑‍💼:</p>
+                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
+                    <div class="payment-graphics-container" id="give-cashier-graphics">
+                        <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
                     </div>
                 </div>
-
-                <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
             </div>
-
-            <!-- PAYMENT OUTPUT -->
-            <div style="margin-top: 0.5rem; text-align: center; flex-shrink: 0;">
-                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem;">Amount to pay cashier 🧑‍💼:</p>
-                <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
-                
-                <div class="payment-graphics-container" id="give-cashier-graphics" style="min-height: 45px;">
-                    <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
-                </div>
-            </div>
-
-            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color); margin-top: 8px;" onclick="goToStep3()" disabled>
+            <!-- BULLETPROOF FOOTER BUTTON -->
+            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
                 I have paid Cashier
             </button>
         </div>
 
         <!-- STEP 3: CHANGE RECEIVED -->
         <div id="step-3" class="flow-step">
-            <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
-                <h1 style="margin: 0; font-size: 2rem;">$<span id="change-total">0.00</span></h1>
+            <div class="content-body">
+                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
+                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
+                </div>
+                <div class="wallet-grid" id="change-grid-container"></div>
             </div>
-            
-            <div class="wallet-grid" id="change-grid-container">
-                <!-- Dynamically populated via JS -->
-            </div>
-
+            <!-- BULLETPROOF FOOTER BUTTON -->
             <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
         </div>
 
@@ -127,7 +121,7 @@
         let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
         let totalWallet = 0;
         let expectedChange = 0; 
-        let currentStep = 1; // Tracks current step for Back Button logic
+        let currentStep = 1;
 
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
@@ -137,7 +131,6 @@
                 const item = document.createElement('div');
                 item.className = 'wallet-item';
                 const graphic = `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}">`;
-                
                 item.innerHTML = `
                     ${graphic}
                     <div class="wallet-controls">
@@ -172,15 +165,10 @@
         renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
         renderGrid('change-grid-container', changeCounts, 'change-total');
 
-        // --- DYNAMIC BACK NAVIGATION ---
         function goBack() {
-            if (currentStep === 3) {
-                goToStep2();
-            } else if (currentStep === 2) {
-                goToStep1();
-            } else {
-                window.location.href = '../index.html';
-            }
+            if (currentStep === 3) goToStep2();
+            else if (currentStep === 2) goToStep1();
+            else window.location.href = '../index.html';
         }
 
         function switchStep(stepNum, title) {
@@ -190,9 +178,7 @@
             document.getElementById('header-title').innerText = title;
         }
 
-        function goToStep1() {
-            switchStep(1, "Wallet 💳");
-        }
+        function goToStep1() { switchStep(1, "Wallet 💳"); }
 
         function goToStep2() {
             if (parseFloat(totalWallet) === 0) {
@@ -200,13 +186,12 @@
                 return;
             }
             document.getElementById('step2-wallet-total').innerText = totalWallet;
-            calculateTotalCost(); // Recalculate in case they went back to change wallet amount
+            calculateTotalCost(); 
             switchStep(2, "Pay Cashier 🧑‍💼");
         }
 
         function goToStep3() { switchStep(3, "Check Change 💵"); }
 
-        // --- MULTIPLE ITEMS LOGIC ---
         function addItem() {
             const list = document.getElementById('items-list');
             const row = document.createElement('div');
@@ -219,16 +204,15 @@
                 <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
             `;
             list.appendChild(row);
-            row.querySelector('.item-cost').focus(); // Auto focus new item
+            row.querySelector('.item-cost').focus(); 
         }
 
         function removeItem(btn) {
             const list = document.getElementById('items-list');
             if (list.children.length > 1) {
                 btn.parentElement.remove();
-                calculateTotalCost(); // Recalculate total after deletion
+                calculateTotalCost(); 
             } else {
-                // If it's the last item, just clear the value instead of deleting row
                 btn.previousElementSibling.querySelector('input').value = '';
                 calculateTotalCost();
             }
@@ -287,7 +271,6 @@
             expectedChange = paymentSumCents - totalCostCents;
         }
 
-        // --- AI PAYMENT CALCULATION ---
         function calculateOptimalPayment(costCents) {
             let inventory =[];
             denominations.forEach(d => {
