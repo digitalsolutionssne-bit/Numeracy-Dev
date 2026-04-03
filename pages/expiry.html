@@ -8,49 +8,54 @@
 </head>
 <body>
     <header class="top-bar">
-        <a href="../index.html" class="back-btn">
+        <a href="../index.html" class="back-btn" aria-label="Go back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
         </a>
-        <h1>Expiration Date</h1>
-        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
+        <h1>Expiration Date 📅</h1>
+        <div class="header-actions">
+            <a href="../index.html" class="header-icon-btn" aria-label="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
+        </div>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem; display: flex; flex-direction: column; gap: 1.5rem; justify-content: space-evenly;">
-        
-        <!-- 1. Display Today's Date cleanly as plain text -->
-        <div style="text-align: center; flex-shrink: 0;">
-            <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
-            <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
+    <main class="page-content">
+        <div class="content-body" style="gap: 1.5rem; justify-content: space-evenly;">
+            
+            <div style="text-align: center; flex-shrink: 0;">
+                <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
+                <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
+            </div>
+            
+            <label class="ai-scan-btn" style="flex-shrink: 0; padding: 1.5rem; font-size: 1.4rem; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span style="font-weight: bold;">Scan Expiration Date</span>
+                <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
+            </label>
+
+            <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
+
+            <div style="text-align: center; flex-shrink: 0;">
+                <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
+                <input type="date" id="manual-date" class="large-input" style="text-align: center;">
+            </div>
+
         </div>
-        
-        <!-- 2. Scan Button (FIXED UI: Explicit button styling) -->
-        <label style="background-color: #9C27B0; color: white; border-radius: 12px; padding: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.1); flex-shrink: 0;">
-            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
-                <circle cx="12" cy="13" r="4"></circle>
-            </svg>
-            <span style="font-size: 1.4rem; font-weight: bold;">Scan Expiration Date</span>
-            <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
-        </label>
 
-        <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
-
-        <!-- 3. Manual Fallback -->
-        <div style="text-align: center; flex-shrink: 0;">
-            <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
-            <input type="date" id="manual-date" class="large-input" style="margin-bottom: 10px; text-align: center;">
+        <div class="step-footer">
             <button class="primary-btn" id="manual-check-btn">Check Date</button>
         </div>
 
     </main>
 
-    <!-- Processing State Overlay (Hidden by default) -->
+    <!-- Processing State Overlay -->
     <div id="processing-screen" class="processing-overlay" style="display: none;">
         <div class="processing-spinner">⏳</div>
         <h2 style="font-size: 2rem;">AI is checking...</h2>
     </div>
 
-    <!-- The Big Obnoxious Overlays (Hidden by default) -->
+    <!-- Obnoxious Overlays -->
     <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
         <div class="giant-icon">✅</div>
         <h1>SAFE!</h1>
@@ -68,23 +73,17 @@
     <script src="../app.js"></script>
     <script>
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
-        
         const cameraInput = document.getElementById('camera-input');
         const manualCheckBtn = document.getElementById('manual-check-btn');
         const manualDateInput = document.getElementById('manual-date');
-        
         const processingScreen = document.getElementById('processing-screen');
         const goodOverlay = document.getElementById('obnoxious-good');
         const badOverlay = document.getElementById('obnoxious-bad');
 
-        // 1. Set Today's Date dynamically on page load
         const today = new Date();
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
 
-        // ==========================================
-        // CAMERA AI FLOW
-        // ==========================================
         cameraInput.addEventListener('change', async function(e) {
             if(e.target.files.length > 0) {
                 if (!navigator.onLine) {
@@ -128,7 +127,6 @@
             }
         });
 
-        // Image compression helper for AI
         function compressImage(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
@@ -156,34 +154,24 @@
             });
         }
 
-        // ==========================================
-        // MANUAL ENTRY FLOW
-        // ==========================================
         manualCheckBtn.addEventListener('click', () => {
             const inputVal = manualDateInput.value;
             if (!inputVal) {
                 showToast("Please enter a date first.", true);
                 return;
             }
-
-            // Show processing screen briefly for consistent UX
             processingScreen.style.display = 'flex';
 
             setTimeout(() => {
                 processingScreen.style.display = 'none';
-
-                // Strip times to compare pure dates
                 const checkDate = new Date(inputVal);
                 checkDate.setHours(0,0,0,0);
                 const compareToday = new Date(today);
                 compareToday.setHours(0,0,0,0);
 
-                if (checkDate < compareToday) {
-                    badOverlay.style.display = 'flex'; // Expired
-                } else {
-                    goodOverlay.style.display = 'flex'; // Safe
-                }
-            }, 800); // 800ms UI delay
+                if (checkDate < compareToday) badOverlay.style.display = 'flex';
+                else goodOverlay.style.display = 'flex'; 
+            }, 800); 
         });
     </script>
 </body>
