@@ -41,27 +41,14 @@
         </div>
 
         <!-- STEP 2: PAY CASHIER -->
-        <div id="step-2" class="flow-step" style="position: relative;">
+        <div id="step-2" class="flow-step">
             <div class="content-body">
-                
-                <!-- NEW SPLIT HEADER DESIGN -->
-                <div style="display: flex; gap: 10px; margin-bottom: 0.8rem; flex-shrink: 0;">
-                    <!-- LEFT SIDE: Total Cost -->
-                    <div id="cost-header-box" style="flex: 1; background-color: var(--success-color, #4CAF50); color: white; border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; text-align: center; display: flex; flex-direction: column; align-items: center; transition: background-color 0.3s;">
-                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px;">
-                            Total Cost
-                        </p>
-                        <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-cost-total">0.00</span></h2>
-                    </div>
-
-                    <!-- RIGHT SIDE: Wallet Amount -->
-                    <div style="flex: 1; background-color: #e8f5e9; color: #2e7d32; border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; text-align: center; display: flex; flex-direction: column; align-items: center;">
-                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px;">
-                            My Wallet
-                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                        </p>
-                        <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
-                    </div>
+                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0; display:flex; flex-direction:column; align-items:center;">
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; display:flex; align-items:center; gap:6px;">
+                        I have in my wallet:
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </p>
+                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
                 </div>
 
                 <div class="items-container">
@@ -91,21 +78,11 @@
                     </div>
                 </div>
             </div>
-            
             <div class="step-footer">
                 <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
                     I have paid Cashier
                 </button>
             </div>
-
-            <!-- OVERBUDGET OVERLAY NOTIFICATION -->
-            <div id="overbudget-overlay" style="display: none; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background-color: var(--card-bg, #ffffff); z-index: 20; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -4px 15px rgba(0,0,0,0.15);">
-                <div class="giant-icon" style="font-size: 4rem; margin-bottom: 10px;">❌</div>
-                <h2 style="margin: 0 0 10px 0; color: var(--error-color, #f44336);">Not Enough Money</h2>
-                <p style="margin: 0; opacity: 0.8; padding: 0 20px; text-align: center;">Your items cost more than your wallet amount. Please edit the prices or remove an item.</p>
-            </div>
-            <!-- END OF NEW OVERLAY -->
-
         </div>
 
         <!-- STEP 3: CHANGE RECEIVED -->
@@ -156,15 +133,15 @@
     <script src="../app.js"></script>
     <script>
         const denominations =[
-            { val: 50,    img: '../assets/note-50.png',   label: '$50',  type: 'note' },
-            { val: 10,    img: '../assets/note-10.png',   label: '$10',  type: 'note' },
-            { val: 5,     img: '../assets/note-5.png',    label: '$5',   type: 'note' },
-            { val: 2,     img: '../assets/note-2.png',    label: '$2',   type: 'note' },
-            { val: 1,     img: '../assets/coin-1.png',    label: '$1',   type: 'coin' },
-            { val: 0.5,   img: '../assets/coin-50c.png',  label: '50¢',  type: 'coin' },
-            { val: 0.2,   img: '../assets/coin-20c.png',  label: '20¢',  type: 'coin' },
-            { val: 0.1,   img: '../assets/coin-10c.png',  label: '10¢',  type: 'coin' },
-            { val: 0.05,  img: '../assets/coin-5c.png',   label: '5¢',   type: 'coin' }
+            { val: 50, img: '../assets/note-50.png', label: '$50', type: 'note' },
+            { val: 10, img: '../assets/note-10.png', label: '$10', type: 'note' },
+            { val: 5,  img: '../assets/note-5.png',  label: '$5',  type: 'note' },
+            { val: 2,  img: '../assets/note-2.png',  label: '$2',  type: 'note' },
+            { val: 1,  img: '../assets/coin-1.png',  label: '$1',  type: 'coin' },
+            { val: 0.5,img: '../assets/coin-50c.png',label: '50¢', type: 'coin' },
+            { val: 0.2,img: '../assets/coin-20c.png',label: '20¢', type: 'coin' },
+            { val: 0.1,img: '../assets/coin-10c.png',label: '10¢', type: 'coin' },
+            { val: 0.05,img: '../assets/coin-5c.png',label: '5¢',  type: 'coin' }
         ];
 
         let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
@@ -207,7 +184,7 @@
 
         function recalcTotal(countsObj, totalElemId) {
             let totalCents = 0;
-            for (const [val, count] of Object.entries(countsObj)) {
+            for (const[val, count] of Object.entries(countsObj)) {
                 totalCents += Math.round(parseFloat(val) * 100) * count;
             }
             const totalDollars = (totalCents / 100).toFixed(2);
@@ -286,12 +263,18 @@
             const payText = document.getElementById('pay-amount-text');
             const paidBtn = document.getElementById('btn-paid-cashier');
 
-            // --- NEW UI LOGIC ENDS HERE ---
-
             if (totalCostCents <= 0) {
                 payText.innerText = '$0.00';
                 payText.style.color = "var(--primary-color)";
                 graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>';
+                paidBtn.disabled = true;
+                return;
+            }
+
+            if (totalCostCents > walletCents) {
+                payText.innerText = "Not enough money!";
+                payText.style.color = "var(--error-color)";
+                graphicsContainer.innerHTML = '';
                 paidBtn.disabled = true;
                 return;
             }
@@ -335,7 +318,7 @@
             function dfs(index, currentSubset, currentSum) {
                 if (currentSum >= costCents) {
                     if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
-                        bestSum = currentSum; bestSubset = [...currentSubset];
+                        bestSum = currentSum; bestSubset =[...currentSubset];
                     }
                     return;
                 }
@@ -361,7 +344,7 @@
 
         function checkChange() {
             let actualChangeCents = 0;
-            for (const [val, count] of Object.entries(changeCounts)) {
+            for (const[val, count] of Object.entries(changeCounts)) {
                 actualChangeCents += Math.round(parseFloat(val) * 100) * count;
             }
 
