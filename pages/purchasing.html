@@ -51,7 +51,10 @@
                         <h2 id="total-cost-display">$0.00</h2>
                     </div>
                     <div class="summary-box summary-box-safe">
-                        <p>Wallet 💳</p>
+                        <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                            Wallet 
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                        </p>
                         <h2>$<span id="step2-wallet-total">0.00</span></h2>
                     </div>
                 </div>
@@ -75,7 +78,7 @@
                 <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
                     <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
                         Amount to pay cashier:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
                     </p>
                     <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                     <div class="payment-graphics-container" id="give-cashier-graphics">
@@ -90,11 +93,11 @@
                 </button>
             </div>
 
-            <!-- ERROR OVERLAY (Pops up to cover bottom half when cost > wallet) -->
+            <!-- ERROR OVERLAY -->
             <div id="error-payment-section" class="error-payment-section">
                 <div style="font-size: 4rem; line-height: 1; margin-bottom: 10px;">❌</div>
                 <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">Not Enough Money</h2>
-                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Remove an item to proceed.</p>
+                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Reduce cost by removing items or choosing cheaper items</p>
             </div>
         </div>
 
@@ -127,7 +130,7 @@
             <h2>Wrong Change</h2>
             <p>
                 Please inform the cashier
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
             </p>
         </div>
         <div class="sheet-btn-group" style="margin-top: 15px;">
@@ -162,7 +165,7 @@
         let currentStep = 1;
 
         const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
+        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>`;
 
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
@@ -270,7 +273,6 @@
 
             const walletCents = Math.round(parseFloat(totalWallet) * 100);
             
-            // --- UI LOGIC: DYNAMIC BANNERS AND OVERLAYS ---
             const costBox = document.getElementById('cost-indicator-box');
             const errorOverlay = document.getElementById('error-payment-section');
             const costDisplay = document.getElementById('total-cost-display');
@@ -280,14 +282,13 @@
             if (totalCostCents > walletCents) {
                 costBox.classList.remove('summary-box-safe');
                 costBox.classList.add('summary-box-danger');
-                errorOverlay.style.display = 'flex'; // Triggers bottom half overlay
+                errorOverlay.style.display = 'flex'; 
             } else {
                 costBox.classList.remove('summary-box-danger');
                 costBox.classList.add('summary-box-safe');
-                errorOverlay.style.display = 'none'; // Hides overlay
+                errorOverlay.style.display = 'none'; 
             }
 
-            // --- NORMAL PAYMENT CALCULATION ---
             const graphicsContainer = document.getElementById('give-cashier-graphics');
             const payText = document.getElementById('pay-amount-text');
             const paidBtn = document.getElementById('btn-paid-cashier');
@@ -301,7 +302,6 @@
             }
 
             if (totalCostCents > walletCents) {
-                // Behind the overlay, clear the box out so it doesn't peek through weirdly
                 payText.innerText = "Insufficient Funds";
                 graphicsContainer.innerHTML = '';
                 paidBtn.disabled = true;
