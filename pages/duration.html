@@ -15,38 +15,42 @@
         <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem;">
-        <div class="input-group">
-            <label>▶️ Start Time:</label>
-            <div class="time-picker-wrapper">
-                <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
-                <input type="time" id="start-time" class="time-picker-native">
+    <main class="page-content" style="padding: 1.5rem; position: relative;">
+        
+        <div class="content-body">
+            <div class="input-group">
+                <label>▶️ Start Time:</label>
+                <div class="time-picker-wrapper">
+                    <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
+                    <input type="time" id="start-time" class="time-picker-native">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>⏹️ End Time (Finished):</label>
+                <div class="time-picker-wrapper">
+                    <input type="text" id="end-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
+                    <input type="time" id="end-time" class="time-picker-native">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>🏃 Activity:</label>
+                <select class="large-input">
+                    <option value="travel">Traveling</option>
+                    <option value="lunch">Lunch / Dinner</option>
+                    <option value="other">Other activity</option>
+                </select>
+            </div>
+
+            <div style="margin-top: 1rem; background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; flex-shrink: 0;">
+                <p style="margin: 0 0 0.5rem 0; font-weight:bold;">Time spent ⌛:</p>
+                <h2 id="duration-result" style="margin: 0; font-size: 1.8rem; color: var(--primary-color);">--</h2>
             </div>
         </div>
 
-        <div class="input-group">
-            <label>⏹️ End Time (Finished):</label>
-            <div class="time-picker-wrapper">
-                <input type="text" id="end-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
-                <input type="time" id="end-time" class="time-picker-native">
-            </div>
-        </div>
+        <button class="primary-btn" onclick="calculateDuration()">Calculate Duration</button>
 
-        <div class="input-group">
-            <label>🏃 Activity:</label>
-            <select class="large-input">
-                <option value="travel">Traveling</option>
-                <option value="lunch">Lunch / Dinner</option>
-                <option value="other">Other activity</option>
-            </select>
-        </div>
-
-        <button class="primary-btn" style="margin-top:auto;" onclick="calculateDuration()">Calculate Duration</button>
-
-        <div style="margin-top: 1rem; background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; flex-shrink: 0;">
-            <p style="margin: 0 0 0.5rem 0; font-weight:bold;">Time spent ⌛:</p>
-            <h2 id="duration-result" style="margin: 0; font-size: 1.8rem; color: var(--primary-color);">--</h2>
-        </div>
     </main>
 
     <script src="../app.js"></script>
