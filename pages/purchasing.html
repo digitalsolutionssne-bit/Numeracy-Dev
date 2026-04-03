@@ -24,39 +24,38 @@
         <div id="step-1" class="flow-step active">
             <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
                 <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount</p>
-                <h1 style="margin: 0; font-size: 2.5rem;">$<span id="wallet-total">0.00</span></h1>
+                <h1 style="margin: 0; font-size: 2rem;">$<span id="wallet-total">0.00</span></h1>
             </div>
             
-            <div class="wallet-grid" id="wallet-grid-container" style="margin-bottom: 10px;">
+            <div class="wallet-grid" id="wallet-grid-container">
                 <!-- Dynamically populated via JS -->
             </div>
 
-            <!-- Restored standalone Next button -->
             <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
         </div>
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
-            <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.6rem; border-radius: 12px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
+            <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
                 <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet:</p>
-                <h2 style="margin: 0; font-size: 1.5rem;">$<span id="step2-wallet-total">0.00</span></h2>
+                <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
             </div>
 
-            <div class="input-group" style="margin-bottom: 0.5rem; flex-shrink: 0;">
+            <div class="input-group">
                 <label>🛒 I want to buy (cost):</label>
                 <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
             </div>
 
             <div style="margin-top: 0.5rem; text-align: center; flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1.1rem; flex-shrink: 0;">Amount to pay cashier:</p>
+                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0;">Amount to pay cashier:</p>
                 <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                 
                 <div class="payment-graphics-container" id="give-cashier-graphics">
-                    <p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>
+                    <p style="opacity: 0.5; margin: auto;">Enter cost...</p>
                 </div>
             </div>
 
-            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color); margin-top: 10px;" onclick="goToStep3()" disabled>
+            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color); margin-top: 8px;" onclick="goToStep3()" disabled>
                 I have paid Cashier
             </button>
         </div>
@@ -65,14 +64,13 @@
         <div id="step-3" class="flow-step">
             <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
                 <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me</p>
-                <h1 style="margin: 0; font-size: 2.5rem;">$<span id="change-total">0.00</span></h1>
+                <h1 style="margin: 0; font-size: 2rem;">$<span id="change-total">0.00</span></h1>
             </div>
             
-            <div class="wallet-grid" id="change-grid-container" style="margin-bottom: 10px;">
+            <div class="wallet-grid" id="change-grid-container">
                 <!-- Dynamically populated via JS -->
             </div>
 
-            <!-- Restored standalone check button -->
             <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
         </div>
 
@@ -99,7 +97,6 @@
 
     <script src="../app.js"></script>
     <script>
-        // Use real image assets in the /assets/ folder
         const denominations =[
             { val: 50, img: '../assets/note-50.png', label: '$50', type: 'note' },
             { val: 10, img: '../assets/note-10.png', label: '$10', type: 'note' },
@@ -124,8 +121,6 @@
             denominations.forEach(d => {
                 const item = document.createElement('div');
                 item.className = 'wallet-item';
-                
-                // Uses the actual images
                 const graphic = `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}">`;
                 
                 item.innerHTML = `
@@ -156,13 +151,9 @@
             }
             const totalDollars = (totalCents / 100).toFixed(2);
             document.getElementById(totalElemId).innerText = totalDollars;
-            
-            if (totalElemId === 'wallet-total') {
-                totalWallet = totalDollars;
-            }
+            if (totalElemId === 'wallet-total') totalWallet = totalDollars;
         }
 
-        // Initialize Grids (Buttons are no longer passed dynamically)
         renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
         renderGrid('change-grid-container', changeCounts, 'change-total');
 
@@ -180,21 +171,17 @@
             document.getElementById('step2-wallet-total').innerText = totalWallet;
             document.getElementById('cost-input').value = '';
             document.getElementById('pay-amount-text').innerText = '$0.00';
-            document.getElementById('give-cashier-graphics').innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>';
+            document.getElementById('give-cashier-graphics').innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost...</p>';
             document.getElementById('btn-paid-cashier').disabled = true;
-            
             switchStep(2, "Pay Cashier");
         }
 
-        function goToStep3() {
-            switchStep(3, "Check Change");
-        }
+        function goToStep3() { switchStep(3, "Check Change"); }
 
         document.getElementById('cost-input').addEventListener('input', function(e) {
             const costStr = e.target.value;
             const costCents = Math.round(parseFloat(costStr || 0) * 100);
             const walletCents = Math.round(parseFloat(totalWallet) * 100);
-            
             const graphicsContainer = document.getElementById('give-cashier-graphics');
             const payText = document.getElementById('pay-amount-text');
             const paidBtn = document.getElementById('btn-paid-cashier');
@@ -202,7 +189,7 @@
             if (costCents <= 0) {
                 payText.innerText = '$0.00';
                 payText.style.color = "var(--primary-color)";
-                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>';
+                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost...</p>';
                 paidBtn.disabled = true;
                 return;
             }
@@ -231,13 +218,12 @@
             bestPaymentArray.forEach(valCents => {
                 paymentSumCents += valCents;
                 const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
-                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}" style="margin: 2px;">`;
+                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}" style="max-height:30px; width:auto; margin: 2px;">`;
             });
 
             payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
             payText.style.color = "var(--success-color)";
             paidBtn.disabled = false;
-
             expectedChange = paymentSumCents - costCents;
         });
 
@@ -245,9 +231,7 @@
             let inventory =[];
             denominations.forEach(d => {
                 let valCents = Math.round(d.val * 100);
-                for (let i = 0; i < walletCounts[d.val]; i++) {
-                    inventory.push(valCents);
-                }
+                for (let i = 0; i < walletCounts[d.val]; i++) inventory.push(valCents);
             });
             inventory.sort((a,b) => b - a);
 
@@ -257,13 +241,11 @@
             function dfs(index, currentSubset, currentSum) {
                 if (currentSum >= costCents) {
                     if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
-                        bestSum = currentSum;
-                        bestSubset =[...currentSubset];
+                        bestSum = currentSum; bestSubset =[...currentSubset];
                     }
                     return;
                 }
                 if (index >= inventory.length) return;
-                
                 currentSubset.push(inventory[index]);
                 dfs(index + 1, currentSubset, currentSum + inventory[index]);
                 currentSubset.pop();
@@ -290,13 +272,10 @@
             }
 
             const isCorrect = actualChangeCents === expectedChange;
-            
             document.getElementById('sheet-backdrop').classList.add('show');
             const sheet = document.getElementById('result-sheet');
-            
             document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
             document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
-            
             document.getElementById('retry-btn').style.display = isCorrect ? 'none' : 'block';
             
             sheet.classList.remove('correct', 'wrong');
