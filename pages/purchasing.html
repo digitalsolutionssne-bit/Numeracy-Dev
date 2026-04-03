@@ -24,16 +24,16 @@
         <div id="step-1" class="flow-step active">
             <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
                 <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount</p>
-                <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
+                <h1 style="margin: 0; font-size: 2.5rem;">$<span id="wallet-total">0.00</span></h1>
             </div>
             
-            <div class="wallet-grid" id="wallet-grid-container">
+            <div class="wallet-grid" id="wallet-grid-container" style="margin-bottom: 10px;">
                 <!-- Dynamically populated via JS -->
             </div>
-            
+
+            <!-- Restored standalone Next button -->
             <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
         </div>
-
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
@@ -52,7 +52,6 @@
                 <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                 
                 <div class="payment-graphics-container" id="give-cashier-graphics">
-                    <!-- Populated via JS -->
                     <p style="opacity: 0.5; margin: auto;">Enter cost to calculate...</p>
                 </div>
             </div>
@@ -62,18 +61,18 @@
             </button>
         </div>
 
-
         <!-- STEP 3: CHANGE RECEIVED -->
         <div id="step-3" class="flow-step">
             <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
                 <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me</p>
-                <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
+                <h1 style="margin: 0; font-size: 2.5rem;">$<span id="change-total">0.00</span></h1>
             </div>
             
-            <div class="wallet-grid" id="change-grid-container">
+            <div class="wallet-grid" id="change-grid-container" style="margin-bottom: 10px;">
                 <!-- Dynamically populated via JS -->
             </div>
-            
+
+            <!-- Restored standalone check button -->
             <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
         </div>
 
@@ -100,17 +99,17 @@
 
     <script src="../app.js"></script>
     <script>
-        // Currency Definitions
+        // Use real image assets in the /assets/ folder
         const denominations =[
-            { val: 50, css: 'sg-money sg-note sg-note-50', label: '$50' },
-            { val: 10, css: 'sg-money sg-note sg-note-10', label: '$10' },
-            { val: 5,  css: 'sg-money sg-note sg-note-5',  label: '$5' },
-            { val: 2,  css: 'sg-money sg-note sg-note-2',  label: '$2' },
-            { val: 1,  css: 'sg-money sg-coin sg-coin-1',  label: '$1' },
-            { val: 0.5,css: 'sg-money sg-coin sg-coin-silver', label: '50¢' },
-            { val: 0.2,css: 'sg-money sg-coin sg-coin-silver', label: '20¢' },
-            { val: 0.1,css: 'sg-money sg-coin sg-coin-silver', label: '10¢' },
-            { val: 0.05,css:'sg-money sg-coin sg-coin-gold', label: '5¢' }
+            { val: 50, img: '../assets/note-50.png', label: '$50', type: 'note' },
+            { val: 10, img: '../assets/note-10.png', label: '$10', type: 'note' },
+            { val: 5,  img: '../assets/note-5.png',  label: '$5',  type: 'note' },
+            { val: 2,  img: '../assets/note-2.png',  label: '$2',  type: 'note' },
+            { val: 1,  img: '../assets/coin-1.png',  label: '$1',  type: 'coin' },
+            { val: 0.5,img: '../assets/coin-50c.png',label: '50¢', type: 'coin' },
+            { val: 0.2,img: '../assets/coin-20c.png',label: '20¢', type: 'coin' },
+            { val: 0.1,img: '../assets/coin-10c.png',label: '10¢', type: 'coin' },
+            { val: 0.05,img: '../assets/coin-5c.png',label: '5¢',  type: 'coin' }
         ];
 
         let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
@@ -126,7 +125,8 @@
                 const item = document.createElement('div');
                 item.className = 'wallet-item';
                 
-                const graphic = `<div class="${d.css}">${d.label}</div>`;
+                // Uses the actual images
+                const graphic = `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}">`;
                 
                 item.innerHTML = `
                     ${graphic}
@@ -162,6 +162,7 @@
             }
         }
 
+        // Initialize Grids (Buttons are no longer passed dynamically)
         renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
         renderGrid('change-grid-container', changeCounts, 'change-total');
 
@@ -229,8 +230,8 @@
             
             bestPaymentArray.forEach(valCents => {
                 paymentSumCents += valCents;
-                const denomObj = denominations.find(d => Math.round(d.val * 100) === valCents);
-                graphicsContainer.innerHTML += `<div class="${denomObj.css}">${denomObj.label}</div>`;
+                const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
+                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}" style="margin: 2px;">`;
             });
 
             payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
@@ -257,7 +258,7 @@
                 if (currentSum >= costCents) {
                     if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
                         bestSum = currentSum;
-                        bestSubset = [...currentSubset];
+                        bestSubset =[...currentSubset];
                     }
                     return;
                 }
