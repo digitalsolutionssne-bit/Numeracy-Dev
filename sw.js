@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v17';
+const CACHE_NAME = 'lifecount-cache-v19';
 
 const urlsToCache =[
     './',
@@ -11,7 +11,18 @@ const urlsToCache =[
     './pages/stopwatch.html',
     './pages/duration.html',
     './pages/end-time.html',
-    './pages/expiry.html'
+    './pages/expiry.html',
+    './assets/icon-192.png',
+    './assets/icon-512.png',
+    './assets/note-50.png',
+    './assets/note-10.png',
+    './assets/note-5.png',
+    './assets/note-2.png',
+    './assets/coin-1.png',
+    './assets/coin-50c.png',
+    './assets/coin-20c.png',
+    './assets/coin-10c.png',
+    './assets/coin-5c.png'
 ];
 
 self.addEventListener('install', event => {
