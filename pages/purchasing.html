@@ -2,94 +2,396 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pay Cashier</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Purchasing | LifeCount</title>
     <link rel="stylesheet" href="../styles.css">
-    <!-- Include manifest for PWA -->
-    <link rel="manifest" href="../manifest.json">
 </head>
 <body>
-    <div class="test-env-banner">TEST ENVIRONMENT</div>
-    
-    <header>
-        <button class="back-btn">&lt; Back</button>
-        <h1>Pay Cashier 🤖</h1>
-        <div class="header-icons">
-            <span class="icon">🏠</span>
-            <span class="icon">🌓</span>
+    <header class="top-bar">
+        <button class="back-btn" onclick="goBack()" aria-label="Go back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Back
+        </button>
+        <h1 id="header-title">
+            Wallet 
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+        </h1>
+        <div class="header-actions">
+            <a href="../index.html" class="header-icon-btn" aria-label="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
         </div>
     </header>
 
-    <main>
-        <!-- Top Summary Boxes -->
-        <div class="top-summary-container">
-            <div id="total-cost-box" class="summary-box total-box-green">
-                <span>Total Cost</span>
-                <strong id="total-cost-display">$0.00</strong>
+    <main class="page-content">
+
+        <!-- STEP 1: WALLET SETUP -->
+        <div id="step-1" class="flow-step active">
+            <div class="content-body">
+                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
+                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
+                </div>
+                <div class="wallet-grid" id="wallet-grid-container"></div>
             </div>
-            <div id="wallet-box" class="summary-box wallet-box-light-green">
-                <span>My Wallet 💳</span>
-                <strong id="wallet-total">$52.00</strong>
+            <div class="step-footer">
+                <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: PAY CASHIER -->
+        <div id="step-2" class="flow-step" style="position: relative;">
+            <div class="content-body">
+                
+                <!-- NEW SPLIT HEADER DESIGN -->
+                <div style="display: flex; gap: 10px; margin-bottom: 0.8rem; flex-shrink: 0;">
+                    <!-- LEFT SIDE: Total Cost -->
+                    <div id="cost-header-box" style="flex: 1; background-color: var(--success-color, #4CAF50); color: white; border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; text-align: center; display: flex; flex-direction: column; align-items: center; transition: background-color 0.3s;">
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px;">
+                            Total Cost
+                        </p>
+                        <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-cost-total">0.00</span></h2>
+                    </div>
+
+                    <!-- RIGHT SIDE: Wallet Amount -->
+                    <div style="flex: 1; background-color: #e8f5e9; color: #2e7d32; border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; text-align: center; display: flex; flex-direction: column; align-items: center;">
+                        <p style="margin: 0; font-size: 0.9rem; opacity: 0.9; display: flex; align-items: center; gap: 6px;">
+                            My Wallet
+                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                        </p>
+                        <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
+                    </div>
+                </div>
+
+                <div class="items-container">
+                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">🛒 I want to buy:</label>
+                    <div id="items-list" style="flex-shrink: 0;">
+                        <div class="item-row">
+                            <div class="currency-wrapper">
+                                <span class="currency-symbol">$</span>
+                                <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
+                            </div>
+                            <button class="remove-item-btn" onclick="removeItem(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                            </button>
+                        </div>
+                    </div>
+                    <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
+                </div>
+
+                <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
+                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        Amount to pay cashier:
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+                    </p>
+                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
+                    <div class="payment-graphics-container" id="give-cashier-graphics">
+                        <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="step-footer">
+                <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
+                    I have paid Cashier
+                </button>
+            </div>
+
+            <!-- OVERBUDGET OVERLAY NOTIFICATION -->
+            <div id="overbudget-overlay" style="display: none; position: absolute; bottom: 0; left: 0; width: 100%; height: 50%; background-color: var(--card-bg, #ffffff); z-index: 20; flex-direction: column; align-items: center; justify-content: center; border-top-left-radius: 20px; border-top-right-radius: 20px; box-shadow: 0 -4px 15px rgba(0,0,0,0.15);">
+                <div class="giant-icon" style="font-size: 4rem; margin-bottom: 10px;">❌</div>
+                <h2 style="margin: 0 0 10px 0; color: var(--error-color, #f44336);">Not Enough Money</h2>
+                <p style="margin: 0; opacity: 0.8; padding: 0 20px; text-align: center;">Your items cost more than your wallet amount. Please edit the prices or remove an item.</p>
+            </div>
+            <!-- END OF NEW OVERLAY -->
+
+        </div>
+
+        <!-- STEP 3: CHANGE RECEIVED -->
+        <div id="step-3" class="flow-step">
+            <div class="content-body">
+                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
+                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
+                </div>
+                <div class="wallet-grid" id="change-grid-container"></div>
+            </div>
+            <div class="step-footer">
+                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
             </div>
         </div>
 
-        <!-- Input Section -->
-        <section class="buy-section">
-            <div class="section-title">🛒 I want to buy:</div>
-            
-            <div id="item-list">
-                <!-- Items list -->
-                <div class="item-row">
-                    <span class="currency-symbol">$</span>
-                    <input type="number" class="item-input" value="48">
-                    <button class="delete-item-btn">🗑️</button>
-                </div>
-                <div class="item-row">
-                    <span class="currency-symbol">$</span>
-                    <input type="number" class="item-input" value="4.5">
-                    <button class="delete-item-btn">🗑️</button>
-                </div>
-                <div class="item-row">
-                    <span class="currency-symbol">$</span>
-                    <input type="number" class="item-input" value="1.2">
-                    <button class="delete-item-btn">🗑️</button>
-                </div>
-                <div class="item-row">
-                    <span class="currency-symbol">$</span>
-                    <input type="number" class="item-input" value="0.00">
-                    <button class="delete-item-btn">🗑️</button>
-                </div>
-            </div>
-
-            <button id="add-item-btn" class="add-item-btn">➕ Add Another Item</button>
-        </section>
-
-        <!-- Relative container to trap the overlay to the bottom half -->
-        <div id="payment-section-container">
-            <div class="payment-prompt">
-                Amount to pay cashier: 🤖<br>
-                <span class="error-text">Cannot make exact payment</span>
-            </div>
-            
-            <!-- Placeholder for cash selection area shown in screenshot -->
-            <div class="grey-placeholder-box"></div>
-
-            <button id="pay-cashier-btn" class="pay-btn">I have paid Cashier</button>
-
-            <!-- NEW: Persistent Notification Overlay -->
-            <div id="insufficient-funds-overlay" class="hidden">
-                <div class="overlay-content">
-                    <svg viewBox="0 0 100 100" width="80" height="80">
-                        <line x1="25" y1="25" x2="75" y2="75" stroke="#ea4335" stroke-width="10" stroke-linecap="round" />
-                        <line x1="75" y1="25" x2="25" y2="75" stroke="#ea4335" stroke-width="10" stroke-linecap="round" />
-                    </svg>
-                    <h2 class="overlay-title-red">Not Enough Money in Wallet</h2>
-                    <p class="overlay-subtext">Please remove items or lower costs to proceed 🤖</p>
-                </div>
-            </div>
-        </div>
     </main>
 
+    <!-- STEP 4: BIG BOTTOM SHEET NOTIFICATION -->
+    <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
+    <div class="bottom-sheet" id="result-sheet">
+        <div id="sheet-content-correct" style="display:none; flex-direction: column; align-items: center;">
+            <div class="giant-icon">✅</div>
+            <h2>Correct Change!</h2>
+            <p>You received the right amount.</p>
+        </div>
+        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
+            <div class="giant-icon">❌</div>
+            <h2>Wrong Change</h2>
+            <p>
+                Please inform the cashier
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+            </p>
+        </div>
+        <div class="sheet-btn-group" style="margin-top: 15px;">
+            <!-- CORRECT BUTTON (MAIN MENU + SVG) -->
+            <button class="primary-btn" id="sheet-home-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0; display:flex; align-items:center; justify-content:center; gap:8px;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                Main Menu
+            </button>
+            <!-- WRONG BUTTON (PROMINENT PURPLE) -->
+            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: #9C27B0; color: #ffffff; border: none; padding:0.8rem; margin:0;">
+                Check New Change
+            </button>
+        </div>
+    </div>
+
     <script src="../app.js"></script>
+    <script>
+        const denominations =[
+            { val: 50,    img: '../assets/note-50.png',   label: '$50',  type: 'note' },
+            { val: 10,    img: '../assets/note-10.png',   label: '$10',  type: 'note' },
+            { val: 5,     img: '../assets/note-5.png',    label: '$5',   type: 'note' },
+            { val: 2,     img: '../assets/note-2.png',    label: '$2',   type: 'note' },
+            { val: 1,     img: '../assets/coin-1.png',    label: '$1',   type: 'coin' },
+            { val: 0.5,   img: '../assets/coin-50c.png',  label: '50¢',  type: 'coin' },
+            { val: 0.2,   img: '../assets/coin-20c.png',  label: '20¢',  type: 'coin' },
+            { val: 0.1,   img: '../assets/coin-10c.png',  label: '10¢',  type: 'coin' },
+            { val: 0.05,  img: '../assets/coin-5c.png',   label: '5¢',   type: 'coin' }
+        ];
+
+        let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
+        let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
+        let totalWallet = 0;
+        let expectedChange = 0; 
+        let currentStep = 1;
+
+        const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
+        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
+
+        function renderGrid(containerId, countsObj, totalElemId) {
+            const container = document.getElementById(containerId);
+            container.innerHTML = '';
+            
+            denominations.forEach(d => {
+                const item = document.createElement('div');
+                item.className = 'wallet-item';
+                const graphic = `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}">`;
+                item.innerHTML = `
+                    ${graphic}
+                    <div class="wallet-controls">
+                        <button class="control-btn minus" onclick="updateCount(${d.val}, -1, '${containerId}', '${totalElemId}')">-</button>
+                        <span class="control-count" id="count-${containerId}-${d.val}">${countsObj[d.val]}</span>
+                        <button class="control-btn plus" onclick="updateCount(${d.val}, 1, '${containerId}', '${totalElemId}')">+</button>
+                    </div>
+                `;
+                container.appendChild(item);
+            });
+        }
+
+        function updateCount(val, delta, containerId, totalElemId) {
+            let countsObj = containerId === 'wallet-grid-container' ? walletCounts : changeCounts;
+            if (countsObj[val] + delta >= 0) {
+                countsObj[val] += delta;
+                document.getElementById(`count-${containerId}-${val}`).innerText = countsObj[val];
+                recalcTotal(countsObj, totalElemId);
+            }
+        }
+
+        function recalcTotal(countsObj, totalElemId) {
+            let totalCents = 0;
+            for (const [val, count] of Object.entries(countsObj)) {
+                totalCents += Math.round(parseFloat(val) * 100) * count;
+            }
+            const totalDollars = (totalCents / 100).toFixed(2);
+            document.getElementById(totalElemId).innerText = totalDollars;
+            if (totalElemId === 'wallet-total') totalWallet = totalDollars;
+        }
+
+        renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
+        renderGrid('change-grid-container', changeCounts, 'change-total');
+
+        function goBack() {
+            if (currentStep === 3) goToStep2();
+            else if (currentStep === 2) goToStep1();
+            else window.location.href = '../index.html';
+        }
+
+        function switchStep(stepNum, titleHtml) {
+            currentStep = stepNum;
+            document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
+            document.getElementById(`step-${stepNum}`).classList.add('active');
+            document.getElementById('header-title').innerHTML = titleHtml;
+        }
+
+        function goToStep1() { switchStep(1, `Wallet ${walletSvg}`); }
+
+        function goToStep2() {
+            if (parseFloat(totalWallet) === 0) {
+                alert("Your wallet is empty! Please add money first.");
+                return;
+            }
+            document.getElementById('step2-wallet-total').innerText = totalWallet;
+            calculateTotalCost(); 
+            switchStep(2, `Pay Cashier ${cashierSvg}`);
+        }
+
+        function goToStep3() { switchStep(3, "Check Change 💵"); }
+
+        function addItem() {
+            const list = document.getElementById('items-list');
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div class="currency-wrapper">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
+                </div>
+                <button class="remove-item-btn" onclick="removeItem(this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </button>
+            `;
+            list.appendChild(row);
+            row.querySelector('.item-cost').focus(); 
+            document.querySelector('#step-2 .content-body').scrollTop = document.querySelector('#step-2 .content-body').scrollHeight;
+        }
+
+        function removeItem(btn) {
+            const list = document.getElementById('items-list');
+            if (list.children.length > 1) {
+                btn.parentElement.remove();
+                calculateTotalCost(); 
+            } else {
+                btn.previousElementSibling.querySelector('input').value = '';
+                calculateTotalCost();
+            }
+        }
+
+        function calculateTotalCost() {
+            const inputs = document.querySelectorAll('.item-cost');
+            let totalCostCents = 0;
+            inputs.forEach(input => {
+                totalCostCents += Math.round(parseFloat(input.value || 0) * 100);
+            });
+
+            const walletCents = Math.round(parseFloat(totalWallet) * 100);
+            const graphicsContainer = document.getElementById('give-cashier-graphics');
+            const payText = document.getElementById('pay-amount-text');
+            const paidBtn = document.getElementById('btn-paid-cashier');
+
+            // --- NEW UI LOGIC ENDS HERE ---
+
+            if (totalCostCents <= 0) {
+                payText.innerText = '$0.00';
+                payText.style.color = "var(--primary-color)";
+                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>';
+                paidBtn.disabled = true;
+                return;
+            }
+
+            const bestPaymentArray = calculateOptimalPayment(totalCostCents);
+            
+            if (bestPaymentArray.length === 0) {
+                payText.innerText = "Cannot make exact payment";
+                payText.style.color = "var(--error-color)";
+                graphicsContainer.innerHTML = '';
+                paidBtn.disabled = true;
+                return;
+            }
+
+            let paymentSumCents = 0;
+            graphicsContainer.innerHTML = '';
+            
+            bestPaymentArray.forEach(valCents => {
+                paymentSumCents += valCents;
+                const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
+                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="payment-img ${d.type}">`;
+            });
+
+            payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
+            payText.style.color = "var(--success-color)";
+            paidBtn.disabled = false;
+            expectedChange = paymentSumCents - totalCostCents;
+        }
+
+        function calculateOptimalPayment(costCents) {
+            let inventory =[];
+            denominations.forEach(d => {
+                let valCents = Math.round(d.val * 100);
+                for (let i = 0; i < walletCounts[d.val]; i++) inventory.push(valCents);
+            });
+            inventory.sort((a,b) => b - a);
+
+            let bestSum = Infinity;
+            let bestSubset =[];
+
+            function dfs(index, currentSubset, currentSum) {
+                if (currentSum >= costCents) {
+                    if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
+                        bestSum = currentSum; bestSubset = [...currentSubset];
+                    }
+                    return;
+                }
+                if (index >= inventory.length) return;
+                currentSubset.push(inventory[index]);
+                dfs(index + 1, currentSubset, currentSum + inventory[index]);
+                currentSubset.pop();
+                dfs(index + 1, currentSubset, currentSum);
+            }
+
+            if (inventory.length <= 22) {
+                dfs(0,[], 0);
+            } else {
+                let sum = 0;
+                for (let v of inventory) {
+                    bestSubset.push(v);
+                    sum += v;
+                    if (sum >= costCents) break;
+                }
+            }
+            return bestSubset;
+        }
+
+        function checkChange() {
+            let actualChangeCents = 0;
+            for (const [val, count] of Object.entries(changeCounts)) {
+                actualChangeCents += Math.round(parseFloat(val) * 100) * count;
+            }
+
+            const isCorrect = actualChangeCents === expectedChange;
+            document.getElementById('sheet-backdrop').classList.add('show');
+            const sheet = document.getElementById('result-sheet');
+            
+            document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
+            document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
+            
+            // Dynamic display logic for the buttons based on correctness
+            if (isCorrect) {
+                document.getElementById('sheet-home-btn').style.display = 'flex';
+                document.getElementById('retry-btn').style.display = 'none';
+            } else {
+                document.getElementById('sheet-home-btn').style.display = 'none';
+                document.getElementById('retry-btn').style.display = 'block';
+            }
+            
+            sheet.classList.remove('correct', 'wrong');
+            sheet.classList.add(isCorrect ? 'correct' : 'wrong');
+            sheet.classList.add('show');
+        }
+
+        function retryChange() {
+            document.getElementById('sheet-backdrop').classList.remove('show');
+            document.getElementById('result-sheet').classList.remove('show');
+            changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
+            renderGrid('change-grid-container', changeCounts, 'change-total');
+        }
+    </script>
 </body>
 </html>
