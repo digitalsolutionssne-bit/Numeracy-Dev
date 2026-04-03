@@ -3,19 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Purchasing | LifeCount</title>
+    <title>Expiration | LifeCount</title>
     <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
     <header class="top-bar">
-        <button class="back-btn" onclick="goBack()" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            Back
-        </button>
-        <h1 id="header-title">
-            Wallet 
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-        </h1>
+        <a href="../index.html" class="back-btn" aria-label="Go back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+        </a>
+        <h1>Expiration Date 📅</h1>
         <div class="header-actions">
             <a href="../index.html" class="header-icon-btn" aria-label="Home">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -25,334 +21,159 @@
     </header>
 
     <main class="page-content">
+        <div class="content-body" style="gap: 1.5rem; justify-content: space-evenly;">
+            
+            <div style="text-align: center; flex-shrink: 0;">
+                <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
+                <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
+            </div>
+            
+            <!-- BULLETPROOF INLINE STYLED BUTTON -->
+            <label style="background-color: #9C27B0 !important; color: #ffffff !important; border-radius: 12px !important; padding: 1.5rem !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; cursor: pointer !important; box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important; flex-shrink: 0 !important; width: 100% !important; box-sizing: border-box !important;">
+                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                <span style="font-weight: bold !important; font-size: 1.4rem !important;">Scan Expiration Date</span>
+                <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
+            </label>
 
-        <!-- STEP 1: WALLET SETUP -->
-        <div id="step-1" class="flow-step active">
-            <div class="content-body">
-                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
-                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
-                </div>
-                <div class="wallet-grid" id="wallet-grid-container"></div>
+            <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
+
+            <div style="text-align: center; flex-shrink: 0;">
+                <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
+                <input type="date" id="manual-date" class="large-input" style="text-align: center;">
             </div>
-            <!-- BULLETPROOF FOOTER SEPARATION -->
-            <div class="step-footer">
-                <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
-            </div>
+
         </div>
 
-        <!-- STEP 2: PAY CASHIER -->
-        <div id="step-2" class="flow-step">
-            <div class="content-body">
-                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0; display:flex; flex-direction:column; align-items:center;">
-                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; display:flex; align-items:center; gap:6px;">
-                        I have in my wallet:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                    </p>
-                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
-                </div>
-
-                <div class="items-container">
-                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">🛒 I want to buy:</label>
-                    <div id="items-list" style="flex-shrink: 0;">
-                        <div class="item-row">
-                            <div class="currency-wrapper">
-                                <span class="currency-symbol">$</span>
-                                <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
-                            </div>
-                            <button class="remove-item-btn" onclick="removeItem(this)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
-                </div>
-
-                <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
-                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
-                        Amount to pay cashier:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-                    </p>
-                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
-                    <div class="payment-graphics-container" id="give-cashier-graphics">
-                        <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
-                    </div>
-                </div>
-            </div>
-            <div class="step-footer">
-                <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
-                    I have paid Cashier
-                </button>
-            </div>
-        </div>
-
-        <!-- STEP 3: CHANGE RECEIVED -->
-        <div id="step-3" class="flow-step">
-            <div class="content-body">
-                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
-                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
-                </div>
-                <div class="wallet-grid" id="change-grid-container"></div>
-            </div>
-            <div class="step-footer">
-                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
-            </div>
+        <div class="step-footer">
+            <button class="primary-btn" id="manual-check-btn">Check Date</button>
         </div>
 
     </main>
 
-    <!-- STEP 4: BIG BOTTOM SHEET NOTIFICATION -->
-    <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
-    <div class="bottom-sheet" id="result-sheet">
-        <div id="sheet-content-correct" style="display:none; flex-direction: column; align-items: center;">
-            <div class="giant-icon">✅</div>
-            <h2>Correct Change!</h2>
-            <p>You received the right amount.</p>
-        </div>
-        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
-            <div class="giant-icon">❌</div>
-            <h2>Wrong Change</h2>
-            <p>
-                Please inform the cashier
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-            </p>
-        </div>
-        <div class="sheet-btn-group" style="margin-top: 15px;">
-            <button class="primary-btn" id="sheet-home-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0;">Home</button>
-            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); padding:0.8rem; margin:0;">Check New Change</button>
-        </div>
+    <!-- Processing State Overlay -->
+    <div id="processing-screen" class="processing-overlay" style="display: none;">
+        <div class="processing-spinner">⏳</div>
+        <h2 style="font-size: 2rem;">AI is checking...</h2>
+    </div>
+
+    <!-- Obnoxious Overlays -->
+    <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
+        <div class="giant-icon">✅</div>
+        <h1>SAFE!</h1>
+        <p>You can eat/use this.</p>
+        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+    </div>
+
+    <div id="obnoxious-bad" class="obnoxious-overlay bad" style="display: none;">
+        <div class="giant-icon">❌</div>
+        <h1>EXPIRED!</h1>
+        <p>DO NOT eat/use this!</p>
+        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
     </div>
 
     <script src="../app.js"></script>
     <script>
-        const denominations =[
-            { val: 50, img: '../assets/note-50.png', label: '$50', type: 'note' },
-            { val: 10, img: '../assets/note-10.png', label: '$10', type: 'note' },
-            { val: 5,  img: '../assets/note-5.png',  label: '$5',  type: 'note' },
-            { val: 2,  img: '../assets/note-2.png',  label: '$2',  type: 'note' },
-            { val: 1,  img: '../assets/coin-1.png',  label: '$1',  type: 'coin' },
-            { val: 0.5,img: '../assets/coin-50c.png',label: '50¢', type: 'coin' },
-            { val: 0.2,img: '../assets/coin-20c.png',label: '20¢', type: 'coin' },
-            { val: 0.1,img: '../assets/coin-10c.png',label: '10¢', type: 'coin' },
-            { val: 0.05,img: '../assets/coin-5c.png',label: '5¢',  type: 'coin' }
-        ];
+        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
+        const cameraInput = document.getElementById('camera-input');
+        const manualCheckBtn = document.getElementById('manual-check-btn');
+        const manualDateInput = document.getElementById('manual-date');
+        const processingScreen = document.getElementById('processing-screen');
+        const goodOverlay = document.getElementById('obnoxious-good');
+        const badOverlay = document.getElementById('obnoxious-bad');
 
-        let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
-        let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
-        let totalWallet = 0;
-        let expectedChange = 0; 
-        let currentStep = 1;
+        const today = new Date();
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
 
-        const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
-
-        function renderGrid(containerId, countsObj, totalElemId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            
-            denominations.forEach(d => {
-                const item = document.createElement('div');
-                item.className = 'wallet-item';
-                const graphic = `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}">`;
-                item.innerHTML = `
-                    ${graphic}
-                    <div class="wallet-controls">
-                        <button class="control-btn minus" onclick="updateCount(${d.val}, -1, '${containerId}', '${totalElemId}')">-</button>
-                        <span class="control-count" id="count-${containerId}-${d.val}">${countsObj[d.val]}</span>
-                        <button class="control-btn plus" onclick="updateCount(${d.val}, 1, '${containerId}', '${totalElemId}')">+</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
-
-        function updateCount(val, delta, containerId, totalElemId) {
-            let countsObj = containerId === 'wallet-grid-container' ? walletCounts : changeCounts;
-            if (countsObj[val] + delta >= 0) {
-                countsObj[val] += delta;
-                document.getElementById(`count-${containerId}-${val}`).innerText = countsObj[val];
-                recalcTotal(countsObj, totalElemId);
-            }
-        }
-
-        function recalcTotal(countsObj, totalElemId) {
-            let totalCents = 0;
-            for (const[val, count] of Object.entries(countsObj)) {
-                totalCents += Math.round(parseFloat(val) * 100) * count;
-            }
-            const totalDollars = (totalCents / 100).toFixed(2);
-            document.getElementById(totalElemId).innerText = totalDollars;
-            if (totalElemId === 'wallet-total') totalWallet = totalDollars;
-        }
-
-        renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
-        renderGrid('change-grid-container', changeCounts, 'change-total');
-
-        function goBack() {
-            if (currentStep === 3) goToStep2();
-            else if (currentStep === 2) goToStep1();
-            else window.location.href = '../index.html';
-        }
-
-        function switchStep(stepNum, titleHtml) {
-            currentStep = stepNum;
-            document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
-            document.getElementById(`step-${stepNum}`).classList.add('active');
-            document.getElementById('header-title').innerHTML = titleHtml;
-        }
-
-        function goToStep1() { switchStep(1, `Wallet ${walletSvg}`); }
-
-        function goToStep2() {
-            if (parseFloat(totalWallet) === 0) {
-                alert("Your wallet is empty! Please add money first.");
-                return;
-            }
-            document.getElementById('step2-wallet-total').innerText = totalWallet;
-            calculateTotalCost(); 
-            switchStep(2, `Pay Cashier ${cashierSvg}`);
-        }
-
-        function goToStep3() { switchStep(3, "Check Change 💵"); }
-
-        function addItem() {
-            const list = document.getElementById('items-list');
-            const row = document.createElement('div');
-            row.className = 'item-row';
-            row.innerHTML = `
-                <div class="currency-wrapper">
-                    <span class="currency-symbol">$</span>
-                    <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
-                </div>
-                <button class="remove-item-btn" onclick="removeItem(this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </button>
-            `;
-            list.appendChild(row);
-            row.querySelector('.item-cost').focus(); 
-            document.querySelector('#step-2 .content-body').scrollTop = document.querySelector('#step-2 .content-body').scrollHeight;
-        }
-
-        function removeItem(btn) {
-            const list = document.getElementById('items-list');
-            if (list.children.length > 1) {
-                btn.parentElement.remove();
-                calculateTotalCost(); 
-            } else {
-                btn.previousElementSibling.querySelector('input').value = '';
-                calculateTotalCost();
-            }
-        }
-
-        function calculateTotalCost() {
-            const inputs = document.querySelectorAll('.item-cost');
-            let totalCostCents = 0;
-            inputs.forEach(input => {
-                totalCostCents += Math.round(parseFloat(input.value || 0) * 100);
-            });
-
-            const walletCents = Math.round(parseFloat(totalWallet) * 100);
-            const graphicsContainer = document.getElementById('give-cashier-graphics');
-            const payText = document.getElementById('pay-amount-text');
-            const paidBtn = document.getElementById('btn-paid-cashier');
-
-            if (totalCostCents <= 0) {
-                payText.innerText = '$0.00';
-                payText.style.color = "var(--primary-color)";
-                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>';
-                paidBtn.disabled = true;
-                return;
-            }
-
-            if (totalCostCents > walletCents) {
-                payText.innerText = "Not enough money!";
-                payText.style.color = "var(--error-color)";
-                graphicsContainer.innerHTML = '';
-                paidBtn.disabled = true;
-                return;
-            }
-
-            const bestPaymentArray = calculateOptimalPayment(totalCostCents);
-            
-            if (bestPaymentArray.length === 0) {
-                payText.innerText = "Cannot make exact payment";
-                payText.style.color = "var(--error-color)";
-                graphicsContainer.innerHTML = '';
-                paidBtn.disabled = true;
-                return;
-            }
-
-            let paymentSumCents = 0;
-            graphicsContainer.innerHTML = '';
-            
-            bestPaymentArray.forEach(valCents => {
-                paymentSumCents += valCents;
-                const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
-                
-                // CRITICAL UI FIX: Assign the .payment-img CSS class to force it to render large
-                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="payment-img ${d.type}">`;
-            });
-
-            payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
-            payText.style.color = "var(--success-color)";
-            paidBtn.disabled = false;
-            expectedChange = paymentSumCents - totalCostCents;
-        }
-
-        function calculateOptimalPayment(costCents) {
-            let inventory =[];
-            denominations.forEach(d => {
-                let valCents = Math.round(d.val * 100);
-                for (let i = 0; i < walletCounts[d.val]; i++) inventory.push(valCents);
-            });
-            inventory.sort((a,b) => b - a);
-
-            let bestSum = Infinity;
-            let bestSubset =[];
-
-            function dfs(index, currentSubset, currentSum) {
-                if (currentSum >= costCents) {
-                    if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
-                        bestSum = currentSum; bestSubset =[...currentSubset];
-                    }
+        cameraInput.addEventListener('change', async function(e) {
+            if(e.target.files.length > 0) {
+                if (!navigator.onLine) {
+                    showToast("Currently Offline. Cannot use AI Scanner.", true);
+                    cameraInput.value = ''; 
                     return;
                 }
-                if (index >= inventory.length) return;
-                currentSubset.push(inventory[index]);
-                dfs(index + 1, currentSubset, currentSum + inventory[index]);
-                currentSubset.pop();
-                dfs(index + 1, currentSubset, currentSum);
-            }
 
-            if (inventory.length <= 22) {
-                dfs(0,[], 0);
-            } else {
-                let sum = 0;
-                for (let v of inventory) {
-                    bestSubset.push(v);
-                    sum += v;
-                    if (sum >= costCents) break;
+                const file = e.target.files[0];
+                processingScreen.style.display = 'flex';
+
+                try {
+                    const base64Image = await compressImage(file);
+                    
+                    const response = await fetch(GAS_URL, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                        body: JSON.stringify({ image: base64Image })
+                    });
+
+                    const result = await response.json();
+                    processingScreen.style.display = 'none';
+
+                    if (result.error) {
+                        showToast("Failed to read date. Please try again.", true);
+                    } else if (result.foundDate === false) {
+                        showToast("No expiration date found in photo.", true);
+                    } else {
+                        if (result.isExpired) {
+                            badOverlay.style.display = 'flex';
+                        } else {
+                            goodOverlay.style.display = 'flex';
+                        }
+                    }
+                } catch (err) {
+                    processingScreen.style.display = 'none';
+                    showToast("Connection error. Try again.", true);
+                } finally {
+                    cameraInput.value = ''; 
                 }
             }
-            return bestSubset;
+        });
+
+        function compressImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = event => {
+                    const img = new Image();
+                    img.src = event.target.result;
+                    img.onload = () => {
+                        const canvas = document.createElement('canvas');
+                        const MAX_WIDTH = 800; 
+                        let scaleSize = 1;
+                        if (img.width > MAX_WIDTH) scaleSize = MAX_WIDTH / img.width;
+                        canvas.width = img.width * scaleSize;
+                        canvas.height = img.height * scaleSize;
+                        
+                        const ctx = canvas.getContext('2d');
+                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                        
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        resolve(dataUrl.split(',')[1]);
+                    };
+                    img.onerror = error => reject(error);
+                };
+                reader.onerror = error => reject(error);
+            });
         }
 
-        function checkChange() {
-            let actualChangeCents = 0;
-            for (const[val, count] of Object.entries(changeCounts)) {
-                actualChangeCents += Math.round(parseFloat(val) * 100) * count;
+        manualCheckBtn.addEventListener('click', () => {
+            const inputVal = manualDateInput.value;
+            if (!inputVal) {
+                showToast("Please enter a date first.", true);
+                return;
             }
+            processingScreen.style.display = 'flex';
 
-            const isCorrect = actualChangeCents === expectedChange;
-            document.getElementById('sheet-backdrop').classList.add('show');
-            const sheet = document.getElementById('result-sheet');
-            
-            document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
-            document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
-            
-            if (isCorrect) {
-                document.getElementById('sheet-home-btn').style.display = 'block';
-                document.getElementById('retry-btn').style.display = 'none';
-            } else {
-      
+            setTimeout(() => {
+                processingScreen.style.display = 'none';
+                const checkDate = new Date(inputVal);
+                checkDate.setHours(0,0,0,0);
+                const compareToday = new Date(today);
+                compareToday.setHours(0,0,0,0);
+
+                if (checkDate < compareToday) badOverlay.style.display = 'flex';
+                else goodOverlay.style.display = 'flex'; 
+            }, 800); 
+        });
+    </script>
+</body>
+</html>
