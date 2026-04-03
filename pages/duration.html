@@ -22,7 +22,9 @@
     </header>
 
     <main class="page-content">
-        <div class="content-body">
+        <!-- New time-content class elegantly spaces everything out -->
+        <div class="content-body time-content">
+            
             <div class="input-group">
                 <label>▶️ Start Time:</label>
                 <div class="time-picker-wrapper">
@@ -48,10 +50,12 @@
                 </select>
             </div>
 
-            <div style="margin-top: 1rem; background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; flex-shrink: 0;">
-                <p style="margin: 0 0 0.5rem 0; font-weight:bold;">Time spent ⌛:</p>
-                <h2 id="duration-result" style="margin: 0; font-size: 1.8rem; color: var(--primary-color);">--</h2>
+            <!-- New time-result-box class makes it a prominent card -->
+            <div class="time-result-box">
+                <p style="margin: 0 0 0.5rem 0; font-weight:bold; font-size:1.1rem; opacity: 0.8;">Time spent ⌛:</p>
+                <h2 id="duration-result" style="margin: 0; font-size: 2.2rem; color: var(--primary-color);">--</h2>
             </div>
+
         </div>
 
         <div class="step-footer">
