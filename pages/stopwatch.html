@@ -7,85 +7,20 @@
     <link rel="stylesheet" href="../styles.css">
     <style>
         .page-content {
-            display: flex;
-            flex-direction: column;
-            padding: 1.5rem;
+            display: flex; flex-direction: column; padding: 1.5rem;
             padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); 
         }
-
         .stopwatch-container {
-            flex: 1; 
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center; 
-            min-height: 0; 
-            /* Added gap to create perfect spacing between the timer and the buttons below it */
-            gap: 2.5rem; 
+            flex: 1; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; min-height: 0; gap: 2.5rem; 
         }
-        
-        .time-display {
-            display: flex;
-            align-items: flex-start;
-            justify-content: center;
-            gap: 8px;
-        }
-        
-        .time-segment {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 85px; 
-        }
-        
-        .digits {
-            font-size: 4.5rem; 
-            color: var(--primary-color);
-            font-weight: 300;
-            line-height: 1;
-            font-variant-numeric: tabular-nums; 
-        }
-
-        .colon {
-            color: var(--primary-color);
-            font-size: 4.5rem;
-            font-weight: 300;
-            line-height: 1;
-            transform: translateY(-4px); 
-        }
-        
-        .time-label {
-            font-size: 1rem;
-            color: #888;
-            margin-top: 8px;
-            font-weight: normal;
-        }
-
-        .controls {
-            flex-shrink: 0; 
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            width: 100%;
-            /* Constraining the max-width makes it look much better when centered */
-            max-width: 320px; 
-        }
-        
-        .reset-btn {
-            background-color: transparent;
-            color: var(--text-color);
-            border: 2px solid var(--card-border);
-            border-radius: 8px;
-            padding: 0.75rem 1rem;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            box-sizing: border-box;
-            text-align: center;
-            /* CRITICAL: visibility: hidden keeps the physical space reserved so the UI never jumps */
-            visibility: hidden; 
-        }
+        .time-display { display: flex; align-items: flex-start; justify-content: center; gap: 8px; }
+        .time-segment { display: flex; flex-direction: column; align-items: center; width: 85px; }
+        .digits { font-size: 4.5rem; color: var(--primary-color); font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+        .colon { color: var(--primary-color); font-size: 4.5rem; font-weight: 300; line-height: 1; transform: translateY(-4px); }
+        .time-label { font-size: 1rem; color: #888; margin-top: 8px; font-weight: normal; }
+        .controls { flex-shrink: 0; display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; }
+        .reset-btn { background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); border-radius: 8px; padding: 0.75rem 1rem; font-size: 1.1rem; font-weight: 600; cursor: pointer; width: 100%; box-sizing: border-box; text-align: center; visibility: hidden; }
     </style>
 </head>
 <body>
@@ -96,37 +31,24 @@
             </svg>
             Back
         </a>
-        <h1>Stop Watch</h1>
+        <h1>Stop Watch ⏱️</h1>
         <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
     </header>
 
     <main class="page-content">
-        
         <div class="stopwatch-container">
             <div class="time-display">
-                <div class="time-segment">
-                    <span id="sw-hours" class="digits">00</span>
-                    <span class="time-label">hours</span>
-                </div>
+                <div class="time-segment"><span id="sw-hours" class="digits">00</span><span class="time-label">hours</span></div>
                 <span class="colon">:</span>
-                <div class="time-segment">
-                    <span id="sw-minutes" class="digits">00</span>
-                    <span class="time-label">minutes</span>
-                </div>
+                <div class="time-segment"><span id="sw-minutes" class="digits">00</span><span class="time-label">minutes</span></div>
                 <span class="colon">:</span>
-                <div class="time-segment">
-                    <span id="sw-seconds" class="digits">00</span>
-                    <span class="time-label">seconds</span>
-                </div>
+                <div class="time-segment"><span id="sw-seconds" class="digits">00</span><span class="time-label">seconds</span></div>
             </div>
-
-            <!-- Moved controls inside the center container -->
             <div class="controls">
                 <button class="primary-btn" id="start-stop-btn">▷ START</button>
                 <button class="reset-btn" id="reset-btn">↺ RESET</button>
             </div>
         </div>
-        
     </main>
 
     <script src="../app.js"></script>
@@ -134,7 +56,6 @@
         let timerInterval = null;
         let totalSeconds = 0;
         let isRunning = false;
-
         const hoursDisplay = document.getElementById('sw-hours');
         const minutesDisplay = document.getElementById('sw-minutes');
         const secondsDisplay = document.getElementById('sw-seconds');
@@ -145,7 +66,6 @@
             const h = Math.floor(totalSeconds / 3600);
             const m = Math.floor((totalSeconds % 3600) / 60);
             const s = totalSeconds % 60;
-
             hoursDisplay.textContent = h.toString().padStart(2, '0');
             minutesDisplay.textContent = m.toString().padStart(2, '0');
             secondsDisplay.textContent = s.toString().padStart(2, '0');
@@ -153,18 +73,12 @@
 
         function toggleTimer() {
             if (isRunning) {
-                // Pause Timer
                 clearInterval(timerInterval);
                 startStopBtn.innerHTML = "▷ START";
                 startStopBtn.style.backgroundColor = "var(--primary-color)";
-                // Use visibility instead of display to prevent jumping
                 resetBtn.style.visibility = "visible"; 
             } else {
-                // Start Timer
-                timerInterval = setInterval(() => {
-                    totalSeconds++;
-                    updateDisplay();
-                }, 1000);
+                timerInterval = setInterval(() => { totalSeconds++; updateDisplay(); }, 1000);
                 startStopBtn.innerHTML = "⏸ STOP";
                 startStopBtn.style.backgroundColor = "var(--error-color)"; 
                 resetBtn.style.visibility = "hidden";
