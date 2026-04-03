@@ -8,7 +8,6 @@
     --success-color: #4CAF50; 
     --error-color: #F44336;   
     --time-block-bg: #E06666; 
-    --app-height: 100vh; /* Fallback before JS runs */
 }[data-theme="dark"] {
     --bg-color: #121212;
     --text-color: #e0e0e0;
@@ -22,18 +21,18 @@
 
 /* Bulletproof Viewport Lock */
 html, body {
-    margin: 0; padding: 0; width: 100vw; 
+    margin: 0; padding: 0; width: 100vw; height: 100vh; height: 100dvh; 
     overflow: hidden; position: fixed; touch-action: none; 
 }
 
 body {
-    height: var(--app-height); /* JS synced height */
     background-color: var(--bg-color); color: var(--text-color);
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     transition: background-color 0.3s, color 0.3s;
     display: flex; flex-direction: column;
 }
 
+/* --- HEADER STYLES --- */
 .top-bar {
     display: flex; justify-content: space-between; align-items: center;
     padding: 0.6rem 1.5rem; background-color: var(--card-bg);
@@ -78,17 +77,16 @@ body {
 }
 .flow-step.active { display: flex; animation: popIn 0.2s ease-out; }
 
-/* CRITICAL SEPARATION OF CONCERNS */
 .content-body {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; 
-    overflow: hidden; padding: 1rem; padding-bottom: 0; /* No bottom padding here */
+    overflow-y: auto; scrollbar-width: none; padding: 1rem; padding-bottom: 0; 
 }
+.content-body::-webkit-scrollbar { display: none; }
 
-/* This container is physically shielded from the grid sizes above it */
 .step-footer {
     flex-shrink: 0; padding: 10px 1rem; 
     padding-bottom: max(1rem, env(safe-area-inset-bottom, 15px));
-    background-color: var(--bg-color); /* Matches background so it blends naturally */
+    background-color: var(--bg-color); 
 }
 
 .menu-card, .action-btn {
@@ -109,6 +107,32 @@ body {
     font-size: 1.5rem; padding: 0.5rem; flex-grow: 1; border: 2px solid var(--card-border); 
     border-radius: 8px; background-color: var(--card-bg); color: var(--text-color); width: 100%; box-sizing: border-box;
 }
+
+/* --- AI SCAN BUTTON (PERMANENT FIX) --- */
+.ai-scan-btn {
+    background-color: #9C27B0 !important;
+    color: #ffffff !important;
+    border: none;
+    border-radius: 12px;
+    padding: 1.5rem;
+    font-size: 1.4rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    cursor: pointer;
+    box-sizing: border-box;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.15);
+    transition: transform 0.1s ease-in-out, background-color 0.2s;
+    flex-shrink: 0;
+}
+.ai-scan-btn:active {
+    transform: scale(0.97);
+    background-color: #7b1fa2 !important;
+}
+/* -------------------------------------- */
 
 .items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
@@ -135,6 +159,7 @@ body {
     background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
     padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
     text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer; width: 100%;
+    flex-shrink: 0 !important; margin-top: auto !important; 
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
@@ -149,8 +174,7 @@ body {
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
-    grid-template-rows: repeat(5, minmax(0, 1fr)); /* Force rows to shrink into available height */
-    gap: 4px; flex: 1 1 0%; min-height: 0; height: 100%;
+    grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 4px; flex: 1 1 0%; min-height: 0; height: 100%;
 }
 .wallet-item {
     border: 1px solid var(--card-border); padding: 4px; display: flex; flex-direction: column; 
@@ -192,7 +216,6 @@ body {
 }
 .bottom-sheet-backdrop.show { display: block; opacity: 1; }
 .bottom-sheet.show { transform: translateY(0); }
-
 .bottom-sheet .giant-icon { font-size: 5rem; line-height: 1; margin-bottom: 5px; }
 .bottom-sheet h2 { font-size: 2.2rem; margin: 0 0 5px 0; }
 .bottom-sheet p { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--text-color); opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 8px;}
