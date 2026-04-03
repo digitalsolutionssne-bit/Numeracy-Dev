@@ -71,7 +71,7 @@
                 <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
                     <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
                         Amount to pay cashier:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
                     </p>
                     <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                     <div class="payment-graphics-container" id="give-cashier-graphics">
@@ -79,7 +79,6 @@
                     </div>
                 </div>
             </div>
-            <!-- BULLETPROOF FOOTER SEPARATION -->
             <div class="step-footer">
                 <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
                     I have paid Cashier
@@ -96,7 +95,6 @@
                 </div>
                 <div class="wallet-grid" id="change-grid-container"></div>
             </div>
-            <!-- BULLETPROOF FOOTER SEPARATION -->
             <div class="step-footer">
                 <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
             </div>
@@ -117,7 +115,7 @@
             <h2>Wrong Change</h2>
             <p>
                 Please inform the cashier
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
             </p>
         </div>
         <div class="sheet-btn-group" style="margin-top: 15px;">
@@ -147,7 +145,7 @@
         let currentStep = 1;
 
         const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>`;
+        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
 
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
@@ -233,7 +231,6 @@
             `;
             list.appendChild(row);
             row.querySelector('.item-cost').focus(); 
-            // Auto scroll to bottom
             document.querySelector('#step-2 .content-body').scrollTop = document.querySelector('#step-2 .content-body').scrollHeight;
         }
 
@@ -292,7 +289,9 @@
             bestPaymentArray.forEach(valCents => {
                 paymentSumCents += valCents;
                 const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
-                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}" style="max-height:28px; width:auto; margin: 1px;">`;
+                
+                // CRITICAL UI FIX: Assign the .payment-img CSS class to force it to render large
+                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="payment-img ${d.type}">`;
             });
 
             payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
