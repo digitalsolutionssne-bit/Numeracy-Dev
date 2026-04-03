@@ -8,6 +8,7 @@
     --success-color: #4CAF50; 
     --error-color: #F44336;   
     --time-block-bg: #E06666; 
+    --app-height: 100vh; /* Fallback before JS runs */
 }[data-theme="dark"] {
     --bg-color: #121212;
     --text-color: #e0e0e0;
@@ -21,11 +22,12 @@
 
 /* Bulletproof Viewport Lock */
 html, body {
-    margin: 0; padding: 0; width: 100vw; height: 100vh; height: 100dvh; 
+    margin: 0; padding: 0; width: 100vw; 
     overflow: hidden; position: fixed; touch-action: none; 
 }
 
 body {
+    height: var(--app-height); /* JS synced height */
     background-color: var(--bg-color); color: var(--text-color);
     font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     transition: background-color 0.3s, color 0.3s;
@@ -43,6 +45,12 @@ body {
     color: var(--primary-color); font-weight: 600; font-size: 1.1rem; white-space: nowrap; 
     background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;
 }
+.header-actions { display: flex; align-items: center; gap: 15px; }
+.header-icon-btn {
+    background: none; border: none; padding: 0; cursor: pointer; 
+    color: var(--text-color); display: flex; align-items: center; justify-content: center;
+}
+.inline-icon { width: 24px; height: 24px; display: inline-block; vertical-align: bottom; }
 
 /* --- ANIMATIONS & TOAST MESSAGES --- */
 @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -60,24 +68,28 @@ body {
 
 /* --- CONTENT CONTAINERS --- */
 .menu-container, .page-content {
-    flex: 1; min-height: 0; display: flex; flex-direction: column; box-sizing: border-box;
+    flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; position: relative;
 }
 .menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; }
 
-/* 
-  BULLETPROOF FIX: The Content Body Wrapper
-  This guarantees the content shrinks and the button stays pinned.
-*/
-.content-body {
-    flex: 1 1 0%; 
-    min-height: 0; 
-    display: flex; 
-    flex-direction: column; 
-    overflow-y: auto; /* Fallback scroll only if mathematically impossible to fit */
-    scrollbar-width: none; /* Hides scrollbar visually */
-    padding-bottom: 10px;
+.flow-step { 
+    display: none; position: absolute; top:0; left:0; width:100%; height: 100%;
+    flex-direction: column; box-sizing: border-box; overflow: hidden;
 }
-.content-body::-webkit-scrollbar { display: none; }
+.flow-step.active { display: flex; animation: popIn 0.2s ease-out; }
+
+/* CRITICAL SEPARATION OF CONCERNS */
+.content-body {
+    flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; 
+    overflow: hidden; padding: 1rem; padding-bottom: 0; /* No bottom padding here */
+}
+
+/* This container is physically shielded from the grid sizes above it */
+.step-footer {
+    flex-shrink: 0; padding: 10px 1rem; 
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 15px));
+    background-color: var(--bg-color); /* Matches background so it blends naturally */
+}
 
 .menu-card, .action-btn {
     display: flex; align-items: center; padding: 1.5rem; background-color: var(--card-bg);
@@ -86,7 +98,6 @@ body {
 }
 .menu-card .icon { font-size: 2.5rem; margin-right: 1.5rem; }
 .menu-card h2 { margin: 0; font-size: 1.3rem; }
-
 .money-card { border-left: 8px solid var(--success-color); }
 .time-card { border-left: 8px solid var(--primary-color); }
 .other-card { border-left: 8px solid #FF9800; }
@@ -95,10 +106,8 @@ body {
 .input-group label { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 
 .large-input {
-    font-size: 1.5rem; padding: 0.5rem; flex-grow: 1;
-    border: 2px solid var(--card-border); border-radius: 8px;
-    background-color: var(--card-bg); color: var(--text-color);
-    width: 100%; box-sizing: border-box;
+    font-size: 1.5rem; padding: 0.5rem; flex-grow: 1; border: 2px solid var(--card-border); 
+    border-radius: 8px; background-color: var(--card-bg); color: var(--text-color); width: 100%; box-sizing: border-box;
 }
 
 .items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
@@ -107,10 +116,11 @@ body {
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
 .currency-wrapper .large-input { padding-left: 32px; margin: 0; }
 .remove-item-btn { 
-    background: var(--error-color); color: white; border: none; border-radius: 8px; 
-    width: 44px; height: 44px; font-size: 1.2rem; cursor: pointer; display: flex; 
-    justify-content: center; align-items: center; flex-shrink: 0; 
+    background: transparent; color: var(--error-color); border: 2px solid var(--error-color); 
+    border-radius: 8px; width: 44px; height: 44px; cursor: pointer; display: flex; 
+    justify-content: center; align-items: center; flex-shrink: 0; transition: background 0.2s;
 }
+.remove-item-btn:active { background: var(--error-color); color: white; }
 .add-item-btn { 
     background: transparent; border: 2px dashed var(--primary-color); color: var(--primary-color); 
     padding: 0.6rem; border-radius: 8px; font-weight: bold; font-size: 1.1rem; cursor: pointer; 
@@ -119,17 +129,12 @@ body {
 
 .time-picker-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
 .time-picker-display { cursor: pointer; }
-.time-picker-native {
-    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-    opacity: 0; z-index: 2; cursor: pointer; -webkit-appearance: none;
-}
+.time-picker-native { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 2; cursor: pointer; -webkit-appearance: none; }
 
 .primary-btn {
     background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
     padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
-    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer;
-    flex-shrink: 0 !important; /* BULLETPROOF: Button can never be squished */
-    margin-top: auto !important; /* BULLETPROOF: Pushes strictly to the bottom edge */
+    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer; width: 100%;
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
@@ -137,30 +142,24 @@ body {
 .time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
 .time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
 .time-block input {
-    background-color: var(--time-block-bg); color: white; border: none;
-    border-radius: 8px; padding: 0.8rem; font-size: 1.5rem; text-align: center;
-    font-weight: bold; width: 100%; box-sizing: border-box;
+    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
+    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
 }
 
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
-    display: grid; 
-    grid-template-columns: repeat(2, 1fr); 
-    grid-template-rows: repeat(5, minmax(0, 1fr)); 
-    gap: 4px 8px; 
-    flex: 1 1 0%; 
-    min-height: 0; 
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    grid-template-rows: repeat(5, minmax(0, 1fr)); /* Force rows to shrink into available height */
+    gap: 4px; flex: 1 1 0%; min-height: 0; height: 100%;
 }
-
 .wallet-item {
-    border: 1px solid var(--card-border); padding: 4px;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background-color: var(--card-bg); height: 100%; box-sizing: border-box; min-height: 0; 
+    border: 1px solid var(--card-border); padding: 4px; display: flex; flex-direction: column; 
+    align-items: center; justify-content: space-evenly; background-color: var(--card-bg); 
+    min-height: 0; overflow: hidden; border-radius: 8px;
 }
-
-.wallet-controls { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; width: 100%; flex-shrink: 0; }
+.wallet-controls { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; flex-shrink: 0; }
 .control-btn {
-    width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
+    width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
     font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; 
     cursor: pointer; line-height: 1; flex-shrink: 0;
 }
@@ -168,34 +167,9 @@ body {
 .control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
 .control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
 
-.currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-width: 90%; max-height: 40px; }
-.currency-img.note { width: 75px; height: 35px; }
-.currency-img.coin { width: 35px; height: 35px; }
-
-/* 
-  SMART MOBILE SIZING:
-  If the screen is short (e.g. Test Banner active), change grid items to horizontal!
-  This instantly frees up 40% of the screen height, guaranteeing zero scroll.
-*/
-@media (max-height: 700px) {
-    .wallet-item { flex-direction: row; justify-content: space-evenly; gap: 4px; padding: 2px 4px; }
-    .wallet-controls { margin-top: 0; width: auto; gap: 6px; }
-    .control-btn { width: 24px; height: 24px; font-size: 1rem; }
-    .currency-img.note { width: 60px; height: 28px; }
-    .currency-img.coin { width: 28px; height: 28px; }
-    h1 { font-size: 1.5rem !important; }
-    h2 { font-size: 1.2rem !important; }
-    .primary-btn { padding: 0.6rem; font-size: 1.1rem; }
-}
-
-/* ------------------------------------------ */
-
-.flow-step { 
-    display: none; padding: 0.8rem; padding-bottom: max(0.8rem, env(safe-area-inset-bottom, 15px)); 
-    flex-direction: column; height: 100%; box-sizing: border-box; position: absolute; top:0; left:0; width:100%;
-    overflow: hidden;
-}
-.flow-step.active { display: flex; animation: popIn 0.2s ease-out; }
+.currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-height: 100%; max-width: 90%; }
+.currency-img.note { width: auto; height: auto; }
+.currency-img.coin { width: auto; height: auto; }
 
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; margin-top: 5px;
@@ -205,11 +179,11 @@ body {
 
 /* --- BOTTOM SHEET --- */
 .bottom-sheet-backdrop {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
 }
 .bottom-sheet {
-    position: fixed; bottom: 0; left: 0; width: 100%; height: 55dvh;
+    position: fixed; bottom: 0; left: 0; width: 100%; height: 55vh; height: 55dvh;
     background: var(--card-bg); border-top-left-radius: 30px; border-top-right-radius: 30px;
     box-shadow: 0 -10px 25px rgba(0,0,0,0.2); z-index: 10000;
     transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
@@ -221,14 +195,14 @@ body {
 
 .bottom-sheet .giant-icon { font-size: 5rem; line-height: 1; margin-bottom: 5px; }
 .bottom-sheet h2 { font-size: 2.2rem; margin: 0 0 5px 0; }
-.bottom-sheet p { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--text-color); opacity: 0.8; }
+.bottom-sheet p { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--text-color); opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 8px;}
 .bottom-sheet.correct h2 { color: var(--success-color); }
 .bottom-sheet.wrong h2 { color: var(--error-color); }
 .sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
 
 /* --- OBNOXIOUS NOTIFICATION STYLES --- */
 .obnoxious-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     z-index: 999999; display: flex; flex-direction: column; justify-content: center;
     align-items: center; text-align: center; padding: 1.5rem; box-sizing: border-box;
     animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
@@ -246,7 +220,7 @@ body {
 .obnoxious-btn:active { transform: scale(0.95); }
 
 .processing-overlay {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     background: rgba(0,0,0,0.8); z-index: 999990; display: flex; flex-direction: column;
     justify-content: center; align-items: center; color: white;
 }
