@@ -8,15 +8,20 @@
 </head>
 <body>
     <header class="top-bar">
-        <a href="time-menu.html" class="back-btn">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+        <a href="time-menu.html" class="back-btn" aria-label="Go back">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            Back
         </a>
         <h1>End Time 🕒</h1>
-        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
+        <div class="header-actions">
+            <a href="../index.html" class="header-icon-btn" aria-label="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
+        </div>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem; position: relative;">
-        
+    <main class="page-content">
         <div class="content-body">
             <div class="input-group">
                 <label>▶️ Start Time:</label>
@@ -40,8 +45,9 @@
             </div>
         </div>
 
-        <button class="primary-btn" onclick="calculateEndTime()">Calculate End Time</button>
-
+        <div class="step-footer">
+            <button class="primary-btn" onclick="calculateEndTime()">Calculate End Time</button>
+        </div>
     </main>
 
     <script src="../app.js"></script>
