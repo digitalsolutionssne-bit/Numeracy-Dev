@@ -8,13 +8,14 @@
 </head>
 <body>
     <header class="top-bar">
-        <a href="../index.html" class="back-btn" aria-label="Go back">
+        <!-- CHANGED TO A BUTTON TO ALLOW DYNAMIC STEP-BACK NAVIGATION -->
+        <button class="back-btn" onclick="goBack()" aria-label="Go back">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="15 18 9 12 15 6"></polyline>
             </svg>
             Back
-        </a>
-        <h1 id="header-title">Wallet</h1>
+        </button>
+        <h1 id="header-title">Wallet 💳</h1>
         <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
     </header>
 
@@ -23,7 +24,7 @@
         <!-- STEP 1: WALLET SETUP -->
         <div id="step-1" class="flow-step active">
             <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount</p>
+                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
                 <h1 style="margin: 0; font-size: 2rem;">$<span id="wallet-total">0.00</span></h1>
             </div>
             
@@ -37,21 +38,34 @@
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
             <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
-                <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet:</p>
+                <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet 💳:</p>
                 <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
             </div>
 
-            <div class="input-group">
-                <label>🛒 I want to buy (cost):</label>
-                <input type="number" id="cost-input" class="large-input" placeholder="$0.00" step="0.01" min="0">
+            <!-- DYNAMIC ITEMS CONTAINER (SCROLLABLE IF MANY ITEMS) -->
+            <div class="items-container">
+                <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem;">🛒 I want to buy:</label>
+                
+                <div id="items-list">
+                    <div class="item-row">
+                        <div class="currency-wrapper">
+                            <span class="currency-symbol">$</span>
+                            <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
+                        </div>
+                        <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
+                    </div>
+                </div>
+
+                <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
             </div>
 
-            <div style="margin-top: 0.5rem; text-align: center; flex: 1; display: flex; flex-direction: column; min-height: 0;">
-                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0;">Amount to pay cashier:</p>
-                <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
+            <!-- PAYMENT OUTPUT -->
+            <div style="margin-top: 0.5rem; text-align: center; flex-shrink: 0;">
+                <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem;">Amount to pay cashier 🧑‍💼:</p>
+                <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
                 
-                <div class="payment-graphics-container" id="give-cashier-graphics">
-                    <p style="opacity: 0.5; margin: auto;">Enter cost...</p>
+                <div class="payment-graphics-container" id="give-cashier-graphics" style="min-height: 45px;">
+                    <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
                 </div>
             </div>
 
@@ -63,7 +77,7 @@
         <!-- STEP 3: CHANGE RECEIVED -->
         <div id="step-3" class="flow-step">
             <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me</p>
+                <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
                 <h1 style="margin: 0; font-size: 2rem;">$<span id="change-total">0.00</span></h1>
             </div>
             
@@ -87,7 +101,7 @@
         <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
             <div class="giant-icon">❌</div>
             <h2>Wrong Change</h2>
-            <p>Please inform the cashier.</p>
+            <p>Please inform the cashier 🧑‍💼.</p>
         </div>
         <div class="sheet-btn-group" style="margin-top: 15px;">
             <button class="primary-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0;">Home</button>
@@ -113,6 +127,7 @@
         let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
         let totalWallet = 0;
         let expectedChange = 0; 
+        let currentStep = 1; // Tracks current step for Back Button logic
 
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
@@ -157,10 +172,26 @@
         renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
         renderGrid('change-grid-container', changeCounts, 'change-total');
 
+        // --- DYNAMIC BACK NAVIGATION ---
+        function goBack() {
+            if (currentStep === 3) {
+                goToStep2();
+            } else if (currentStep === 2) {
+                goToStep1();
+            } else {
+                window.location.href = '../index.html';
+            }
+        }
+
         function switchStep(stepNum, title) {
+            currentStep = stepNum;
             document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${stepNum}`).classList.add('active');
             document.getElementById('header-title').innerText = title;
+        }
+
+        function goToStep1() {
+            switchStep(1, "Wallet 💳");
         }
 
         function goToStep2() {
@@ -169,32 +200,61 @@
                 return;
             }
             document.getElementById('step2-wallet-total').innerText = totalWallet;
-            document.getElementById('cost-input').value = '';
-            document.getElementById('pay-amount-text').innerText = '$0.00';
-            document.getElementById('give-cashier-graphics').innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost...</p>';
-            document.getElementById('btn-paid-cashier').disabled = true;
-            switchStep(2, "Pay Cashier");
+            calculateTotalCost(); // Recalculate in case they went back to change wallet amount
+            switchStep(2, "Pay Cashier 🧑‍💼");
         }
 
-        function goToStep3() { switchStep(3, "Check Change"); }
+        function goToStep3() { switchStep(3, "Check Change 💵"); }
 
-        document.getElementById('cost-input').addEventListener('input', function(e) {
-            const costStr = e.target.value;
-            const costCents = Math.round(parseFloat(costStr || 0) * 100);
+        // --- MULTIPLE ITEMS LOGIC ---
+        function addItem() {
+            const list = document.getElementById('items-list');
+            const row = document.createElement('div');
+            row.className = 'item-row';
+            row.innerHTML = `
+                <div class="currency-wrapper">
+                    <span class="currency-symbol">$</span>
+                    <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
+                </div>
+                <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
+            `;
+            list.appendChild(row);
+            row.querySelector('.item-cost').focus(); // Auto focus new item
+        }
+
+        function removeItem(btn) {
+            const list = document.getElementById('items-list');
+            if (list.children.length > 1) {
+                btn.parentElement.remove();
+                calculateTotalCost(); // Recalculate total after deletion
+            } else {
+                // If it's the last item, just clear the value instead of deleting row
+                btn.previousElementSibling.querySelector('input').value = '';
+                calculateTotalCost();
+            }
+        }
+
+        function calculateTotalCost() {
+            const inputs = document.querySelectorAll('.item-cost');
+            let totalCostCents = 0;
+            inputs.forEach(input => {
+                totalCostCents += Math.round(parseFloat(input.value || 0) * 100);
+            });
+
             const walletCents = Math.round(parseFloat(totalWallet) * 100);
             const graphicsContainer = document.getElementById('give-cashier-graphics');
             const payText = document.getElementById('pay-amount-text');
             const paidBtn = document.getElementById('btn-paid-cashier');
 
-            if (costCents <= 0) {
+            if (totalCostCents <= 0) {
                 payText.innerText = '$0.00';
                 payText.style.color = "var(--primary-color)";
-                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto;">Enter cost...</p>';
+                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>';
                 paidBtn.disabled = true;
                 return;
             }
 
-            if (costCents > walletCents) {
+            if (totalCostCents > walletCents) {
                 payText.innerText = "Not enough money!";
                 payText.style.color = "var(--error-color)";
                 graphicsContainer.innerHTML = '';
@@ -202,7 +262,7 @@
                 return;
             }
 
-            const bestPaymentArray = calculateOptimalPayment(costCents);
+            const bestPaymentArray = calculateOptimalPayment(totalCostCents);
             
             if (bestPaymentArray.length === 0) {
                 payText.innerText = "Cannot make exact payment";
@@ -218,15 +278,16 @@
             bestPaymentArray.forEach(valCents => {
                 paymentSumCents += valCents;
                 const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
-                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}" style="max-height:30px; width:auto; margin: 2px;">`;
+                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}" style="max-height:28px; width:auto; margin: 1px;">`;
             });
 
             payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
             payText.style.color = "var(--success-color)";
             paidBtn.disabled = false;
-            expectedChange = paymentSumCents - costCents;
-        });
+            expectedChange = paymentSumCents - totalCostCents;
+        }
 
+        // --- AI PAYMENT CALCULATION ---
         function calculateOptimalPayment(costCents) {
             let inventory =[];
             denominations.forEach(d => {
