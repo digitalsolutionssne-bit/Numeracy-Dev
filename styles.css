@@ -149,8 +149,7 @@ body {
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
-    grid-template-rows: repeat(5, minmax(0, 1fr)); 
-    gap: 4px; flex: 1 1 0%; min-height: 0; height: 100%;
+    grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 4px; flex: 1 1 0%; min-height: 0; height: 100%;
 }
 .wallet-item {
     border: 1px solid var(--card-border); padding: 4px; display: flex; flex-direction: column; 
@@ -171,8 +170,6 @@ body {
 .currency-img.note { width: auto; height: auto; }
 .currency-img.coin { width: auto; height: auto; }
 
-
-/* --- FINAL PAYMENT IMAGES --- */
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 8px; margin-top: 5px;
     padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
@@ -180,22 +177,10 @@ body {
 }
 [data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
 
-/* Make the images huge and clear inside the box */
-.payment-img {
-    object-fit: contain;
-    box-shadow: 0 3px 6px rgba(0,0,0,0.2); 
-    margin: 4px;
-}
-.payment-img.note {
-    width: 140px; 
-    height: auto;
-    border-radius: 6px;
-}
-.payment-img.coin {
-    width: 70px;
-    height: auto;
-    border-radius: 50%;
-}
+.payment-img { object-fit: contain; box-shadow: 0 3px 6px rgba(0,0,0,0.2); margin: 4px; }
+.payment-img.note { width: 140px; height: auto; border-radius: 6px; }
+.payment-img.coin { width: 70px; height: auto; border-radius: 50%; }
+
 @media (max-height: 700px) {
     .wallet-item { flex-direction: row; justify-content: space-evenly; gap: 4px; padding: 2px 4px; }
     .wallet-controls { margin-top: 0; width: auto; gap: 6px; }
@@ -205,11 +190,9 @@ body {
     h1 { font-size: 1.5rem !important; }
     h2 { font-size: 1.2rem !important; }
     .primary-btn { padding: 0.6rem; font-size: 1.1rem; }
-    
     .payment-img.note { width: 100px; }
     .payment-img.coin { width: 50px; }
 }
-
 
 /* --- BOTTOM SHEET --- */
 .bottom-sheet-backdrop {
@@ -259,3 +242,31 @@ body {
     justify-content: center; align-items: center; color: white;
 }
 .processing-spinner { font-size: 5rem; animation: spin 1s linear infinite; margin-bottom: 20px; }
+
+
+/* --- TIME MODULES FIX (UNCRAMPED) --- */
+.time-content {
+    justify-content: center;
+    gap: 2rem; 
+    padding: 2rem 1.5rem;
+}
+.time-content .input-group {
+    margin-bottom: 0; 
+}
+.time-content .large-input {
+    padding: 1.2rem; 
+    font-size: 1.6rem;
+}
+.time-content .time-block input {
+    padding: 1.2rem; 
+    font-size: 1.8rem;
+}
+.time-result-box {
+    background-color: var(--card-bg);
+    border: 2px solid var(--card-border);
+    padding: 1.5rem;
+    border-radius: 12px;
+    text-align: center;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-top: 1rem;
+}
