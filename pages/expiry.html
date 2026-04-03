@@ -38,12 +38,8 @@
 
             <div style="text-align: center; flex-shrink: 0;">
                 <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
-                
-                <div class="time-picker-wrapper" style="margin-bottom: 10px;">
-                    <input type="text" id="manual-date-display" class="large-input time-picker-display" value="Tap to select date" readonly aria-hidden="true" style="text-align: center;">
-                    <input type="date" id="manual-date" class="time-picker-native">
-                </div>
-                
+                <!-- NEW: Massively obvious button to trigger the Date Rolodex -->
+                <p id="manual-date-display" class="time-card-display" onclick="openDatePicker()">Tap to select date</p>
             </div>
 
         </div>
@@ -54,13 +50,12 @@
 
     </main>
 
-    <!-- Processing State Overlay -->
+    <!-- Overlays -->
     <div id="processing-screen" class="processing-overlay" style="display: none;">
         <div class="processing-spinner">⏳</div>
         <h2 style="font-size: 2rem;">AI is checking...</h2>
     </div>
 
-    <!-- Obnoxious Overlays -->
     <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
         <div class="giant-icon">✅</div>
         <h1>SAFE!</h1>
@@ -80,7 +75,6 @@
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
         const cameraInput = document.getElementById('camera-input');
         const manualCheckBtn = document.getElementById('manual-check-btn');
-        const manualDateInput = document.getElementById('manual-date');
         const manualDateDisplay = document.getElementById('manual-date-display');
         const processingScreen = document.getElementById('processing-screen');
         const goodOverlay = document.getElementById('obnoxious-good');
@@ -90,31 +84,45 @@
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
 
+        let selectedManualDate = null; // Store actual date object for checking
+
         // ==========================================
-        // DYNAMIC MANUAL DATE SELECTION LOGIC
+        // CUSTOM DATE ROLODEX FLOW
         // ==========================================
-        function updateDateDisplay(e) {
-            const val = e.target.value;
-            if (!val) {
-                manualDateDisplay.value = "Tap to select date";
-                return;
-            }
+        function openDatePicker() {
+            const currYear = today.getFullYear();
             
-            // Strictly split the YYYY-MM-DD string to avoid automatic Timezone Shifts
-            const parts = val.split('-');
-            if (parts.length === 3) {
-                const year = parseInt(parts[0], 10);
-                const month = parseInt(parts[1], 10) - 1; // JS Months are 0-indexed
-                const day = parseInt(parts[2], 10);
+            window.openRolodex("Select Date",[
+                { id: 'day', items: window.RoloGen.days31(), selectedValue: today.getDate() },
+                { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 }, // Give month col more width
+                { id: 'year', items: window.RoloGen.years(currYear, 10), selectedValue: currYear }
+            ], (res) => {
+                const year = parseInt(res.year);
+                const month = parseInt(res.month) - 1; // JS 0-index
+                const day = parseInt(res.day);
                 
-                const selectedDate = new Date(year, month, day);
-                manualDateDisplay.value = selectedDate.toLocaleDateString('en-GB', options);
-            }
+                selectedManualDate = new Date(year, month, day);
+                manualDateDisplay.innerText = selectedManualDate.toLocaleDateString('en-GB', options);
+            });
         }
 
-        // Binding to both 'change' and 'input' guarantees it works on every single mobile OS
-        manualDateInput.addEventListener('change', updateDateDisplay);
-        manualDateInput.addEventListener('input', updateDateDisplay);
+        manualCheckBtn.addEventListener('click', () => {
+            if (!selectedManualDate) {
+                showToast("Please tap to select a date first.", true);
+                return;
+            }
+            processingScreen.style.display = 'flex';
+            setTimeout(() => {
+                processingScreen.style.display = 'none';
+                
+                selectedManualDate.setHours(0,0,0,0);
+                const compareToday = new Date(today);
+                compareToday.setHours(0,0,0,0);
+
+                if (selectedManualDate < compareToday) badOverlay.style.display = 'flex';
+                else goodOverlay.style.display = 'flex'; 
+            }, 800); 
+        });
 
         // ==========================================
         // CAMERA AI FLOW
@@ -132,7 +140,6 @@
 
                 try {
                     const base64Image = await compressImage(file);
-                    
                     const response = await fetch(GAS_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
@@ -147,11 +154,8 @@
                     } else if (result.foundDate === false) {
                         showToast("No expiration date found in photo.", true);
                     } else {
-                        if (result.isExpired) {
-                            badOverlay.style.display = 'flex';
-                        } else {
-                            goodOverlay.style.display = 'flex';
-                        }
+                        if (result.isExpired) badOverlay.style.display = 'flex';
+                        else goodOverlay.style.display = 'flex';
                     }
                 } catch (err) {
                     processingScreen.style.display = 'none';
@@ -179,38 +183,13 @@
                         
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                        resolve(dataUrl.split(',')[1]);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
                     };
                     img.onerror = error => reject(error);
                 };
                 reader.onerror = error => reject(error);
             });
         }
-
-        // ==========================================
-        // MANUAL ENTRY FLOW
-        // ==========================================
-        manualCheckBtn.addEventListener('click', () => {
-            const inputVal = manualDateInput.value;
-            if (!inputVal) {
-                showToast("Please enter a date first.", true);
-                return;
-            }
-            processingScreen.style.display = 'flex';
-
-            setTimeout(() => {
-                processingScreen.style.display = 'none';
-                const checkDate = new Date(inputVal);
-                checkDate.setHours(0,0,0,0);
-                const compareToday = new Date(today);
-                compareToday.setHours(0,0,0,0);
-
-                if (checkDate < compareToday) badOverlay.style.display = 'flex';
-                else goodOverlay.style.display = 'flex'; 
-            }, 800); 
-        });
     </script>
 </body>
 </html>
