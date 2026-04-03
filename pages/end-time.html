@@ -9,8 +9,7 @@
 <body>
     <header class="top-bar">
         <a href="time-menu.html" class="back-btn" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            Back
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
         </a>
         <h1>End Time 🕒</h1>
         <div class="header-actions">
@@ -24,25 +23,19 @@
     <main class="page-content">
         <div class="content-body time-content">
             
-            <div class="input-group">
-                <label>▶️ Start Time:</label>
-                <div class="time-picker-wrapper">
-                    <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
-                    <input type="time" id="start-time" class="time-picker-native">
-                </div>
+            <div class="time-card-box">
+                <h3 class="time-card-header">▶️ Start Time</h3>
+                <p id="start-time-display" class="time-card-display" onclick="openTimePicker()">Tap to set time</p>
             </div>
 
-            <div class="input-group">
-                <label>⌛ Duration (Time spent on):</label>
-                <div class="time-block-container">
-                    <div class="time-block"><label>Hour</label><input type="number" id="dur-hours" placeholder="0" min="0"></div>
-                    <div class="time-block"><label>Minute</label><input type="number" id="dur-mins" placeholder="0" min="0" max="59"></div>
-                </div>
+            <div class="time-card-box">
+                <h3 class="time-card-header">⌛ Duration</h3>
+                <p id="duration-display" class="time-card-display" onclick="openDurationPicker()">Tap to set duration</p>
             </div>
 
             <div class="time-result-box">
-                <p style="margin: 0 0 0.5rem 0; font-weight:bold; font-size:1.1rem; opacity:0.8;">You will finish at ⏹️:</p>
-                <h2 id="end-time-result" style="margin: 0; font-size: 2.5rem; color: var(--primary-color);">--:--</h2>
+                <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity:0.9;">You will finish at ⏹️</p>
+                <h2 id="end-time-result" style="margin: 0; font-size: 2.8rem;">--:--</h2>
             </div>
             
         </div>
@@ -54,30 +47,45 @@
 
     <script src="../app.js"></script>
     <script>
-        function format12Hour(time24) {
-            if (!time24) return "Tap to set time";
-            let[hours, minutes] = time24.split(':');
-            hours = parseInt(hours, 10);
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12;
-            hours = hours ? hours : 12; 
-            const strHours = hours < 10 ? '0' + hours : hours;
-            return `${strHours}:${minutes} ${ampm}`;
+        let state = { start: null, duration: null }; 
+
+        function openTimePicker() {
+            window.openRolodex("Select Start Time",[
+                { id: 'hr', items: window.RoloGen.hours12(), selectedValue: 12 },
+                { id: 'min', items: window.RoloGen.mins60(), selectedValue: 0 },
+                { id: 'ampm', items: window.RoloGen.ampm(), selectedValue: 'PM' }
+            ], (res) => {
+                const hr = parseInt(res.hr);
+                const min = parseInt(res.min);
+                const ampm = res.ampm;
+                
+                let hr24 = hr;
+                if (ampm === 'PM' && hr !== 12) hr24 += 12;
+                if (ampm === 'AM' && hr === 12) hr24 = 0;
+
+                state.start = { hr24, min };
+                document.getElementById('start-time-display').innerText = `${hr.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')} ${ampm}`;
+            });
         }
 
-        document.getElementById('start-time').addEventListener('input', function(e) {
-            document.getElementById('start-time-display').value = format12Hour(e.target.value);
-        });
+        function openDurationPicker() {
+            window.openRolodex("Select Duration",[
+                { id: 'hr', items: window.RoloGen.hours24(), selectedValue: 0 },
+                { id: 'min', items: window.RoloGen.mins60(), selectedValue: 30 }
+            ], (res) => {
+                state.duration = { hr: parseInt(res.hr), min: parseInt(res.min) };
+                document.getElementById('duration-display').innerText = `${res.hr}h ${res.min}m`;
+            });
+        }
 
         function calculateEndTime() {
-            const start = document.getElementById('start-time').value;
-            const hours = parseInt(document.getElementById('dur-hours').value) || 0;
-            const mins = parseInt(document.getElementById('dur-mins').value) || 0;
-            if(!start) return alert("Please enter a Start Time.");
+            if(!state.start || !state.duration) return alert("Please set both fields first.");
 
-            const startD = new Date(`1970-01-01T${start}:00`);
-            startD.setHours(startD.getHours() + hours);
-            startD.setMinutes(startD.getMinutes() + mins);
+            const startD = new Date();
+            startD.setHours(state.start.hr24, state.start.min, 0);
+            
+            startD.setHours(startD.getHours() + state.duration.hr);
+            startD.setMinutes(startD.getMinutes() + state.duration.min);
 
             let hr = startD.getHours();
             let mn = startD.getMinutes();
