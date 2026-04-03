@@ -15,29 +15,33 @@
         <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0;">🌗</button>
     </header>
 
-    <main class="page-content" style="padding: 1.5rem;">
-        <div class="input-group">
-            <label>▶️ Start Time:</label>
-            <div class="time-picker-wrapper">
-                <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
-                <input type="time" id="start-time" class="time-picker-native">
+    <main class="page-content" style="padding: 1.5rem; position: relative;">
+        
+        <div class="content-body">
+            <div class="input-group">
+                <label>▶️ Start Time:</label>
+                <div class="time-picker-wrapper">
+                    <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
+                    <input type="time" id="start-time" class="time-picker-native">
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>⌛ Duration (Time spent on):</label>
+                <div class="time-block-container">
+                    <div class="time-block"><label>Hour</label><input type="number" id="dur-hours" placeholder="0" min="0"></div>
+                    <div class="time-block"><label>Minute</label><input type="number" id="dur-mins" placeholder="0" min="0" max="59"></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1rem; text-align: center; flex-shrink: 0;">
+                <p style="margin: 0 0 0.5rem 0; font-weight:bold;">You will finish at ⏹️:</p>
+                <h2 id="end-time-result" style="margin: 0; font-size: 2.5rem; color: var(--primary-color);">--:--</h2>
             </div>
         </div>
 
-        <div class="input-group">
-            <label>⌛ Duration (Time spent on):</label>
-            <div class="time-block-container">
-                <div class="time-block"><label>Hour</label><input type="number" id="dur-hours" placeholder="0" min="0"></div>
-                <div class="time-block"><label>Minute</label><input type="number" id="dur-mins" placeholder="0" min="0" max="59"></div>
-            </div>
-        </div>
+        <button class="primary-btn" onclick="calculateEndTime()">Calculate End Time</button>
 
-        <button class="primary-btn" style="margin-top:auto;" onclick="calculateEndTime()">Calculate End Time</button>
-
-        <div style="margin-top: 1rem; text-align: center; flex-shrink: 0;">
-            <p style="margin: 0 0 0.5rem 0; font-weight:bold;">You will finish at ⏹️:</p>
-            <h2 id="end-time-result" style="margin: 0; font-size: 2.5rem; color: var(--primary-color);">--:--</h2>
-        </div>
     </main>
 
     <script src="../app.js"></script>
