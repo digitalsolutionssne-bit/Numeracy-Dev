@@ -42,13 +42,18 @@
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
-            <div class="content-body">
-                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0; display:flex; flex-direction:column; align-items:center;">
-                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; display:flex; align-items:center; gap:6px;">
-                        I have in my wallet:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                    </p>
-                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
+            <div class="content-body" style="padding-bottom: 0;">
+                
+                <!-- DYNAMIC TOP BANNER (Split Left/Right) -->
+                <div style="display: flex; gap: 10px; margin-bottom: 0.8rem; flex-shrink: 0;">
+                    <div id="cost-indicator-box" class="summary-box summary-box-safe">
+                        <p>Total Cost 🛒</p>
+                        <h2 id="total-cost-display">$0.00</h2>
+                    </div>
+                    <div class="summary-box summary-box-safe">
+                        <p>Wallet 💳</p>
+                        <h2>$<span id="step2-wallet-total">0.00</span></h2>
+                    </div>
                 </div>
 
                 <div class="items-container">
@@ -78,10 +83,18 @@
                     </div>
                 </div>
             </div>
+            
             <div class="step-footer">
                 <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
                     I have paid Cashier
                 </button>
+            </div>
+
+            <!-- ERROR OVERLAY (Pops up to cover bottom half when cost > wallet) -->
+            <div id="error-payment-section" class="error-payment-section">
+                <div style="font-size: 4rem; line-height: 1; margin-bottom: 10px;">❌</div>
+                <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">Not Enough Money</h2>
+                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Remove an item to proceed.</p>
             </div>
         </div>
 
@@ -118,12 +131,10 @@
             </p>
         </div>
         <div class="sheet-btn-group" style="margin-top: 15px;">
-            <!-- CORRECT BUTTON (MAIN MENU + SVG) -->
             <button class="primary-btn" id="sheet-home-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0; display:flex; align-items:center; justify-content:center; gap:8px;">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
                 Main Menu
             </button>
-            <!-- WRONG BUTTON (PROMINENT PURPLE) -->
             <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: #9C27B0; color: #ffffff; border: none; padding:0.8rem; margin:0;">
                 Check New Change
             </button>
@@ -156,7 +167,6 @@
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
-            
             denominations.forEach(d => {
                 const item = document.createElement('div');
                 item.className = 'wallet-item';
@@ -259,6 +269,25 @@
             });
 
             const walletCents = Math.round(parseFloat(totalWallet) * 100);
+            
+            // --- UI LOGIC: DYNAMIC BANNERS AND OVERLAYS ---
+            const costBox = document.getElementById('cost-indicator-box');
+            const errorOverlay = document.getElementById('error-payment-section');
+            const costDisplay = document.getElementById('total-cost-display');
+            
+            costDisplay.innerText = `$${(totalCostCents / 100).toFixed(2)}`;
+
+            if (totalCostCents > walletCents) {
+                costBox.classList.remove('summary-box-safe');
+                costBox.classList.add('summary-box-danger');
+                errorOverlay.style.display = 'flex'; // Triggers bottom half overlay
+            } else {
+                costBox.classList.remove('summary-box-danger');
+                costBox.classList.add('summary-box-safe');
+                errorOverlay.style.display = 'none'; // Hides overlay
+            }
+
+            // --- NORMAL PAYMENT CALCULATION ---
             const graphicsContainer = document.getElementById('give-cashier-graphics');
             const payText = document.getElementById('pay-amount-text');
             const paidBtn = document.getElementById('btn-paid-cashier');
@@ -272,8 +301,8 @@
             }
 
             if (totalCostCents > walletCents) {
-                payText.innerText = "Not enough money!";
-                payText.style.color = "var(--error-color)";
+                // Behind the overlay, clear the box out so it doesn't peek through weirdly
+                payText.innerText = "Insufficient Funds";
                 graphicsContainer.innerHTML = '';
                 paidBtn.disabled = true;
                 return;
@@ -355,7 +384,6 @@
             document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
             document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
             
-            // Dynamic display logic for the buttons based on correctness
             if (isCorrect) {
                 document.getElementById('sheet-home-btn').style.display = 'flex';
                 document.getElementById('retry-btn').style.display = 'none';
