@@ -16,9 +16,8 @@
     </header>
 
     <main class="page-content" style="padding: 1.5rem;">
-        
         <div class="input-group">
-            <label>Start Time:</label>
+            <label>▶️ Start Time:</label>
             <div class="time-picker-wrapper">
                 <input type="text" id="start-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
                 <input type="time" id="start-time" class="time-picker-native">
@@ -26,7 +25,7 @@
         </div>
 
         <div class="input-group">
-            <label>End Time (Finished):</label>
+            <label>⏹️ End Time (Finished):</label>
             <div class="time-picker-wrapper">
                 <input type="text" id="end-time-display" class="large-input time-picker-display" value="Tap to set time" readonly aria-hidden="true">
                 <input type="time" id="end-time" class="time-picker-native">
@@ -34,7 +33,7 @@
         </div>
 
         <div class="input-group">
-            <label>Activity:</label>
+            <label>🏃 Activity:</label>
             <select class="large-input">
                 <option value="travel">Traveling</option>
                 <option value="lunch">Lunch / Dinner</option>
@@ -42,48 +41,40 @@
             </select>
         </div>
 
-        <button class="primary-btn" onclick="calculateDuration()">Calculate Duration</button>
+        <button class="primary-btn" style="margin-top:auto;" onclick="calculateDuration()">Calculate Duration</button>
 
-        <div style="margin-top: 1.5rem; background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px;">
-            <p style="margin: 0 0 0.5rem 0; font-weight:bold;">Time spent:</p>
+        <div style="margin-top: 1rem; background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1rem; border-radius: 12px; flex-shrink: 0;">
+            <p style="margin: 0 0 0.5rem 0; font-weight:bold;">Time spent ⌛:</p>
             <h2 id="duration-result" style="margin: 0; font-size: 1.8rem; color: var(--primary-color);">--</h2>
         </div>
     </main>
 
     <script src="../app.js"></script>
     <script>
-        // Global helper to convert 24h hidden values into 12h AM/PM strings
         function format12Hour(time24) {
             if (!time24) return "Tap to set time";
             let [hours, minutes] = time24.split(':');
             hours = parseInt(hours, 10);
             const ampm = hours >= 12 ? 'PM' : 'AM';
             hours = hours % 12;
-            hours = hours ? hours : 12; // '0' becomes '12'
-            
-            // Add leading zero for visual consistency (e.g. 06:15 PM)
+            hours = hours ? hours : 12; 
             const strHours = hours < 10 ? '0' + hours : hours;
             return `${strHours}:${minutes} ${ampm}`;
         }
-
-        // Event listeners to update the visual displays when user picks a time
         document.getElementById('start-time').addEventListener('input', function(e) {
             document.getElementById('start-time-display').value = format12Hour(e.target.value);
         });
-
         document.getElementById('end-time').addEventListener('input', function(e) {
             document.getElementById('end-time-display').value = format12Hour(e.target.value);
         });
 
         function calculateDuration() {
-            // We use the hidden native input value (always 24h) for easy math
             const start = document.getElementById('start-time').value;
             const end = document.getElementById('end-time').value;
             if(!start || !end) return alert("Please enter both times.");
 
             const startD = new Date(`1970-01-01T${start}:00`);
             let endD = new Date(`1970-01-01T${end}:00`);
-            
             if (endD < startD) endD.setDate(endD.getDate() + 1); 
             
             const diffMs = endD - startD;
