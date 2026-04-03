@@ -9,13 +9,19 @@
 <body>
     <header class="top-bar">
         <button class="back-btn" onclick="goBack()" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"></polyline>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
             Back
         </button>
-        <h1 id="header-title">Wallet 💳</h1>
-        <button id="theme-toggle" style="background:none; border:none; font-size:1.5rem; padding: 0; cursor: pointer;">🌗</button>
+        <h1 id="header-title">
+            Wallet 
+            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+        </h1>
+        <div class="header-actions">
+            <a href="../index.html" class="header-icon-btn" aria-label="Home">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </a>
+            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
+        </div>
     </header>
 
     <main class="page-content">
@@ -29,15 +35,20 @@
                 </div>
                 <div class="wallet-grid" id="wallet-grid-container"></div>
             </div>
-            <!-- BULLETPROOF FOOTER BUTTON -->
-            <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
+            <!-- BULLETPROOF FOOTER SEPARATION -->
+            <div class="step-footer">
+                <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
+            </div>
         </div>
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
             <div class="content-body">
-                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0;">
-                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8;">I have in my wallet 💳:</p>
+                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.5rem; border-radius: 8px; margin-bottom: 0.8rem; text-align: center; flex-shrink: 0; display:flex; flex-direction:column; align-items:center;">
+                    <p style="margin: 0; font-size: 0.9rem; opacity: 0.8; display:flex; align-items:center; gap:6px;">
+                        I have in my wallet:
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </p>
                     <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
                 </div>
 
@@ -49,24 +60,31 @@
                                 <span class="currency-symbol">$</span>
                                 <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
                             </div>
-                            <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
+                            <button class="remove-item-btn" onclick="removeItem(this)">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                            </button>
                         </div>
                     </div>
                     <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
                 </div>
 
                 <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
-                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0;">Amount to pay cashier 🧑‍💼:</p>
+                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        Amount to pay cashier:
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
+                    </p>
                     <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                     <div class="payment-graphics-container" id="give-cashier-graphics">
                         <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
                     </div>
                 </div>
             </div>
-            <!-- BULLETPROOF FOOTER BUTTON -->
-            <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
-                I have paid Cashier
-            </button>
+            <!-- BULLETPROOF FOOTER SEPARATION -->
+            <div class="step-footer">
+                <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
+                    I have paid Cashier
+                </button>
+            </div>
         </div>
 
         <!-- STEP 3: CHANGE RECEIVED -->
@@ -78,8 +96,10 @@
                 </div>
                 <div class="wallet-grid" id="change-grid-container"></div>
             </div>
-            <!-- BULLETPROOF FOOTER BUTTON -->
-            <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
+            <!-- BULLETPROOF FOOTER SEPARATION -->
+            <div class="step-footer">
+                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
+            </div>
         </div>
 
     </main>
@@ -95,11 +115,14 @@
         <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
             <div class="giant-icon">❌</div>
             <h2>Wrong Change</h2>
-            <p>Please inform the cashier 🧑‍💼.</p>
+            <p>
+                Please inform the cashier
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
+            </p>
         </div>
         <div class="sheet-btn-group" style="margin-top: 15px;">
-            <button class="primary-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0;">Home</button>
-            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); padding:0.8rem; margin:0;">Try Again</button>
+            <button class="primary-btn" id="sheet-home-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0;">Home</button>
+            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); padding:0.8rem; margin:0;">Check New Change</button>
         </div>
     </div>
 
@@ -122,6 +145,9 @@
         let totalWallet = 0;
         let expectedChange = 0; 
         let currentStep = 1;
+
+        const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
+        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>`;
 
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
@@ -171,14 +197,14 @@
             else window.location.href = '../index.html';
         }
 
-        function switchStep(stepNum, title) {
+        function switchStep(stepNum, titleHtml) {
             currentStep = stepNum;
             document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
             document.getElementById(`step-${stepNum}`).classList.add('active');
-            document.getElementById('header-title').innerText = title;
+            document.getElementById('header-title').innerHTML = titleHtml;
         }
 
-        function goToStep1() { switchStep(1, "Wallet 💳"); }
+        function goToStep1() { switchStep(1, `Wallet ${walletSvg}`); }
 
         function goToStep2() {
             if (parseFloat(totalWallet) === 0) {
@@ -187,7 +213,7 @@
             }
             document.getElementById('step2-wallet-total').innerText = totalWallet;
             calculateTotalCost(); 
-            switchStep(2, "Pay Cashier 🧑‍💼");
+            switchStep(2, `Pay Cashier ${cashierSvg}`);
         }
 
         function goToStep3() { switchStep(3, "Check Change 💵"); }
@@ -201,10 +227,14 @@
                     <span class="currency-symbol">$</span>
                     <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
                 </div>
-                <button class="remove-item-btn" onclick="removeItem(this)">❌</button>
+                <button class="remove-item-btn" onclick="removeItem(this)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                </button>
             `;
             list.appendChild(row);
             row.querySelector('.item-cost').focus(); 
+            // Auto scroll to bottom
+            document.querySelector('#step-2 .content-body').scrollTop = document.querySelector('#step-2 .content-body').scrollHeight;
         }
 
         function removeItem(btn) {
@@ -318,9 +348,17 @@
             const isCorrect = actualChangeCents === expectedChange;
             document.getElementById('sheet-backdrop').classList.add('show');
             const sheet = document.getElementById('result-sheet');
+            
             document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
             document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
-            document.getElementById('retry-btn').style.display = isCorrect ? 'none' : 'block';
+            
+            if (isCorrect) {
+                document.getElementById('sheet-home-btn').style.display = 'block';
+                document.getElementById('retry-btn').style.display = 'none';
+            } else {
+                document.getElementById('sheet-home-btn').style.display = 'none';
+                document.getElementById('retry-btn').style.display = 'block';
+            }
             
             sheet.classList.remove('correct', 'wrong');
             sheet.classList.add(isCorrect ? 'correct' : 'wrong');
@@ -330,6 +368,8 @@
         function retryChange() {
             document.getElementById('sheet-backdrop').classList.remove('show');
             document.getElementById('result-sheet').classList.remove('show');
+            changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
+            renderGrid('change-grid-container', changeCounts, 'change-total');
         }
     </script>
 </body>
