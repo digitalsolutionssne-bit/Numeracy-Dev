@@ -1,84 +1,211 @@
-const CACHE_NAME = 'lifecount-cache-v19';
+/* CSS Variables for seamless Light/Dark Mode */
+:root {
+    --bg-color: #f4f7f6;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --card-border: #e0e0e0;
+    --primary-color: #4a90e2;
+    --success-color: #4CAF50; 
+    --error-color: #F44336;   
+    --time-block-bg: #E06666; 
+}[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --card-border: #333333;
+    --primary-color: #64b5f6;
+    --success-color: #81C784;
+    --error-color: #E57373;
+    --time-block-bg: #D32F2F;
+}
 
-const urlsToCache =[
-    './',
-    './index.html',
-    './styles.css',
-    './app.js',
-    './manifest.json',
-    './pages/purchasing.html',
-    './pages/time-menu.html',
-    './pages/stopwatch.html',
-    './pages/duration.html',
-    './pages/end-time.html',
-    './pages/expiry.html',
-    './assets/icon-192.png',
-    './assets/icon-512.png',
-    './assets/note-50.png',
-    './assets/note-10.png',
-    './assets/note-5.png',
-    './assets/note-2.png',
-    './assets/coin-1.png',
-    './assets/coin-50c.png',
-    './assets/coin-20c.png',
-    './assets/coin-10c.png',
-    './assets/coin-5c.png'
-];
+/* Native App Viewport Lock */
+html, body {
+    margin: 0; padding: 0; width: 100vw; height: 100vh; height: 100dvh; 
+    overflow: hidden; position: fixed; 
+}
 
-self.addEventListener('install', event => {
-    self.skipWaiting(); 
-    event.waitUntil(
-        caches.open(CACHE_NAME)
-            .then(cache => {
-                const cacheBustedUrls = urlsToCache.map(url => new Request(url, { cache: 'reload' }));
-                return cache.addAll(cacheBustedUrls);
-            })
-            .catch(err => console.error('Failed to cache files on install:', err))
-    );
-});
+body {
+    background-color: var(--bg-color); color: var(--text-color);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex; flex-direction: column;
+}
 
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (cacheName !== CACHE_NAME) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
-    return self.clients.claim(); 
-});
+.top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.8rem 1.5rem; background-color: var(--card-bg);
+    border-bottom: 2px solid var(--card-border); flex-shrink: 0; z-index: 10;
+}
+.top-bar h1 { margin: 0; font-size: 1.5rem; text-align: center; flex-grow: 1; }
+.back-btn {
+    display: flex; align-items: center; gap: 0.25rem; text-decoration: none;
+    color: var(--primary-color); font-weight: 600; font-size: 1.1rem; white-space: nowrap; 
+}
 
-self.addEventListener('fetch', event => {
-    if (event.request.method !== 'GET') return;
+/* --- ANIMATIONS & TOAST MESSAGES --- */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
+@keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-    event.respondWith(
-        caches.match(event.request, { ignoreSearch: true }).then(cachedResponse => {
-            if (cachedResponse) {
-                event.waitUntil(
-                    fetch(event.request).then(networkResponse => {
-                        if (networkResponse && networkResponse.status === 200) {
-                            caches.open(CACHE_NAME).then(cache => {
-                                cache.put(event.request, networkResponse.clone());
-                            });
-                        }
-                    }).catch(() => {})
-                );
-                return cachedResponse;
-            }
+.toast {
+    visibility: hidden; min-width: 250px; background-color: var(--success-color); color: #fff;
+    text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 10000;
+    left: 50%; bottom: max(30px, env(safe-area-inset-bottom)); transform: translateX(-50%) translateY(20px);
+    font-size: 1.1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+.toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
-            return fetch(event.request).then(networkResponse => {
-                if (networkResponse && networkResponse.status === 200) {
-                    const responseToCache = networkResponse.clone();
-                    caches.open(CACHE_NAME).then(cache => {
-                        cache.put(event.request, responseToCache);
-                    });
-                }
-                return networkResponse;
-            }).catch(() => {});
-        })
-    );
-});
+/* --- CONTENT CONTAINERS --- */
+.menu-container, .page-content {
+    flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box;
+}
+.menu-container { gap: 1rem; padding: 1.5rem; }
+
+.menu-card, .action-btn {
+    display: flex; align-items: center; padding: 1.5rem; background-color: var(--card-bg);
+    border: 2px solid var(--card-border); border-radius: 12px; text-decoration: none;
+    color: var(--text-color); box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+}
+.menu-card .icon { font-size: 2.5rem; margin-right: 1.5rem; }
+.menu-card h2 { margin: 0; font-size: 1.3rem; }
+
+.money-card { border-left: 8px solid var(--success-color); }
+.time-card { border-left: 8px solid var(--primary-color); }
+.other-card { border-left: 8px solid #FF9800; }
+
+.input-group { margin-bottom: 1rem; display: flex; flex-direction: column; gap: 0.5rem; flex-shrink: 0; }
+.input-group label { font-size: 1.1rem; font-weight: 600; }
+
+.large-input {
+    font-size: 1.5rem; padding: 0.5rem; flex-grow: 1;
+    border: 2px solid var(--card-border); border-radius: 8px;
+    background-color: var(--card-bg); color: var(--text-color);
+    width: 100%; box-sizing: border-box;
+}
+
+.time-picker-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+.time-picker-display { cursor: pointer; }
+.time-picker-native {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0; z-index: 2; cursor: pointer; -webkit-appearance: none;
+}
+
+.primary-btn {
+    background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
+    padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
+    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer;
+    flex-shrink: 0; margin-top: auto; 
+}
+.primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
+
+.time-block-container { display: flex; gap: 1rem; }
+.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
+.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
+.time-block input {
+    background-color: var(--time-block-bg); color: white; border: none;
+    border-radius: 8px; padding: 0.8rem; font-size: 1.5rem; text-align: center;
+    font-weight: bold; width: 100%; box-sizing: border-box;
+}
+
+/* --- IMAGE BASED SINGAPORE MONEY GRAPHICS (ZERO-SCROLL OPTIMIZED) --- */
+.wallet-grid { 
+    display: grid; 
+    grid-template-columns: repeat(2, 1fr); 
+    /* CRITICAL FIX: Mathematically forces 5 rows to squish dynamically to fit screen */
+    grid-template-rows: repeat(5, minmax(0, 1fr)); 
+    gap: 4px 6px; 
+    flex: 1; 
+    min-height: 0;
+}
+
+.wallet-item {
+    border: 1px solid var(--card-border); padding: 4px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background-color: var(--card-bg); height: 100%; box-sizing: border-box; min-height: 0;
+}
+
+.wallet-controls { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 4px; width: 100%; flex-shrink: 0; }
+.control-btn {
+    width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
+    font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; line-height: 1;
+}
+.control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
+.control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
+.control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
+
+/* Currency Image Sizing */
+.currency-img { object-fit: contain; flex-shrink: 1; min-height: 0; }
+.currency-img.note { width: 75px; height: 35px; }
+.currency-img.coin { width: 35px; height: 35px; }
+
+/* ------------------------------------------ */
+
+.flow-step { 
+    display: none; padding: 1rem; 
+    /* CRITICAL FIX: Guarantees button clears the phone's physical bottom edge */
+    padding-bottom: calc(1.5rem + env(safe-area-inset-bottom, 15px)); 
+    flex-direction: column; height: 100%; box-sizing: border-box; position: absolute; top:0; left:0; width:100%;
+}
+.flow-step.active { display: flex; animation: popIn 0.3s ease-out; }
+
+.payment-graphics-container {
+    display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; margin-top: 10px;
+    padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; min-height: 50px;
+    flex: 1; overflow-y: auto; 
+}[data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
+
+/* --- BOTTOM SHEET --- */
+.bottom-sheet-backdrop {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+    background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
+}
+.bottom-sheet {
+    position: fixed; bottom: 0; left: 0; width: 100%; height: 55dvh;
+    background: var(--card-bg); border-top-left-radius: 30px; border-top-right-radius: 30px;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.2); z-index: 10000;
+    transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 1rem; box-sizing: border-box; text-align: center;
+}
+.bottom-sheet-backdrop.show { display: block; opacity: 1; }
+.bottom-sheet.show { transform: translateY(0); }
+
+.bottom-sheet .giant-icon { font-size: 5rem; line-height: 1; margin-bottom: 5px; }
+.bottom-sheet h2 { font-size: 2.2rem; margin: 0 0 5px 0; }
+.bottom-sheet p { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--text-color); opacity: 0.8; }
+.bottom-sheet.correct h2 { color: var(--success-color); }
+.bottom-sheet.wrong h2 { color: var(--error-color); }
+.sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
+
+/* --- OBNOXIOUS NOTIFICATION STYLES --- */
+.obnoxious-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+    z-index: 999999; display: flex; flex-direction: column; justify-content: center;
+    align-items: center; text-align: center; padding: 1.5rem; box-sizing: border-box;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+
+.obnoxious-overlay.good { background-color: #4CAF50; color: white; }
+.obnoxious-overlay.bad { background-color: #F44336; color: white; }
+
+.obnoxious-overlay .giant-icon { font-size: 10rem; margin-bottom: 1rem; line-height: 1; }
+.obnoxious-overlay h1 { font-size: 3.5rem; margin: 0 0 1rem 0; text-transform: uppercase; line-height: 1.1; }
+.obnoxious-overlay p { font-size: 1.8rem; margin: 0 0 3rem 0; font-weight: bold; }
+
+.obnoxious-btn {
+    background-color: rgba(255,255,255,0.3); border: 4px solid white; color: white;
+    font-size: 1.5rem; font-weight: bold; padding: 1.2rem 2rem; border-radius: 16px;
+    cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+.obnoxious-btn:active { transform: scale(0.95); }
+
+/* Processing overlay */
+.processing-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
+    background: rgba(0,0,0,0.8); z-index: 999990; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; color: white;
+}
+.processing-spinner { font-size: 5rem; animation: spin 1s linear infinite; margin-bottom: 20px; }
