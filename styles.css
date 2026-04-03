@@ -109,7 +109,6 @@ body {
     border-radius: 8px; background-color: var(--card-bg); color: var(--text-color); width: 100%; box-sizing: border-box;
 }
 
-/* --- NEW PURCHASING BANNERS --- */
 .summary-box {
     flex: 1; border: 2px solid; border-radius: 8px; padding: 0.6rem; text-align: center;
     transition: all 0.3s ease; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;
@@ -118,7 +117,6 @@ body {
 .summary-box h2 { margin: 0; font-size: 1.5rem; }
 .summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
 .summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
-/* -------------------------------- */
 
 .items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 5px;}
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
@@ -137,10 +135,6 @@ body {
     width: 100%; flex-shrink: 0; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 8px;
 }
 
-.time-picker-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
-.time-picker-display { cursor: pointer; }
-.time-picker-native { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 2; cursor: pointer; -webkit-appearance: none; }
-
 .primary-btn {
     background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
     padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
@@ -148,14 +142,6 @@ body {
     flex-shrink: 0 !important; margin-top: auto !important; 
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
-
-.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
-.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
-.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
-.time-block input {
-    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
-    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
-}
 
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
@@ -245,13 +231,9 @@ body {
 }
 .obnoxious-btn:active { transform: scale(0.95); }
 
-/* --- DYNAMIC IN-PAGE ERROR NOTIFICATION (Step 2 Bottom Cover) --- */
 .error-payment-section {
     position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-    /* Hardcoded to match Dark Mode Red perfectly across both themes */
-    background-color: #E57373; 
-    color: white;
-    display: none; flex-direction: column; align-items: center; justify-content: center;
+    background-color: #E57373; color: white; display: none; flex-direction: column; align-items: center; justify-content: center;
     z-index: 100; border-top-left-radius: 24px; border-top-right-radius: 24px;
     box-shadow: 0 -10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; text-align: center; padding: 1rem; box-sizing: border-box;
 }
@@ -263,12 +245,69 @@ body {
 }
 .processing-spinner { font-size: 5rem; animation: spin 1s linear infinite; margin-bottom: 20px; }
 
-/* --- TIME MODULES FIX (UNCRAMPED) --- */
-.time-content { justify-content: center; gap: 2rem; padding: 2rem 1.5rem; }
-.time-content .input-group { margin-bottom: 0; }
-.time-content .large-input { padding: 1.2rem; font-size: 1.6rem; }
-.time-content .time-block input { padding: 1.2rem; font-size: 1.8rem; }
-.time-result-box {
-    background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 1.5rem;
-    border-radius: 12px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-top: 1rem;
+
+/* ========================================================= */
+/* --- NEW: MASSIVE UNCRAMPED TIME UI & ROLODEX PICKER --- */
+/* ========================================================= */
+.time-content { padding: 1.5rem; gap: 1.5rem; display: flex; flex-direction: column; }
+
+/* Large Visual Card layout replacing the old inputs */
+.time-card-box {
+    background: var(--card-bg); border: 2px solid var(--card-border);
+    border-radius: 16px; padding: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    display: flex; flex-direction: column; gap: 10px; flex-shrink: 0;
 }
+.time-card-header {
+    font-size: 1.4rem; font-weight: 800; color: var(--text-color);
+    display: flex; align-items: center; gap: 10px; padding-bottom: 0.5rem;
+    border-bottom: 2px dashed var(--card-border); margin: 0;
+}
+.time-card-display {
+    background: rgba(74, 144, 226, 0.1); color: var(--primary-color);
+    font-size: 1.8rem; font-weight: 900; text-align: center; padding: 1rem;
+    border-radius: 8px; cursor: pointer; border: 2px solid var(--primary-color);
+    margin: 0; transition: transform 0.1s;
+}
+.time-card-display:active { transform: scale(0.98); }
+
+.time-result-box {
+    background-color: var(--primary-color); color: white; padding: 1.5rem;
+    border-radius: 16px; text-align: center; box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3); 
+    margin-top: auto; flex-shrink: 0;
+}
+
+/* Custom Rolodex Modal */
+.rolodex-sheet {
+    height: 320px; /* Exact height to fit 5 items */
+    padding: 0; 
+}
+.rolodex-header {
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
+    padding: 15px 20px; box-sizing: border-box; border-bottom: 1px solid var(--card-border);
+    font-size: 1.2rem; font-weight: bold; background: var(--card-bg);
+    border-top-left-radius: 30px; border-top-right-radius: 30px;
+}
+.rolodex-cancel { color: var(--error-color); cursor: pointer; }
+.rolodex-title { color: var(--text-color); font-size: 1.3rem; }
+.rolodex-save { color: var(--success-color); cursor: pointer; }
+
+.rolodex-body {
+    display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color);
+}
+.rolodex-highlight {
+    position: absolute; top: 50%; left: 0; width: 100%; height: 44px; transform: translateY(-50%);
+    background: rgba(74, 144, 226, 0.15); border-top: 2px solid var(--primary-color); 
+    border-bottom: 2px solid var(--primary-color); pointer-events: none; z-index: 2;
+}
+.rolodex-col {
+    flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none;
+    /* padding: (ContainerHeight/2) - (ItemHeight/2) */
+    padding: 88px 0; box-sizing: border-box; position: relative; z-index: 1;
+}
+.rolodex-col::-webkit-scrollbar { display: none; }
+.rolodex-item {
+    height: 44px; display: flex; align-items: center; justify-content: center;
+    scroll-snap-align: center; font-size: 1.2rem; color: var(--text-color); opacity: 0.4;
+    transition: all 0.2s ease; user-select: none;
+}
+.rolodex-item.active { opacity: 1; font-size: 1.5rem; font-weight: 900; color: var(--primary-color); }
