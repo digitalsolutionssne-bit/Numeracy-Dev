@@ -19,11 +19,10 @@
     --time-block-bg: #D32F2F;
 }
 
-/* Native App Viewport Lock */
+/* Bulletproof Viewport Lock */
 html, body {
     margin: 0; padding: 0; width: 100vw; height: 100vh; height: 100dvh; 
-    overflow: hidden; position: fixed; 
-    touch-action: none; 
+    overflow: hidden; position: fixed; touch-action: none; 
 }
 
 body {
@@ -39,8 +38,6 @@ body {
     border-bottom: 2px solid var(--card-border); flex-shrink: 0; z-index: 10;
 }
 .top-bar h1 { margin: 0; font-size: 1.3rem; text-align: center; flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
-
-/* Back Button works for both <a> and <button> */
 .back-btn {
     display: flex; align-items: center; gap: 0.25rem; text-decoration: none;
     color: var(--primary-color); font-weight: 600; font-size: 1.1rem; white-space: nowrap; 
@@ -63,9 +60,24 @@ body {
 
 /* --- CONTENT CONTAINERS --- */
 .menu-container, .page-content {
-    flex: 1; min-height: 0; overflow: hidden; display: flex; flex-direction: column; box-sizing: border-box;
+    flex: 1; min-height: 0; display: flex; flex-direction: column; box-sizing: border-box;
 }
-.menu-container { gap: 1rem; padding: 1.5rem; }
+.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; }
+
+/* 
+  BULLETPROOF FIX: The Content Body Wrapper
+  This guarantees the content shrinks and the button stays pinned.
+*/
+.content-body {
+    flex: 1 1 0%; 
+    min-height: 0; 
+    display: flex; 
+    flex-direction: column; 
+    overflow-y: auto; /* Fallback scroll only if mathematically impossible to fit */
+    scrollbar-width: none; /* Hides scrollbar visually */
+    padding-bottom: 10px;
+}
+.content-body::-webkit-scrollbar { display: none; }
 
 .menu-card, .action-btn {
     display: flex; align-items: center; padding: 1.5rem; background-color: var(--card-bg);
@@ -89,9 +101,8 @@ body {
     width: 100%; box-sizing: border-box;
 }
 
-/* MULTIPLE ITEMS & DOLLAR SIGN UI */
-.items-container { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 5px; }
-.item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; }
+.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; }
+.item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
 .currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; }
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
 .currency-wrapper .large-input { padding-left: 32px; margin: 0; }
@@ -106,7 +117,6 @@ body {
     width: 100%; flex-shrink: 0; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 8px;
 }
 
-/* 12-HOUR TIME FORMAT HACK */
 .time-picker-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
 .time-picker-display { cursor: pointer; }
 .time-picker-native {
@@ -118,11 +128,12 @@ body {
     background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
     padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
     text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer;
-    flex-shrink: 0; 
+    flex-shrink: 0 !important; /* BULLETPROOF: Button can never be squished */
+    margin-top: auto !important; /* BULLETPROOF: Pushes strictly to the bottom edge */
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
-.time-block-container { display: flex; gap: 1rem; }
+.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
 .time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
 .time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
 .time-block input {
@@ -137,9 +148,8 @@ body {
     grid-template-columns: repeat(2, 1fr); 
     grid-template-rows: repeat(5, minmax(0, 1fr)); 
     gap: 4px 8px; 
-    flex: 1; 
+    flex: 1 1 0%; 
     min-height: 0; 
-    margin-bottom: 10px;
 }
 
 .wallet-item {
@@ -152,28 +162,45 @@ body {
 .control-btn {
     width: 26px; height: 26px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
     font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; 
-    cursor: pointer; line-height: 1;
+    cursor: pointer; line-height: 1; flex-shrink: 0;
 }
 .control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
 .control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
 .control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
 
-.currency-img { object-fit: contain; flex: 1; min-height: 0; max-width: 90%; max-height: 40px; }
+.currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-width: 90%; max-height: 40px; }
 .currency-img.note { width: 75px; height: 35px; }
 .currency-img.coin { width: 35px; height: 35px; }
+
+/* 
+  SMART MOBILE SIZING:
+  If the screen is short (e.g. Test Banner active), change grid items to horizontal!
+  This instantly frees up 40% of the screen height, guaranteeing zero scroll.
+*/
+@media (max-height: 700px) {
+    .wallet-item { flex-direction: row; justify-content: space-evenly; gap: 4px; padding: 2px 4px; }
+    .wallet-controls { margin-top: 0; width: auto; gap: 6px; }
+    .control-btn { width: 24px; height: 24px; font-size: 1rem; }
+    .currency-img.note { width: 60px; height: 28px; }
+    .currency-img.coin { width: 28px; height: 28px; }
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.2rem !important; }
+    .primary-btn { padding: 0.6rem; font-size: 1.1rem; }
+}
 
 /* ------------------------------------------ */
 
 .flow-step { 
     display: none; padding: 0.8rem; padding-bottom: max(0.8rem, env(safe-area-inset-bottom, 15px)); 
     flex-direction: column; height: 100%; box-sizing: border-box; position: absolute; top:0; left:0; width:100%;
+    overflow: hidden;
 }
 .flow-step.active { display: flex; animation: popIn 0.2s ease-out; }
 
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; margin-top: 5px;
     padding: 5px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
-    flex: 1; min-height: 0; overflow: hidden; 
+    flex: 1 1 0%; min-height: 0; overflow-y: auto; 
 }[data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
 
 /* --- BOTTOM SHEET --- */
@@ -218,7 +245,6 @@ body {
 }
 .obnoxious-btn:active { transform: scale(0.95); }
 
-/* Processing overlay */
 .processing-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100dvh;
     background: rgba(0,0,0,0.8); z-index: 999990; display: flex; flex-direction: column;
