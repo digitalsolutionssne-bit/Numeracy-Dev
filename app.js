@@ -1,4 +1,15 @@
 // ==========================================
+// TRUE VIEWPORT HEIGHT ENGINE (BULLETPROOF FIX)
+// ==========================================
+const appHeight = () => {
+    const doc = document.documentElement;
+    doc.style.setProperty('--app-height', `${window.innerHeight}px`);
+};
+window.addEventListener('resize', appHeight);
+window.addEventListener('orientationchange', appHeight);
+appHeight(); // Run immediately
+
+// ==========================================
 // ENVIRONMENT CONFIGURATION
 // ==========================================
 const ENVIRONMENT = 'testing'; 
@@ -54,7 +65,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// Global function to close the obnoxious overlays
 window.closeOverlay = function() {
     const goodOverlay = document.getElementById('obnoxious-good');
     const badOverlay = document.getElementById('obnoxious-bad');
