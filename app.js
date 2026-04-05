@@ -109,7 +109,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // =========================================================
-// CUSTOM ROLODEX SYSTEM (HAPTIC + LABELS)
+// CUSTOM ROLODEX SYSTEM (FROM SCRATCH: Touch-Physics Engine)
 // =========================================================
 window.openRolodex = function(title, columns, onSaveCallback) {
     let existing = document.getElementById('rolodex-modal');
@@ -126,13 +126,17 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             itemsHtml += `<div class="rolodex-item" data-value="${item.value}">${item.label}</div>`;
         });
         
-        // Dynamically inject the "Hour / Minute" static label overlay if provided
         const suffixClass = col.suffixLabel ? 'has-suffix' : '';
         const staticLabel = col.suffixLabel ? `<div class="rolodex-static-label">${col.suffixLabel}</div>` : '';
         
+        // Wrapped items inside an inner track that will be physically dragged via JS Transform
         colsHtml += `
             <div class="rolodex-col-wrapper" style="flex: ${col.flex || 1}">
-                <div class="rolodex-col ${suffixClass}" id="rolo-col-${col.id}">${itemsHtml}</div>
+                <div class="rolodex-col ${suffixClass}" id="rolo-col-${col.id}">
+                    <div class="rolodex-col-inner" id="rolo-track-${col.id}">
+                        ${itemsHtml}
+                    </div>
+                </div>
                 ${staticLabel}
             </div>
         `;
@@ -161,52 +165,101 @@ window.openRolodex = function(title, columns, onSaveCallback) {
 
     const results = {};
 
+    // Apply the custom Physics Engine to each column
     columns.forEach(col => {
         const colDiv = document.getElementById(`rolo-col-${col.id}`);
+        const track = document.getElementById(`rolo-track-${col.id}`);
         const itemHeight = 44; 
+        const maxIndex = col.items.length - 1;
         
-        const targetIndex = col.items.findIndex(i => i.value == col.selectedValue);
-        const finalIndex = targetIndex !== -1 ? targetIndex : 0;
-        
-        setTimeout(() => {
-            colDiv.scrollTop = finalIndex * itemHeight;
-            updateActiveState(colDiv, finalIndex);
-        }, 10);
+        let targetIndex = col.items.findIndex(i => i.value == col.selectedValue);
+        if (targetIndex === -1) targetIndex = 0;
 
-        let lastIndex = finalIndex;
+        let currentY = -targetIndex * itemHeight;
+        track.style.transform = `translateY(${currentY}px)`;
+        updateActive(targetIndex);
 
-        colDiv.addEventListener('scroll', () => {
-            let currentIndex = Math.round(colDiv.scrollTop / itemHeight);
+        // Physics State
+        let isDragging = false;
+        let startY = 0;
+        let startTransformY = 0;
+
+        function getClientY(e) {
+            return e.touches ? e.touches[0].clientY : e.clientY;
+        }
+
+        function onStart(e) {
+            isDragging = true;
+            startY = getClientY(e);
+            startTransformY = currentY;
+            track.style.transition = 'none'; // Instant follow to finger
+        }
+
+        function onMove(e) {
+            if (!isDragging) return;
+            e.preventDefault(); // Prevents browser from intercepting the drag
             
-            if (currentIndex < 0) currentIndex = 0;
-            if (currentIndex >= col.items.length) currentIndex = col.items.length - 1;
+            const delta = getClientY(e) - startY;
+            let newY = startTransformY + delta;
 
-            if (currentIndex !== lastIndex) {
-                lastIndex = currentIndex;
-                if (navigator.vibrate) navigator.vibrate(10); // Haptic tick
-                updateActiveState(colDiv, currentIndex);
+            // Rubber-band resistance at the start and end boundaries
+            const boundsTop = 0;
+            const boundsBottom = -maxIndex * itemHeight;
+            if (newY > boundsTop) newY = boundsTop + (newY - boundsTop) * 0.3;
+            if (newY < boundsBottom) newY = boundsBottom + (newY - boundsBottom) * 0.3;
+
+            currentY = newY;
+            track.style.transform = `translateY(${currentY}px)`;
+
+            // Haptic Feedback
+            let tempIndex = Math.round(-currentY / itemHeight);
+            tempIndex = Math.max(0, Math.min(tempIndex, maxIndex));
+            
+            if (tempIndex !== targetIndex) {
+                targetIndex = tempIndex;
+                if (navigator.vibrate) navigator.vibrate(10);
+                updateActive(targetIndex);
             }
-        });
+        }
+
+        function onEnd() {
+            if (!isDragging) return;
+            isDragging = false;
+            
+            // Snap mathematically to the nearest slot
+            targetIndex = Math.round(-currentY / itemHeight);
+            targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
+            
+            currentY = -targetIndex * itemHeight;
+            track.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            track.style.transform = `translateY(${currentY}px)`;
+            updateActive(targetIndex);
+        }
+
+        // Attach listeners directly to the column viewports
+        colDiv.addEventListener('touchstart', onStart, {passive: false});
+        colDiv.addEventListener('touchmove', onMove, {passive: false});
+        colDiv.addEventListener('touchend', onEnd);
+        colDiv.addEventListener('touchcancel', onEnd);
+        
+        // Mouse Fallback for desktop testing
+        colDiv.addEventListener('mousedown', onStart);
+        window.addEventListener('mousemove', onMove, {passive: false});
+        window.addEventListener('mouseup', onEnd);
+
+        function updateActive(index) {
+            Array.from(track.children).forEach((child, i) => {
+                if (i === index) {
+                    child.classList.add('active');
+                    results[col.id] = child.dataset.value;
+                } else {
+                    child.classList.remove('active');
+                }
+            });
+        }
     });
 
-    function updateActiveState(colDiv, activeIndex) {
-        Array.from(colDiv.children).forEach((child, i) => {
-            if (i === activeIndex) {
-                child.classList.add('active');
-                results[colDiv.id.replace('rolo-col-', '')] = child.dataset.value;
-            } else {
-                child.classList.remove('active');
-            }
-        });
-    }
-
     document.getElementById('rolo-save-btn').addEventListener('click', () => {
-        columns.forEach(col => {
-            const colDiv = document.getElementById(`rolo-col-${col.id}`);
-            const index = Math.round(colDiv.scrollTop / 44);
-            const activeItem = colDiv.children[index];
-            if (activeItem) results[col.id] = activeItem.dataset.value;
-        });
         onSaveCallback(results);
         closeRolodex();
     });
