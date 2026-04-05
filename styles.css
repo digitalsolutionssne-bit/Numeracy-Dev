@@ -139,9 +139,17 @@ body {
     background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
     padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
     text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer; width: 100%;
-    flex-shrink: 0 !important; margin-top: auto !important; 
+    flex-shrink: 0 !important; 
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
+
+.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
+.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
+.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
+.time-block input {
+    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
+    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
+}
 
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
@@ -247,11 +255,13 @@ body {
 
 
 /* ========================================================= */
-/* --- NEW: MASSIVE UNCRAMPED TIME UI & ROLODEX PICKER --- */
+/* --- MASSIVE UNCRAMPED TIME UI & ROLODEX PICKER --- */
 /* ========================================================= */
-.time-content { padding: 1.5rem; gap: 1.5rem; display: flex; flex-direction: column; }
+.time-content { 
+    padding: 1.5rem; display: flex; flex-direction: column; 
+    justify-content: space-between; /* Automatically spaces elements vertically */
+}
 
-/* Large Visual Card layout replacing the old inputs */
 .time-card-box {
     background: var(--card-bg); border: 2px solid var(--card-border);
     border-radius: 16px; padding: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -273,14 +283,11 @@ body {
 .time-result-box {
     background-color: var(--primary-color); color: white; padding: 1.5rem;
     border-radius: 16px; text-align: center; box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3); 
-    margin-top: auto; flex-shrink: 0;
+    margin: 0; flex-shrink: 0; width: 100%; box-sizing: border-box;
 }
 
 /* Custom Rolodex Modal */
-.rolodex-sheet {
-    height: 320px; /* Exact height to fit 5 items */
-    padding: 0; 
-}
+.rolodex-sheet { height: 320px; padding: 0; }
 .rolodex-header {
     display: flex; justify-content: space-between; align-items: center; width: 100%;
     padding: 15px 20px; box-sizing: border-box; border-bottom: 1px solid var(--card-border);
@@ -291,20 +298,28 @@ body {
 .rolodex-title { color: var(--text-color); font-size: 1.3rem; }
 .rolodex-save { color: var(--success-color); cursor: pointer; }
 
-.rolodex-body {
-    display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color);
-}
+.rolodex-body { display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color); }
 .rolodex-highlight {
     position: absolute; top: 50%; left: 0; width: 100%; height: 44px; transform: translateY(-50%);
     background: rgba(74, 144, 226, 0.15); border-top: 2px solid var(--primary-color); 
     border-bottom: 2px solid var(--primary-color); pointer-events: none; z-index: 2;
 }
+
+/* ROLODEX LABEL HACKS (Hour/Minute) */
+.rolodex-col-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; }
 .rolodex-col {
     flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none;
-    /* padding: (ContainerHeight/2) - (ItemHeight/2) */
-    padding: 88px 0; box-sizing: border-box; position: relative; z-index: 1;
+    padding: 88px 0; box-sizing: border-box; position: relative; z-index: 1; width: 100%;
 }
 .rolodex-col::-webkit-scrollbar { display: none; }
+.rolodex-col.has-suffix .rolodex-item { padding-right: 45px; } /* Shifts numbers left to make room for text */
+
+.rolodex-static-label {
+    position: absolute; top: 50%; transform: translateY(-50%); right: 15px;
+    font-size: 1.1rem; font-weight: 800; color: var(--primary-color);
+    pointer-events: none; z-index: 3;
+}
+
 .rolodex-item {
     height: 44px; display: flex; align-items: center; justify-content: center;
     scroll-snap-align: center; font-size: 1.2rem; color: var(--text-color); opacity: 0.4;
