@@ -44,19 +44,13 @@
         <div id="step-2" class="flow-step">
             <div class="content-body" style="padding-bottom: 0;">
                 
-                <!-- DYNAMIC TOP BANNER (Split Left/Right) -->
-                <div style="display: flex; gap: 10px; margin-bottom: 0.8rem; flex-shrink: 0;">
-                    <div id="cost-indicator-box" class="summary-box summary-box-safe">
-                        <p>Total Cost 🛒</p>
-                        <h2 id="total-cost-display">$0.00</h2>
-                    </div>
-                    <div class="summary-box summary-box-safe">
-                        <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                            Wallet 
-                            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                        </p>
-                        <h2>$<span id="step2-wallet-total">0.00</span></h2>
-                    </div>
+                <!-- TOP BANNER (Wallet) -->
+                <div class="summary-box summary-box-safe" style="flex: none; margin-bottom: 0.8rem; flex-shrink: 0; padding: 0.5rem;">
+                    <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                        I have in my wallet: 
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                    </p>
+                    <h2 style="margin: 0; font-size: 1.6rem;">$<span id="step2-wallet-total">0.00</span></h2>
                 </div>
 
                 <div class="items-container">
@@ -75,7 +69,13 @@
                     <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
                 </div>
 
-                <div style="margin-top: 0.5rem; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
+                <!-- DYNAMIC TOTAL COST BANNER (Moved below items list) -->
+                <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; margin-bottom: 0.8rem; flex-shrink: 0;">
+                    <p style="font-size: 1.1rem;">Total Cost 🛒</p>
+                    <h2 id="total-cost-display" style="font-size: 1.6rem;">$0.00</h2>
+                </div>
+
+                <div style="margin-top: 0; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
                     <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
                         Amount to pay cashier:
                         <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
@@ -93,7 +93,7 @@
                 </button>
             </div>
 
-            <!-- ERROR OVERLAY -->
+            <!-- ERROR OVERLAY (Pops up to cover bottom half when cost > wallet) -->
             <div id="error-payment-section" class="error-payment-section">
                 <div style="font-size: 4rem; line-height: 1; margin-bottom: 10px;">❌</div>
                 <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">Not Enough Money</h2>
