@@ -20,11 +20,7 @@
     --time-block-bg: #D32F2F;
 }
 
-/* 
-  CRITICAL FIX: 
-  Removed 'touch-action: none' which was completely freezing all internal scrolling. 
-  'overscroll-behavior: none' safely stops edge-bouncing while keeping the Rolodex alive.
-*/
+/* Bulletproof Viewport Lock */
 html, body {
     margin: 0; padding: 0; width: 100vw; 
     overflow: hidden; position: fixed; 
@@ -75,7 +71,7 @@ body {
 .menu-container, .page-content {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; position: relative;
 }
-.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; }
 
 .flow-step { 
     display: none; position: absolute; top:0; left:0; width:100%; height: 100%;
@@ -86,7 +82,7 @@ body {
 .content-body {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; 
     overflow-y: auto; scrollbar-width: none; padding: 1rem; padding-bottom: 0; 
-    -webkit-overflow-scrolling: touch; /* Unlocks momentum scroll */
+    -webkit-overflow-scrolling: touch; 
 }
 .content-body::-webkit-scrollbar { display: none; }
 
@@ -124,10 +120,7 @@ body {
 .summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
 .summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
 
-.items-container { 
-    flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-    display: flex; flex-direction: column; padding-right: 5px;
-}
+.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; padding-right: 5px;}
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
 .currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; }
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
@@ -173,9 +166,6 @@ body {
 .control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
 
 .currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-height: 100%; max-width: 90%; }
-.currency-img.note { width: auto; height: auto; }
-.currency-img.coin { width: auto; height: auto; }
-
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 8px; margin-top: 5px;
     padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
@@ -199,7 +189,7 @@ body {
     .payment-img.coin { width: 50px; }
 }
 
-/* --- BOTTOM SHEET --- */
+/* --- BOTTOM SHEET & OBNOXIOUS OVERLAYS --- */
 .bottom-sheet-backdrop {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
@@ -221,7 +211,6 @@ body {
 .bottom-sheet.wrong h2 { color: var(--error-color); }
 .sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
 
-/* --- OBNOXIOUS NOTIFICATION STYLES --- */
 .obnoxious-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     z-index: 999999; display: flex; flex-direction: column; justify-content: center;
@@ -256,12 +245,9 @@ body {
 
 
 /* ========================================================= */
-/* --- MASSIVE UNCRAMPED TIME UI & ROLODEX PICKER --- */
+/* --- TIME UI & CUSTOM TOUCH-PHYSICS ROLODEX --- */
 /* ========================================================= */
 .time-content { justify-content: center; gap: 2rem; padding: 2rem 1.5rem; }
-.time-content .input-group { margin-bottom: 0; }
-.time-content .large-input { padding: 1.2rem; font-size: 1.6rem; }
-
 .time-card-box {
     background: var(--card-bg); border: 2px solid var(--card-border);
     border-radius: 16px; padding: 1.2rem; box-shadow: 0 4px 6px rgba(0,0,0,0.05);
@@ -288,7 +274,6 @@ body {
     border-radius: 16px; text-align: center; box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3); 
     margin: 0; flex-shrink: 0; width: 100%; box-sizing: border-box;
 }
-
 .time-result-box h2 {
     margin: 0; white-space: nowrap; font-size: clamp(1.4rem, 5.5vw, 2.8rem) !important;
 }
@@ -305,7 +290,10 @@ body {
 .rolodex-title { color: var(--text-color); font-size: 1.3rem; }
 .rolodex-save { color: var(--success-color); cursor: pointer; }
 
-/* Fixed Rolodex Overflow */
+/* 
+  CRITICAL: overflow hidden traps the scrolling lists inside the gray box. 
+  It has absolutely nothing to do with preventing scrolling events.
+*/
 .rolodex-body { display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color); overflow: hidden; }
 
 .rolodex-highlight {
@@ -316,14 +304,22 @@ body {
 
 .rolodex-col-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; }
 
-/* CRITICAL SCROLL RESTORATION */
+/* 
+  CRITICAL: The touch-action rule tells the browser 
+  "Let the Javascript Physics Engine handle all dragging inside this column." 
+*/
 .rolodex-col {
-    flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none;
-    padding: 88px 0; box-sizing: border-box; position: relative; z-index: 1; width: 100%;
-    touch-action: pan-y; /* Explicitly permits vertical swiping */
-    -webkit-overflow-scrolling: touch; /* Forces silky momentum scrolling on iOS */
+    flex: 1; position: relative; z-index: 1; width: 100%; height: 100%;
+    touch-action: none; 
+    cursor: grab;
 }
-.rolodex-col::-webkit-scrollbar { display: none; }
+.rolodex-col:active { cursor: grabbing; }
+
+.rolodex-col-inner {
+    padding: 88px 0; /* Creates blank space so the first and last items can reach the center highlight */
+    margin: 0; display: flex; flex-direction: column; width: 100%;
+}
+
 .rolodex-col.has-suffix .rolodex-item { padding-right: 45px; }
 
 .rolodex-static-label {
@@ -334,9 +330,8 @@ body {
 
 .rolodex-item {
     height: 44px; display: flex; align-items: center; justify-content: center;
-    scroll-snap-align: center; color: var(--text-color); opacity: 0.4;
-    transition: all 0.2s ease; user-select: none;
-    white-space: nowrap; font-size: 1.2rem; 
+    color: var(--text-color); opacity: 0.3; transition: opacity 0.2s ease, font-size 0.2s ease;
+    user-select: none; white-space: nowrap; font-size: 1.2rem; flex-shrink: 0;
 }
 .rolodex-item.active { 
     opacity: 1; font-weight: 900; color: var(--primary-color); 
