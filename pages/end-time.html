@@ -35,7 +35,8 @@
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;">
+            <!-- Removed margin-top: auto so it inherently populates from the center out -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                 <button class="primary-btn" onclick="calculateEndTime()" style="margin: 0 !important;">Calculate End Time</button>
 
                 <div class="time-result-box">
@@ -77,7 +78,6 @@
             ], (res) => {
                 state.duration = { hr: parseInt(res.hr), min: parseInt(res.min) };
                 
-                // Format to explicit words
                 const hrStr = res.hr == 1 ? 'hour' : 'hours';
                 const minStr = res.min == 1 ? 'minute' : 'minutes';
                 
