@@ -21,9 +21,9 @@
     </header>
 
     <main class="page-content">
-        <div class="content-body" style="gap: 2rem; justify-content: center; align-items: center;">
+        <div class="content-body" style="gap: 1.5rem; justify-content: space-evenly;">
             
-            <div style="text-align: center; flex-shrink: 0; width: 100%;">
+            <div style="text-align: center; flex-shrink: 0;">
                 <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
                 <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
             </div>
@@ -39,16 +39,17 @@
             <div style="text-align: center; flex-shrink: 0; width: 100%;">
                 <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
                 
-                <div class="time-picker-wrapper" style="margin-bottom: 15px;">
-                    <input type="text" id="manual-date-display" class="large-input time-picker-display" value="Tap to select date" readonly aria-hidden="true" style="text-align: center;">
-                    <input type="date" id="manual-date" class="time-picker-native">
-                </div>
+                <!-- CRITICAL FIX: Restored the manual Custom Rolodex invocation and removed the native picker -->
+                <p id="manual-date-display" class="time-card-display" onclick="openDatePicker()" style="margin-bottom: 15px;">Tap to select date</p>
                 
-                <!-- MOVED INTO CENTER BLOCK -->
-                <button class="primary-btn" id="manual-check-btn" style="margin: 0 !important;">Check Date</button>
             </div>
 
         </div>
+
+        <div class="step-footer">
+            <button class="primary-btn" id="manual-check-btn">Check Date</button>
+        </div>
+
     </main>
 
     <!-- Processing State Overlay -->
@@ -88,6 +89,9 @@
 
         let selectedManualDate = null; 
 
+        // ==========================================
+        // CUSTOM DATE ROLODEX FLOW (Fixed implementation)
+        // ==========================================
         function openDatePicker() {
             const currYear = today.getFullYear();
             
@@ -111,18 +115,22 @@
                 return;
             }
             processingScreen.style.display = 'flex';
+
             setTimeout(() => {
                 processingScreen.style.display = 'none';
-                
-                selectedManualDate.setHours(0,0,0,0);
+                const checkDate = new Date(selectedManualDate);
+                checkDate.setHours(0,0,0,0);
                 const compareToday = new Date(today);
                 compareToday.setHours(0,0,0,0);
 
-                if (selectedManualDate < compareToday) badOverlay.style.display = 'flex';
+                if (checkDate < compareToday) badOverlay.style.display = 'flex';
                 else goodOverlay.style.display = 'flex'; 
             }, 800); 
         });
 
+        // ==========================================
+        // CAMERA AI FLOW
+        // ==========================================
         cameraInput.addEventListener('change', async function(e) {
             if(e.target.files.length > 0) {
                 if (!navigator.onLine) {
@@ -136,6 +144,7 @@
 
                 try {
                     const base64Image = await compressImage(file);
+                    
                     const response = await fetch(GAS_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
@@ -150,8 +159,11 @@
                     } else if (result.foundDate === false) {
                         showToast("No expiration date found in photo.", true);
                     } else {
-                        if (result.isExpired) badOverlay.style.display = 'flex';
-                        else goodOverlay.style.display = 'flex';
+                        if (result.isExpired) {
+                            badOverlay.style.display = 'flex';
+                        } else {
+                            goodOverlay.style.display = 'flex';
+                        }
                     }
                 } catch (err) {
                     processingScreen.style.display = 'none';
@@ -179,7 +191,9 @@
                         
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+                        
+                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
+                        resolve(dataUrl.split(',')[1]);
                     };
                     img.onerror = error => reject(error);
                 };
