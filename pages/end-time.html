@@ -23,25 +23,28 @@
     <main class="page-content">
         <div class="content-body time-content">
             
-            <div class="time-card-box">
-                <h3 class="time-card-header">▶️ Start Time</h3>
-                <p id="start-time-display" class="time-card-display" onclick="openTimePicker()">Tap to set time</p>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="time-card-box">
+                    <h3 class="time-card-header">▶️ Start Time</h3>
+                    <p id="start-time-display" class="time-card-display" onclick="openTimePicker()">Tap to set time</p>
+                </div>
+
+                <div class="time-card-box">
+                    <h3 class="time-card-header">⌛ Duration</h3>
+                    <p id="duration-display" class="time-card-display" onclick="openDurationPicker()">Tap to set duration</p>
+                </div>
             </div>
 
-            <div class="time-card-box">
-                <h3 class="time-card-header">⌛ Duration</h3>
-                <p id="duration-display" class="time-card-display" onclick="openDurationPicker()">Tap to set duration</p>
-            </div>
+            <!-- Placed Calculate button immediately above Result Box -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;">
+                <button class="primary-btn" onclick="calculateEndTime()" style="margin: 0 !important;">Calculate End Time</button>
 
-            <div class="time-result-box">
-                <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity:0.9;">You will finish at ⏹️</p>
-                <h2 id="end-time-result" style="margin: 0; font-size: 2.8rem;">--:--</h2>
+                <div class="time-result-box">
+                    <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity:0.9;">You will finish at ⏹️</p>
+                    <h2 id="end-time-result" style="margin: 0; font-size: 2.8rem;">--:--</h2>
+                </div>
             </div>
             
-        </div>
-
-        <div class="step-footer">
-            <button class="primary-btn" onclick="calculateEndTime()">Calculate End Time</button>
         </div>
     </main>
 
@@ -70,8 +73,9 @@
 
         function openDurationPicker() {
             window.openRolodex("Select Duration",[
-                { id: 'hr', items: window.RoloGen.hours24(), selectedValue: 0 },
-                { id: 'min', items: window.RoloGen.mins60(), selectedValue: 30 }
+                // NEW: Applied the suffixLabels to render natively inside the Rolodex modal
+                { id: 'hr', items: window.RoloGen.hours24(), selectedValue: 0, suffixLabel: 'Hour' },
+                { id: 'min', items: window.RoloGen.mins60(), selectedValue: 30, suffixLabel: 'Minute' }
             ], (res) => {
                 state.duration = { hr: parseInt(res.hr), min: parseInt(res.min) };
                 document.getElementById('duration-display').innerText = `${res.hr}h ${res.min}m`;
