@@ -35,7 +35,8 @@
                 </div>
             </div>
 
-            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;">
+            <!-- Removed margin-top: auto so it inherently populates from the center out -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                 <button class="primary-btn" onclick="calculateDuration()" style="margin: 0 !important;">Calculate Duration</button>
 
                 <div class="time-result-box">
@@ -87,7 +88,6 @@
             const diffHrs = Math.floor(diffMs / 3600000);
             const diffMins = Math.floor((diffMs % 3600000) / 60000);
             
-            // Format to explicit words
             const hrStr = diffHrs === 1 ? 'hour' : 'hours';
             const minStr = diffMins === 1 ? 'minute' : 'minutes';
             
