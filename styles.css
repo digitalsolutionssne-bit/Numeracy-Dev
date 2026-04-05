@@ -20,11 +20,14 @@
     --time-block-bg: #D32F2F;
 }
 
-/* Bulletproof Viewport Lock */
+/* 
+  CRITICAL FIX: 
+  Removed 'touch-action: none' which was completely freezing all internal scrolling. 
+  'overscroll-behavior: none' safely stops edge-bouncing while keeping the Rolodex alive.
+*/
 html, body {
     margin: 0; padding: 0; width: 100vw; 
     overflow: hidden; position: fixed; 
-    /* CRITICAL FIX: Allows internal elements to scroll while stopping full-page bouncing */
     overscroll-behavior-y: none; 
 }
 
@@ -72,7 +75,7 @@ body {
 .menu-container, .page-content {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; position: relative;
 }
-.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; }
+.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 .flow-step { 
     display: none; position: absolute; top:0; left:0; width:100%; height: 100%;
@@ -83,6 +86,7 @@ body {
 .content-body {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; 
     overflow-y: auto; scrollbar-width: none; padding: 1rem; padding-bottom: 0; 
+    -webkit-overflow-scrolling: touch; /* Unlocks momentum scroll */
 }
 .content-body::-webkit-scrollbar { display: none; }
 
@@ -120,7 +124,10 @@ body {
 .summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
 .summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
 
-.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 5px;}
+.items-container { 
+    flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+    display: flex; flex-direction: column; padding-right: 5px;
+}
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
 .currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; }
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
@@ -145,14 +152,6 @@ body {
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
-.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
-.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
-.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
-.time-block input {
-    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
-    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
-}
-
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
@@ -174,11 +173,13 @@ body {
 .control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
 
 .currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-height: 100%; max-width: 90%; }
+.currency-img.note { width: auto; height: auto; }
+.currency-img.coin { width: auto; height: auto; }
 
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 8px; margin-top: 5px;
     padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
-    flex: 1 1 0%; min-height: 0; overflow-y: auto; 
+    flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
 }[data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
 
 .payment-img { object-fit: contain; box-shadow: 0 3px 6px rgba(0,0,0,0.2); margin: 4px; }
@@ -260,7 +261,6 @@ body {
 .time-content { justify-content: center; gap: 2rem; padding: 2rem 1.5rem; }
 .time-content .input-group { margin-bottom: 0; }
 .time-content .large-input { padding: 1.2rem; font-size: 1.6rem; }
-.time-content .time-block input { padding: 1.2rem; font-size: 1.8rem; }
 
 .time-card-box {
     background: var(--card-bg); border: 2px solid var(--card-border);
@@ -305,6 +305,7 @@ body {
 .rolodex-title { color: var(--text-color); font-size: 1.3rem; }
 .rolodex-save { color: var(--success-color); cursor: pointer; }
 
+/* Fixed Rolodex Overflow */
 .rolodex-body { display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color); overflow: hidden; }
 
 .rolodex-highlight {
@@ -315,12 +316,12 @@ body {
 
 .rolodex-col-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; }
 
-/* CRITICAL FIX: Explicit touch rules strictly targeting inside the rolodex scroll area */
+/* CRITICAL SCROLL RESTORATION */
 .rolodex-col {
     flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none;
     padding: 88px 0; box-sizing: border-box; position: relative; z-index: 1; width: 100%;
-    touch-action: pan-y; 
-    -webkit-overflow-scrolling: touch;
+    touch-action: pan-y; /* Explicitly permits vertical swiping */
+    -webkit-overflow-scrolling: touch; /* Forces silky momentum scrolling on iOS */
 }
 .rolodex-col::-webkit-scrollbar { display: none; }
 .rolodex-col.has-suffix .rolodex-item { padding-right: 45px; }
