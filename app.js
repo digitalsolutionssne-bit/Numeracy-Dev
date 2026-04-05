@@ -129,7 +129,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         const suffixClass = col.suffixLabel ? 'has-suffix' : '';
         const staticLabel = col.suffixLabel ? `<div class="rolodex-static-label">${col.suffixLabel}</div>` : '';
         
-        // Wrapped items inside an inner track that will be physically dragged via JS Transform
         colsHtml += `
             <div class="rolodex-col-wrapper" style="flex: ${col.flex || 1}">
                 <div class="rolodex-col ${suffixClass}" id="rolo-col-${col.id}">
@@ -165,7 +164,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
 
     const results = {};
 
-    // Apply the custom Physics Engine to each column
     columns.forEach(col => {
         const colDiv = document.getElementById(`rolo-col-${col.id}`);
         const track = document.getElementById(`rolo-track-${col.id}`);
@@ -179,10 +177,10 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         track.style.transform = `translateY(${currentY}px)`;
         updateActive(targetIndex);
 
-        // Physics State
         let isDragging = false;
         let startY = 0;
         let startTransformY = 0;
+        let wheelAccumulator = 0;
 
         function getClientY(e) {
             return e.touches ? e.touches[0].clientY : e.clientY;
@@ -192,17 +190,16 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             isDragging = true;
             startY = getClientY(e);
             startTransformY = currentY;
-            track.style.transition = 'none'; // Instant follow to finger
+            track.style.transition = 'none'; 
         }
 
         function onMove(e) {
             if (!isDragging) return;
-            e.preventDefault(); // Prevents browser from intercepting the drag
+            e.preventDefault(); 
             
             const delta = getClientY(e) - startY;
             let newY = startTransformY + delta;
 
-            // Rubber-band resistance at the start and end boundaries
             const boundsTop = 0;
             const boundsBottom = -maxIndex * itemHeight;
             if (newY > boundsTop) newY = boundsTop + (newY - boundsTop) * 0.3;
@@ -211,13 +208,13 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             currentY = newY;
             track.style.transform = `translateY(${currentY}px)`;
 
-            // Haptic Feedback
             let tempIndex = Math.round(-currentY / itemHeight);
             tempIndex = Math.max(0, Math.min(tempIndex, maxIndex));
             
             if (tempIndex !== targetIndex) {
                 targetIndex = tempIndex;
-                if (navigator.vibrate) navigator.vibrate(10);
+                // INCREASED HAPTIC FEEDBACK (30ms)
+                if (navigator.vibrate) navigator.vibrate(30);
                 updateActive(targetIndex);
             }
         }
@@ -226,7 +223,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             if (!isDragging) return;
             isDragging = false;
             
-            // Snap mathematically to the nearest slot
             targetIndex = Math.round(-currentY / itemHeight);
             targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
             
@@ -236,13 +232,37 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             updateActive(targetIndex);
         }
 
-        // Attach listeners directly to the column viewports
+        // --- NEW: DESKTOP MOUSE SCROLL INTEGRATION ---
+        colDiv.addEventListener('wheel', (e) => {
+            e.preventDefault(); // Stop entire page from scrolling
+            wheelAccumulator += e.deltaY;
+            
+            // Wait for enough scroll momentum before ticking (prevents wild spinning)
+            if (Math.abs(wheelAccumulator) >= 30) { 
+                let direction = Math.sign(wheelAccumulator);
+                let newIndex = targetIndex + direction;
+                newIndex = Math.max(0, Math.min(newIndex, maxIndex));
+                
+                if (newIndex !== targetIndex) {
+                    targetIndex = newIndex;
+                    currentY = -targetIndex * itemHeight;
+                    track.style.transition = 'transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1)';
+                    track.style.transform = `translateY(${currentY}px)`;
+                    
+                    // INCREASED HAPTIC FEEDBACK (30ms)
+                    if (navigator.vibrate) navigator.vibrate(30);
+                    updateActive(targetIndex);
+                }
+                wheelAccumulator = 0; // Reset after tick
+            }
+        }, {passive: false});
+        // ----------------------------------------------
+
         colDiv.addEventListener('touchstart', onStart, {passive: false});
         colDiv.addEventListener('touchmove', onMove, {passive: false});
         colDiv.addEventListener('touchend', onEnd);
         colDiv.addEventListener('touchcancel', onEnd);
         
-        // Mouse Fallback for desktop testing
         colDiv.addEventListener('mousedown', onStart);
         window.addEventListener('mousemove', onMove, {passive: false});
         window.addEventListener('mouseup', onEnd);
