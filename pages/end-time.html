@@ -35,13 +35,12 @@
                 </div>
             </div>
 
-            <!-- Placed Calculate button immediately above Result Box -->
             <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;">
                 <button class="primary-btn" onclick="calculateEndTime()" style="margin: 0 !important;">Calculate End Time</button>
 
                 <div class="time-result-box">
                     <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity:0.9;">You will finish at ⏹️</p>
-                    <h2 id="end-time-result" style="margin: 0; font-size: 2.8rem;">--:--</h2>
+                    <h2 id="end-time-result" style="color: #ffffff;">--:--</h2>
                 </div>
             </div>
             
@@ -73,12 +72,16 @@
 
         function openDurationPicker() {
             window.openRolodex("Select Duration",[
-                // NEW: Applied the suffixLabels to render natively inside the Rolodex modal
                 { id: 'hr', items: window.RoloGen.hours24(), selectedValue: 0, suffixLabel: 'Hour' },
                 { id: 'min', items: window.RoloGen.mins60(), selectedValue: 30, suffixLabel: 'Minute' }
             ], (res) => {
                 state.duration = { hr: parseInt(res.hr), min: parseInt(res.min) };
-                document.getElementById('duration-display').innerText = `${res.hr}h ${res.min}m`;
+                
+                // Format to explicit words
+                const hrStr = res.hr == 1 ? 'hour' : 'hours';
+                const minStr = res.min == 1 ? 'minute' : 'minutes';
+                
+                document.getElementById('duration-display').innerText = `${res.hr} ${hrStr} ${res.min} ${minStr}`;
             });
         }
 
