@@ -71,7 +71,7 @@ body {
 .menu-container, .page-content {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; position: relative;
 }
-.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; }
+.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; -webkit-overflow-scrolling: touch; }
 
 .flow-step { 
     display: none; position: absolute; top:0; left:0; width:100%; height: 100%;
@@ -120,7 +120,10 @@ body {
 .summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
 .summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
 
-.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; display: flex; flex-direction: column; padding-right: 5px;}
+.items-container { 
+    flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; 
+    display: flex; flex-direction: column; padding-right: 5px;
+}
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
 .currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; }
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
@@ -166,6 +169,9 @@ body {
 .control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
 
 .currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-height: 100%; max-width: 90%; }
+.currency-img.note { width: auto; height: auto; }
+.currency-img.coin { width: auto; height: auto; }
+
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 8px; margin-top: 5px;
     padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
@@ -189,7 +195,7 @@ body {
     .payment-img.coin { width: 50px; }
 }
 
-/* --- BOTTOM SHEET & OBNOXIOUS OVERLAYS --- */
+/* --- BOTTOM SHEET --- */
 .bottom-sheet-backdrop {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
@@ -211,6 +217,7 @@ body {
 .bottom-sheet.wrong h2 { color: var(--error-color); }
 .sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
 
+/* --- OBNOXIOUS NOTIFICATION STYLES --- */
 .obnoxious-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     z-index: 999999; display: flex; flex-direction: column; justify-content: center;
@@ -242,7 +249,6 @@ body {
     justify-content: center; align-items: center; color: white;
 }
 .processing-spinner { font-size: 5rem; animation: spin 1s linear infinite; margin-bottom: 20px; }
-
 
 /* ========================================================= */
 /* --- TIME UI & CUSTOM TOUCH-PHYSICS ROLODEX --- */
@@ -290,10 +296,6 @@ body {
 .rolodex-title { color: var(--text-color); font-size: 1.3rem; }
 .rolodex-save { color: var(--success-color); cursor: pointer; }
 
-/* 
-  CRITICAL: overflow hidden traps the scrolling lists inside the gray box. 
-  It has absolutely nothing to do with preventing scrolling events.
-*/
 .rolodex-body { display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color); overflow: hidden; }
 
 .rolodex-highlight {
@@ -304,28 +306,33 @@ body {
 
 .rolodex-col-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; }
 
-/* 
-  CRITICAL: The touch-action rule tells the browser 
-  "Let the Javascript Physics Engine handle all dragging inside this column." 
-*/
+/* --- NEW: VERTICAL DIVIDER LINE --- */
+.rolodex-col-wrapper:not(:last-child)::after {
+    content: ''; position: absolute; top: 15%; bottom: 15%; right: 0; width: 1px;
+    background-color: var(--card-border); z-index: 5;
+}
+
 .rolodex-col {
     flex: 1; position: relative; z-index: 1; width: 100%; height: 100%;
-    touch-action: none; 
-    cursor: grab;
+    touch-action: none; cursor: grab;
 }
 .rolodex-col:active { cursor: grabbing; }
 
 .rolodex-col-inner {
-    padding: 88px 0; /* Creates blank space so the first and last items can reach the center highlight */
-    margin: 0; display: flex; flex-direction: column; width: 100%;
+    padding: 88px 0; margin: 0; display: flex; flex-direction: column; width: 100%;
 }
 
-.rolodex-col.has-suffix .rolodex-item { padding-right: 45px; }
+/* 
+   CRITICAL FIX: Tight Grouping for Numbers and Labels 
+   Pushes the numbers slightly left so they meet the label in the exact center.
+*/
+.rolodex-col.has-suffix .rolodex-item { padding-right: 50px; }
 
 .rolodex-static-label {
-    position: absolute; top: 50%; transform: translateY(-50%); right: 15px;
+    position: absolute; top: 50%; transform: translateY(-50%); 
+    left: calc(50% + 5px); /* Tightly pins label to the right of the center */
     font-size: 1.1rem; font-weight: 800; color: var(--primary-color);
-    pointer-events: none; z-index: 3;
+    pointer-events: none; z-index: 3; text-align: left;
 }
 
 .rolodex-item {
