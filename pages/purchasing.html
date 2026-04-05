@@ -42,21 +42,26 @@
 
         <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
-            <div class="content-body" style="padding-bottom: 0;">
+            <div class="content-body" style="padding-bottom: 0; gap: 8px;">
                 
                 <!-- TOP BANNER (Wallet) -->
-                <div class="summary-box summary-box-safe" style="flex: none; margin-bottom: 0.8rem; flex-shrink: 0; padding: 0.5rem;">
+                <div class="summary-box summary-box-safe" style="flex: none; flex-shrink: 0; padding: 0.4rem;">
                     <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                         I have in my wallet: 
                         <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
                     </p>
-                    <h2 style="margin: 0; font-size: 1.6rem;">$<span id="step2-wallet-total">0.00</span></h2>
+                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
                 </div>
 
-                <div class="items-container">
-                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">🛒 I want to buy:</label>
-                    <div id="items-list" style="flex-shrink: 0;">
-                        <div class="item-row">
+                <!-- RIGID CART SECTION (Contains Item List + Add Button + Total Box) -->
+                <div class="items-container" style="flex: none; flex-shrink: 0; gap: 6px;">
+                    <label style="font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
+                        <span style="font-size: 1.2rem;">🛒</span> I want to buy:
+                    </label>
+                    
+                    <!-- CRITICAL FIX: Height strictly locked to precisely 3 items. Automatically scrolls if > 3 -->
+                    <div id="items-list" style="height: 142px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; padding-right: 4px; -webkit-overflow-scrolling: touch;">
+                        <div class="item-row" style="margin-bottom: 0;">
                             <div class="currency-wrapper">
                                 <span class="currency-symbol">$</span>
                                 <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
@@ -66,21 +71,22 @@
                             </button>
                         </div>
                     </div>
-                    <button class="add-item-btn" onclick="addItem()">➕ Add Another Item</button>
+
+                    <button class="add-item-btn" onclick="addItem()" style="margin: 0; padding: 0.4rem;">➕ Add Another Item</button>
+                    
+                    <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0.5rem 0.8rem; margin: 0;">
+                        <p style="font-size: 1rem; margin: 0;">Total Cost <span style="font-size: 1.1rem;">🛒</span></p>
+                        <h2 id="total-cost-display" style="font-size: 1.4rem; margin: 0;">$0.00</h2>
+                    </div>
                 </div>
 
-                <!-- DYNAMIC TOTAL COST BANNER (Moved below items list) -->
-                <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0.8rem 1rem; margin-bottom: 0.8rem; flex-shrink: 0;">
-                    <p style="font-size: 1.1rem;">Total Cost 🛒</p>
-                    <h2 id="total-cost-display" style="font-size: 1.6rem;">$0.00</h2>
-                </div>
-
-                <div style="margin-top: 0; text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0;">
+                <!-- CASHIER GRAPHICS SECTION (Expands to fill remaining bottom space) -->
+                <div style="text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0; margin-top: 4px;">
                     <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
                         Amount to pay cashier:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
                     </p>
-                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
+                    <h2 id="pay-amount-text" style="margin: 0; font-size: 1.8rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                     <div class="payment-graphics-container" id="give-cashier-graphics">
                         <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
                     </div>
@@ -93,7 +99,7 @@
                 </button>
             </div>
 
-            <!-- ERROR OVERLAY (Pops up to cover bottom half when cost > wallet) -->
+            <!-- ERROR OVERLAY -->
             <div id="error-payment-section" class="error-payment-section">
                 <div style="font-size: 4rem; line-height: 1; margin-bottom: 10px;">❌</div>
                 <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">Not Enough Money</h2>
@@ -130,7 +136,7 @@
             <h2>Wrong Change</h2>
             <p>
                 Please inform the cashier
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>
+                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
             </p>
         </div>
         <div class="sheet-btn-group" style="margin-top: 15px;">
@@ -165,7 +171,7 @@
         let currentStep = 1;
 
         const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="16" height="4" x="4" y="2" rx="1"/><rect width="20" height="10" x="2" y="12" rx="2"/><path d="M16 6v6a2 2 0 0 1-2 2H10a2 2 0 0 1-2-2V6"/><path d="M6 16h2"/><path d="M10 16h2"/><path d="M14 16h2"/><path d="M18 16h2"/></svg>`;
+        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
 
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
@@ -239,6 +245,7 @@
             const list = document.getElementById('items-list');
             const row = document.createElement('div');
             row.className = 'item-row';
+            row.style.marginBottom = '0';
             row.innerHTML = `
                 <div class="currency-wrapper">
                     <span class="currency-symbol">$</span>
@@ -250,7 +257,7 @@
             `;
             list.appendChild(row);
             row.querySelector('.item-cost').focus(); 
-            document.querySelector('#step-2 .content-body').scrollTop = document.querySelector('#step-2 .content-body').scrollHeight;
+            list.scrollTop = list.scrollHeight;
         }
 
         function removeItem(btn) {
