@@ -21,9 +21,9 @@
     </header>
 
     <main class="page-content">
-        <div class="content-body" style="gap: 1.5rem; justify-content: space-evenly;">
+        <div class="content-body" style="gap: 2rem; justify-content: center; align-items: center;">
             
-            <div style="text-align: center; flex-shrink: 0;">
+            <div style="text-align: center; flex-shrink: 0; width: 100%;">
                 <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
                 <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
             </div>
@@ -36,26 +36,28 @@
 
             <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
 
-            <div style="text-align: center; flex-shrink: 0;">
+            <div style="text-align: center; flex-shrink: 0; width: 100%;">
                 <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
-                <!-- NEW: Massively obvious button to trigger the Date Rolodex -->
-                <p id="manual-date-display" class="time-card-display" onclick="openDatePicker()">Tap to select date</p>
+                
+                <div class="time-picker-wrapper" style="margin-bottom: 15px;">
+                    <input type="text" id="manual-date-display" class="large-input time-picker-display" value="Tap to select date" readonly aria-hidden="true" style="text-align: center;">
+                    <input type="date" id="manual-date" class="time-picker-native">
+                </div>
+                
+                <!-- MOVED INTO CENTER BLOCK -->
+                <button class="primary-btn" id="manual-check-btn" style="margin: 0 !important;">Check Date</button>
             </div>
 
         </div>
-
-        <div class="step-footer">
-            <button class="primary-btn" id="manual-check-btn">Check Date</button>
-        </div>
-
     </main>
 
-    <!-- Overlays -->
+    <!-- Processing State Overlay -->
     <div id="processing-screen" class="processing-overlay" style="display: none;">
         <div class="processing-spinner">⏳</div>
         <h2 style="font-size: 2rem;">AI is checking...</h2>
     </div>
 
+    <!-- Obnoxious Overlays -->
     <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
         <div class="giant-icon">✅</div>
         <h1>SAFE!</h1>
@@ -84,21 +86,18 @@
         const options = { day: 'numeric', month: 'long', year: 'numeric' };
         document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
 
-        let selectedManualDate = null; // Store actual date object for checking
+        let selectedManualDate = null; 
 
-        // ==========================================
-        // CUSTOM DATE ROLODEX FLOW
-        // ==========================================
         function openDatePicker() {
             const currYear = today.getFullYear();
             
             window.openRolodex("Select Date",[
                 { id: 'day', items: window.RoloGen.days31(), selectedValue: today.getDate() },
-                { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 }, // Give month col more width
+                { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 },
                 { id: 'year', items: window.RoloGen.years(currYear, 10), selectedValue: currYear }
             ], (res) => {
                 const year = parseInt(res.year);
-                const month = parseInt(res.month) - 1; // JS 0-index
+                const month = parseInt(res.month) - 1; 
                 const day = parseInt(res.day);
                 
                 selectedManualDate = new Date(year, month, day);
@@ -124,9 +123,6 @@
             }, 800); 
         });
 
-        // ==========================================
-        // CAMERA AI FLOW
-        // ==========================================
         cameraInput.addEventListener('change', async function(e) {
             if(e.target.files.length > 0) {
                 if (!navigator.onLine) {
