@@ -35,11 +35,10 @@
                 </div>
             </div>
 
-            <!-- Removed margin-top: auto so it inherently populates from the center out -->
             <div style="display: flex; flex-direction: column; gap: 1.5rem;">
                 <button class="primary-btn" onclick="calculateDuration()" style="margin: 0 !important;">Calculate Duration</button>
 
-                <div class="time-result-box">
+                <div class="time-result-box" style="background-color: var(--success-color);">
                     <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity: 0.9;">Time spent ⌛</p>
                     <h2 id="duration-result" style="color: #ffffff;">--</h2>
                 </div>
