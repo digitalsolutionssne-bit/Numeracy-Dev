@@ -1,4 +1,4 @@
-const CACHE_NAME = 'lifecount-cache-v52';
+const CACHE_NAME = 'lifecount-cache-v53';
 
 const urlsToCache =[
     './',
