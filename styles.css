@@ -143,14 +143,6 @@ body {
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
-.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
-.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
-.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
-.time-block input {
-    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
-    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
-}
-
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
@@ -259,7 +251,7 @@ body {
 /* ========================================================= */
 .time-content { 
     padding: 1.5rem; display: flex; flex-direction: column; 
-    justify-content: space-between; /* Automatically spaces elements vertically */
+    justify-content: space-between; 
 }
 
 .time-card-box {
@@ -272,11 +264,17 @@ body {
     display: flex; align-items: center; gap: 10px; padding-bottom: 0.5rem;
     border-bottom: 2px dashed var(--card-border); margin: 0;
 }
+
+/* CRITICAL FIX: Ensure the duration text fits cleanly on one line using Clamp */
 .time-card-display {
     background: rgba(74, 144, 226, 0.1); color: var(--primary-color);
-    font-size: 1.8rem; font-weight: 900; text-align: center; padding: 1rem;
+    font-weight: 900; text-align: center; padding: 1rem;
     border-radius: 8px; cursor: pointer; border: 2px solid var(--primary-color);
     margin: 0; transition: transform 0.1s;
+    font-size: clamp(1rem, 4.5vw, 1.8rem); 
+    white-space: nowrap; 
+    overflow: hidden; 
+    text-overflow: ellipsis;
 }
 .time-card-display:active { transform: scale(0.98); }
 
@@ -284,6 +282,13 @@ body {
     background-color: var(--primary-color); color: white; padding: 1.5rem;
     border-radius: 16px; text-align: center; box-shadow: 0 6px 12px rgba(74, 144, 226, 0.3); 
     margin: 0; flex-shrink: 0; width: 100%; box-sizing: border-box;
+}
+
+/* CRITICAL FIX: Ensure the final output never spills to a second line */
+.time-result-box h2 {
+    margin: 0; 
+    white-space: nowrap;
+    font-size: clamp(1.4rem, 5.5vw, 2.8rem) !important;
 }
 
 /* Custom Rolodex Modal */
@@ -305,14 +310,13 @@ body {
     border-bottom: 2px solid var(--primary-color); pointer-events: none; z-index: 2;
 }
 
-/* ROLODEX LABEL HACKS (Hour/Minute) */
 .rolodex-col-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; }
 .rolodex-col {
     flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; scrollbar-width: none;
     padding: 88px 0; box-sizing: border-box; position: relative; z-index: 1; width: 100%;
 }
 .rolodex-col::-webkit-scrollbar { display: none; }
-.rolodex-col.has-suffix .rolodex-item { padding-right: 45px; } /* Shifts numbers left to make room for text */
+.rolodex-col.has-suffix .rolodex-item { padding-right: 45px; }
 
 .rolodex-static-label {
     position: absolute; top: 50%; transform: translateY(-50%); right: 15px;
@@ -320,9 +324,17 @@ body {
     pointer-events: none; z-index: 3;
 }
 
+/* CRITICAL FIX: Ensure Month names never wrap to 2 lines inside the wheel */
 .rolodex-item {
     height: 44px; display: flex; align-items: center; justify-content: center;
-    scroll-snap-align: center; font-size: 1.2rem; color: var(--text-color); opacity: 0.4;
+    scroll-snap-align: center; color: var(--text-color); opacity: 0.4;
     transition: all 0.2s ease; user-select: none;
+    white-space: nowrap; 
+    font-size: 1.2rem; 
 }
-.rolodex-item.active { opacity: 1; font-size: 1.5rem; font-weight: 900; color: var(--primary-color); }
+.rolodex-item.active { 
+    opacity: 1; 
+    font-weight: 900; 
+    color: var(--primary-color); 
+    font-size: clamp(1.1rem, 4.5vw, 1.5rem); 
+}
