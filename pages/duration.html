@@ -23,31 +23,34 @@
     <main class="page-content">
         <div class="content-body time-content">
             
-            <div class="time-card-box">
-                <h3 class="time-card-header">▶️ Start Time</h3>
-                <p id="start-time-display" class="time-card-display" onclick="openTimePicker('start')">Tap to set time</p>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div class="time-card-box">
+                    <h3 class="time-card-header">▶️ Start Time</h3>
+                    <p id="start-time-display" class="time-card-display" onclick="openTimePicker('start')">Tap to set time</p>
+                </div>
+
+                <div class="time-card-box">
+                    <h3 class="time-card-header">⏹️ End Time</h3>
+                    <p id="end-time-display" class="time-card-display" onclick="openTimePicker('end')">Tap to set time</p>
+                </div>
             </div>
 
-            <div class="time-card-box">
-                <h3 class="time-card-header">⏹️ End Time</h3>
-                <p id="end-time-display" class="time-card-display" onclick="openTimePicker('end')">Tap to set time</p>
+            <!-- Placed Calculate button immediately above Result Box -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;">
+                <button class="primary-btn" onclick="calculateDuration()" style="margin: 0 !important;">Calculate Duration</button>
+
+                <div class="time-result-box">
+                    <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity: 0.9;">Time spent ⌛</p>
+                    <h2 id="duration-result" style="margin: 0; font-size: 2.8rem;">--</h2>
+                </div>
             </div>
 
-            <div class="time-result-box">
-                <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity: 0.9;">Time spent ⌛</p>
-                <h2 id="duration-result" style="margin: 0; font-size: 2.8rem;">--</h2>
-            </div>
-
-        </div>
-
-        <div class="step-footer">
-            <button class="primary-btn" onclick="calculateDuration()">Calculate Duration</button>
         </div>
     </main>
 
     <script src="../app.js"></script>
     <script>
-        let state = { start: null, end: null }; // Stores raw {hr24, min}
+        let state = { start: null, end: null }; 
 
         function openTimePicker(type) {
             const isStart = type === 'start';
@@ -62,7 +65,6 @@
                 const min = parseInt(res.min);
                 const ampm = res.ampm;
                 
-                // Convert to 24h for easy math
                 let hr24 = hr;
                 if (ampm === 'PM' && hr !== 12) hr24 += 12;
                 if (ampm === 'AM' && hr === 12) hr24 = 0;
