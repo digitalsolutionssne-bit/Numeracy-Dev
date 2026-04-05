@@ -109,10 +109,9 @@ if ('serviceWorker' in navigator) {
 }
 
 // =========================================================
-// CUSTOM ROLODEX SYSTEM (HAPTIC + NON-CONTINUOUS)
+// CUSTOM ROLODEX SYSTEM (HAPTIC + LABELS)
 // =========================================================
 window.openRolodex = function(title, columns, onSaveCallback) {
-    // Remove existing if any
     let existing = document.getElementById('rolodex-modal');
     if (existing) existing.remove();
 
@@ -120,14 +119,23 @@ window.openRolodex = function(title, columns, onSaveCallback) {
     backdrop.id = 'rolodex-modal';
     backdrop.className = 'bottom-sheet-backdrop';
     
-    // Build HTML string for columns
     let colsHtml = '';
     columns.forEach(col => {
         let itemsHtml = '';
         col.items.forEach(item => {
             itemsHtml += `<div class="rolodex-item" data-value="${item.value}">${item.label}</div>`;
         });
-        colsHtml += `<div class="rolodex-col" id="rolo-col-${col.id}" style="flex: ${col.flex || 1}">${itemsHtml}</div>`;
+        
+        // Dynamically inject the "Hour / Minute" static label overlay if provided
+        const suffixClass = col.suffixLabel ? 'has-suffix' : '';
+        const staticLabel = col.suffixLabel ? `<div class="rolodex-static-label">${col.suffixLabel}</div>` : '';
+        
+        colsHtml += `
+            <div class="rolodex-col-wrapper" style="flex: ${col.flex || 1}">
+                <div class="rolodex-col ${suffixClass}" id="rolo-col-${col.id}">${itemsHtml}</div>
+                ${staticLabel}
+            </div>
+        `;
     });
 
     backdrop.innerHTML = `
@@ -146,7 +154,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
 
     document.body.appendChild(backdrop);
     
-    // Trigger slide up
     requestAnimationFrame(() => {
         backdrop.classList.add('show');
         backdrop.querySelector('.rolodex-sheet').classList.add('show');
@@ -154,16 +161,13 @@ window.openRolodex = function(title, columns, onSaveCallback) {
 
     const results = {};
 
-    // Initialize scrolling and haptic mechanics for each column
     columns.forEach(col => {
         const colDiv = document.getElementById(`rolo-col-${col.id}`);
         const itemHeight = 44; 
         
-        // Initial scroll position
         const targetIndex = col.items.findIndex(i => i.value == col.selectedValue);
         const finalIndex = targetIndex !== -1 ? targetIndex : 0;
         
-        // Timeout ensures the DOM is painted before scrolling
         setTimeout(() => {
             colDiv.scrollTop = finalIndex * itemHeight;
             updateActiveState(colDiv, finalIndex);
@@ -174,14 +178,12 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         colDiv.addEventListener('scroll', () => {
             let currentIndex = Math.round(colDiv.scrollTop / itemHeight);
             
-            // Bounds clamp (Non-continuous)
             if (currentIndex < 0) currentIndex = 0;
             if (currentIndex >= col.items.length) currentIndex = col.items.length - 1;
 
             if (currentIndex !== lastIndex) {
                 lastIndex = currentIndex;
-                // Trigger tactile haptic bump
-                if (navigator.vibrate) navigator.vibrate(10);
+                if (navigator.vibrate) navigator.vibrate(10); // Haptic tick
                 updateActiveState(colDiv, currentIndex);
             }
         });
@@ -199,14 +201,12 @@ window.openRolodex = function(title, columns, onSaveCallback) {
     }
 
     document.getElementById('rolo-save-btn').addEventListener('click', () => {
-        // Force an immediate read of the current highlighted items
         columns.forEach(col => {
             const colDiv = document.getElementById(`rolo-col-${col.id}`);
             const index = Math.round(colDiv.scrollTop / 44);
             const activeItem = colDiv.children[index];
             if (activeItem) results[col.id] = activeItem.dataset.value;
         });
-        
         onSaveCallback(results);
         closeRolodex();
     });
@@ -221,7 +221,6 @@ window.closeRolodex = function() {
     }
 };
 
-// Global Helpers for generating standard Rolodex Arrays
 window.RoloGen = {
     hours12: () => Array.from({length:12}, (_,i) => ({ value: i+1, label: (i+1).toString().padStart(2,'0') })),
     mins60: () => Array.from({length:60}, (_,i) => ({ value: i, label: i.toString().padStart(2,'0') })),
