@@ -35,13 +35,12 @@
                 </div>
             </div>
 
-            <!-- Placed Calculate button immediately above Result Box -->
             <div style="display: flex; flex-direction: column; gap: 1.5rem; margin-top: auto;">
                 <button class="primary-btn" onclick="calculateDuration()" style="margin: 0 !important;">Calculate Duration</button>
 
                 <div class="time-result-box">
                     <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity: 0.9;">Time spent ⌛</p>
-                    <h2 id="duration-result" style="margin: 0; font-size: 2.8rem;">--</h2>
+                    <h2 id="duration-result" style="color: #ffffff;">--</h2>
                 </div>
             </div>
 
@@ -88,7 +87,11 @@
             const diffHrs = Math.floor(diffMs / 3600000);
             const diffMins = Math.floor((diffMs % 3600000) / 60000);
             
-            document.getElementById('duration-result').innerText = `${diffHrs}h ${diffMins}m`;
+            // Format to explicit words
+            const hrStr = diffHrs === 1 ? 'hour' : 'hours';
+            const minStr = diffMins === 1 ? 'minute' : 'minutes';
+            
+            document.getElementById('duration-result').innerText = `${diffHrs} ${hrStr} ${diffMins} ${minStr}`;
         }
     </script>
 </body>
