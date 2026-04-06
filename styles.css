@@ -23,7 +23,8 @@
 /* Bulletproof Viewport Lock */
 html, body {
     margin: 0; padding: 0; width: 100vw; 
-    overflow: hidden; position: fixed; touch-action: none; 
+    overflow: hidden; position: fixed; 
+    overscroll-behavior-y: none; 
 }
 
 body {
@@ -91,6 +92,25 @@ body {
     background-color: var(--bg-color); 
 }
 
+/* --- NEW: AFFORDABILITY BANNER & INLINE ERROR --- */
+.affordability-banner {
+    position: sticky; top: -1rem; margin: -1rem -1rem 1rem -1rem; padding: 0.8rem;
+    text-align: center; font-size: 1.4rem; font-weight: 900; color: white;
+    z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); text-transform: uppercase; letter-spacing: 1px;
+}
+.affordability-banner.safe { background-color: var(--success-color); }
+.affordability-banner.danger { background-color: var(--error-color); }
+
+.inline-error-box {
+    background-color: #E57373; color: white; border-radius: 12px; padding: 1.5rem;
+    text-align: center; margin-top: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    display: none; flex-direction: column; align-items: center; gap: 8px; flex-shrink: 0;
+}
+.inline-error-box .giant-icon { font-size: 3rem; line-height: 1; }
+.inline-error-box h2 { margin: 0; font-size: 1.6rem; }
+.inline-error-box p { margin: 0; font-size: 1.1rem; opacity: 0.9; }
+/* ------------------------------------------------ */
+
 .menu-card, .action-btn {
     display: flex; align-items: center; padding: 1.5rem; background-color: var(--card-bg);
     border: 2px solid var(--card-border); border-radius: 12px; text-decoration: none;
@@ -119,7 +139,7 @@ body {
 .summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
 .summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
 
-.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 5px;}
+.items-container { flex: none; flex-shrink: 0; display: flex; flex-direction: column; }
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
 .currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; }
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
@@ -166,22 +186,11 @@ body {
     align-items: center; justify-content: space-evenly; background-color: var(--card-bg); 
     min-height: 0; overflow: hidden; border-radius: 8px;
 }
-
-/* CRITICAL UI UPGRADE: Increased Gap for Fat Fingers and massively bolder buttons */
-.wallet-controls { 
-    display: flex; align-items: center; justify-content: center; 
-    gap: 16px; /* Fat finger gap */
-    width: 100%; flex-shrink: 0; 
-}
+.wallet-controls { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; flex-shrink: 0; }
 .control-btn {
-    width: 36px; height: 36px; /* Box size unchanged */
-    border-radius: 50%; border: 2px solid transparent; background: transparent; 
-    font-size: 2.2rem; /* Size of internal +/- increased by +50% */
-    font-weight: 900; /* Maximum bold */
-    display: flex; align-items: center; justify-content: center; 
-    cursor: pointer; 
-    line-height: 0.9; /* Optical tweak to prevent clipping in circle */
-    flex-shrink: 0; padding: 0; margin: 0;
+    width: 36px; height: 36px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
+    font-size: 2.2rem; font-weight: 900; display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; line-height: 0.9; flex-shrink: 0; padding: 0; margin: 0;
 }
 .control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
 .control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
@@ -194,7 +203,7 @@ body {
 .payment-graphics-container {
     display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 8px; margin-top: 5px;
     padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
-    flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch;
+    flex: none; min-height: 50px; 
 }[data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
 
 .payment-img { object-fit: contain; box-shadow: 0 3px 6px rgba(0,0,0,0.2); margin: 4px; }
@@ -255,13 +264,6 @@ body {
 }
 .obnoxious-btn:active { transform: scale(0.95); }
 
-.error-payment-section {
-    position: absolute; bottom: 0; left: 0; width: 100%; height: 50%;
-    background-color: #E57373; color: white; display: none; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 100; border-top-left-radius: 24px; border-top-right-radius: 24px;
-    box-shadow: 0 -10px 25px rgba(0,0,0,0.2); animation: popIn 0.3s ease-out; text-align: center; padding: 1rem; box-sizing: border-box;
-}
-
 .processing-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     background: rgba(0,0,0,0.8); z-index: 999990; display: flex; flex-direction: column;
@@ -271,7 +273,7 @@ body {
 
 
 /* ========================================================= */
-/* --- MASSIVE UNCRAMPED TIME UI & ROLODEX PICKER --- */
+/* --- TIME UI & CUSTOM TOUCH-PHYSICS ROLODEX --- */
 /* ========================================================= */
 .time-content { justify-content: center; gap: 2rem; padding: 2rem 1.5rem; }
 .time-card-box {
@@ -302,7 +304,6 @@ body {
 }
 .time-result-box h2 { margin: 0; white-space: nowrap; font-size: clamp(1.4rem, 5.5vw, 2.8rem) !important; }
 
-/* Custom Rolodex Modal */
 .rolodex-sheet { height: 320px; padding: 0; }
 .rolodex-header {
     display: flex; justify-content: space-between; align-items: center; width: 100%;
@@ -334,13 +335,8 @@ body {
     touch-action: none; cursor: grab;
 }
 .rolodex-col:active { cursor: grabbing; }
-
-.rolodex-col-inner {
-    padding: 88px 0; margin: 0; display: flex; flex-direction: column; width: 100%;
-}
-
+.rolodex-col-inner { padding: 88px 0; margin: 0; display: flex; flex-direction: column; width: 100%; }
 .rolodex-col.has-suffix .rolodex-item { padding-right: 50px; }
-
 .rolodex-static-label {
     position: absolute; top: 50%; transform: translateY(-50%); 
     left: calc(50% + 5px); 
