@@ -38,10 +38,7 @@
 
             <div style="text-align: center; flex-shrink: 0; width: 100%;">
                 <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
-                
-                <!-- CRITICAL FIX: Restored the manual Custom Rolodex invocation and removed the native picker -->
                 <p id="manual-date-display" class="time-card-display" onclick="openDatePicker()" style="margin-bottom: 15px;">Tap to select date</p>
-                
             </div>
 
         </div>
@@ -89,16 +86,14 @@
 
         let selectedManualDate = null; 
 
-        // ==========================================
-        // CUSTOM DATE ROLODEX FLOW (Fixed implementation)
-        // ==========================================
         function openDatePicker() {
             const currYear = today.getFullYear();
             
             window.openRolodex("Select Date",[
                 { id: 'day', items: window.RoloGen.days31(), selectedValue: today.getDate() },
                 { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 },
-                { id: 'year', items: window.RoloGen.years(currYear, 10), selectedValue: currYear }
+                // CRITICAL UPDATE: Bounds are dynamically constructed from Current Year (-6 to +12, which totals 19 years)
+                { id: 'year', items: window.RoloGen.years(currYear - 6, 19), selectedValue: currYear }
             ], (res) => {
                 const year = parseInt(res.year);
                 const month = parseInt(res.month) - 1; 
@@ -128,9 +123,6 @@
             }, 800); 
         });
 
-        // ==========================================
-        // CAMERA AI FLOW
-        // ==========================================
         cameraInput.addEventListener('change', async function(e) {
             if(e.target.files.length > 0) {
                 if (!navigator.onLine) {
@@ -144,7 +136,6 @@
 
                 try {
                     const base64Image = await compressImage(file);
-                    
                     const response = await fetch(GAS_URL, {
                         method: 'POST',
                         headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
@@ -159,11 +150,8 @@
                     } else if (result.foundDate === false) {
                         showToast("No expiration date found in photo.", true);
                     } else {
-                        if (result.isExpired) {
-                            badOverlay.style.display = 'flex';
-                        } else {
-                            goodOverlay.style.display = 'flex';
-                        }
+                        if (result.isExpired) badOverlay.style.display = 'flex';
+                        else goodOverlay.style.display = 'flex';
                     }
                 } catch (err) {
                     processingScreen.style.display = 'none';
@@ -191,9 +179,7 @@
                         
                         const ctx = canvas.getContext('2d');
                         ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        
-                        const dataUrl = canvas.toDataURL('image/jpeg', 0.7);
-                        resolve(dataUrl.split(',')[1]);
+                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
                     };
                     img.onerror = error => reject(error);
                 };
