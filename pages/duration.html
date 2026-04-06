@@ -58,7 +58,8 @@
             window.openRolodex(title,[
                 { id: 'hr', items: window.RoloGen.hours12(), selectedValue: 12 },
                 { id: 'min', items: window.RoloGen.mins60(), selectedValue: 0 },
-                { id: 'ampm', items: window.RoloGen.ampm(), selectedValue: 'PM' }
+                // CRITICAL FIX: Disabled infinite scrolling solely for AM/PM
+                { id: 'ampm', items: window.RoloGen.ampm(), selectedValue: 'PM', infinite: false }
             ], (res) => {
                 const hr = parseInt(res.hr);
                 const min = parseInt(res.min);
