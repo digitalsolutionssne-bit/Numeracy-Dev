@@ -109,7 +109,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // =========================================================
-// CUSTOM ROLODEX SYSTEM (FROM SCRATCH: Touch-Physics Engine)
+// CUSTOM ROLODEX SYSTEM (INFINITE LOOP & HAPTIC ENGINE)
 // =========================================================
 window.openRolodex = function(title, columns, onSaveCallback) {
     let existing = document.getElementById('rolodex-modal');
@@ -120,10 +120,27 @@ window.openRolodex = function(title, columns, onSaveCallback) {
     backdrop.className = 'bottom-sheet-backdrop';
     
     let colsHtml = '';
+    
+    // Core Infinite Setup
+    const NUM_SETS = 7; 
+    const CENTER_SET = 3; 
+
     columns.forEach(col => {
+        // Inject the explicit Visual Indicator Divider at the end of each cycle
+        const cycleItems =[...col.items, { value: 'DIVIDER', label: '•••', isDivider: true }];
+        col.cycleLength = cycleItems.length;
+        col.centerOffset = CENTER_SET * col.cycleLength;
+        
+        let allItems =[];
+        for (let i = 0; i < NUM_SETS; i++) {
+            allItems.push(...cycleItems);
+        }
+        col.renderedItems = allItems;
+
         let itemsHtml = '';
-        col.items.forEach(item => {
-            itemsHtml += `<div class="rolodex-item" data-value="${item.value}">${item.label}</div>`;
+        col.renderedItems.forEach((item, idx) => {
+            const opacityStyle = item.isDivider ? 'opacity: 0.15; font-size: 1rem; letter-spacing: 2px;' : '';
+            itemsHtml += `<div class="rolodex-item" style="${opacityStyle}" data-value="${item.value}">${item.label}</div>`;
         });
         
         const suffixClass = col.suffixLabel ? 'has-suffix' : '';
@@ -168,11 +185,13 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         const colDiv = document.getElementById(`rolo-col-${col.id}`);
         const track = document.getElementById(`rolo-track-${col.id}`);
         const itemHeight = 44; 
-        const maxIndex = col.items.length - 1;
+        const maxIndex = col.renderedItems.length - 1;
         
-        let targetIndex = col.items.findIndex(i => i.value == col.selectedValue);
-        if (targetIndex === -1) targetIndex = 0;
+        let localTarget = col.items.findIndex(i => i.value == col.selectedValue);
+        if (localTarget === -1) localTarget = 0;
 
+        // Start them perfectly in the middle set
+        let targetIndex = col.centerOffset + localTarget;
         let currentY = -targetIndex * itemHeight;
         track.style.transform = `translateY(${currentY}px)`;
         updateActive(targetIndex);
@@ -181,6 +200,7 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         let startY = 0;
         let startTransformY = 0;
         let wheelAccumulator = 0;
+        let lastDelta = 0;
 
         function getClientY(e) {
             return e.touches ? e.touches[0].clientY : e.clientY;
@@ -198,6 +218,7 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             e.preventDefault(); 
             
             const delta = getClientY(e) - startY;
+            lastDelta = delta; 
             let newY = startTransformY + delta;
 
             const boundsTop = 0;
@@ -213,7 +234,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             
             if (tempIndex !== targetIndex) {
                 targetIndex = tempIndex;
-                // INCREASED HAPTIC FEEDBACK (30ms)
                 if (navigator.vibrate) navigator.vibrate(30);
                 updateActive(targetIndex);
             }
@@ -226,22 +246,41 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             targetIndex = Math.round(-currentY / itemHeight);
             targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
             
+            // Prevent naturally landing exactly on the visual divider
+            if (col.renderedItems[targetIndex].isDivider) {
+                targetIndex += (lastDelta < 0 ? 1 : -1);
+            }
+            
             currentY = -targetIndex * itemHeight;
             track.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)';
             track.style.transform = `translateY(${currentY}px)`;
             updateActive(targetIndex);
+
+            // SILENT RECENTER: Seamlessly jumps them back to the center of the infinite track
+            setTimeout(() => {
+                const offset = targetIndex % col.cycleLength;
+                targetIndex = col.centerOffset + offset;
+                currentY = -targetIndex * itemHeight;
+                track.style.transition = 'none';
+                track.offsetHeight; // Force reflow to prevent flickering
+                track.style.transform = `translateY(${currentY}px)`;
+                updateActive(targetIndex);
+            }, 260); 
         }
 
-        // --- NEW: DESKTOP MOUSE SCROLL INTEGRATION ---
         colDiv.addEventListener('wheel', (e) => {
-            e.preventDefault(); // Stop entire page from scrolling
+            e.preventDefault(); 
             wheelAccumulator += e.deltaY;
             
-            // Wait for enough scroll momentum before ticking (prevents wild spinning)
             if (Math.abs(wheelAccumulator) >= 30) { 
                 let direction = Math.sign(wheelAccumulator);
                 let newIndex = targetIndex + direction;
                 newIndex = Math.max(0, Math.min(newIndex, maxIndex));
+                
+                // Skip the divider on wheel ticks
+                if (col.renderedItems[newIndex] && col.renderedItems[newIndex].isDivider) {
+                    newIndex += direction; 
+                }
                 
                 if (newIndex !== targetIndex) {
                     targetIndex = newIndex;
@@ -249,14 +288,23 @@ window.openRolodex = function(title, columns, onSaveCallback) {
                     track.style.transition = 'transform 0.15s cubic-bezier(0.2, 0.8, 0.2, 1)';
                     track.style.transform = `translateY(${currentY}px)`;
                     
-                    // INCREASED HAPTIC FEEDBACK (30ms)
                     if (navigator.vibrate) navigator.vibrate(30);
                     updateActive(targetIndex);
+
+                    clearTimeout(col.recenterTimeout);
+                    col.recenterTimeout = setTimeout(() => {
+                        const offset = targetIndex % col.cycleLength;
+                        targetIndex = col.centerOffset + offset;
+                        currentY = -targetIndex * itemHeight;
+                        track.style.transition = 'none';
+                        track.offsetHeight; 
+                        track.style.transform = `translateY(${currentY}px)`;
+                        updateActive(targetIndex);
+                    }, 160);
                 }
-                wheelAccumulator = 0; // Reset after tick
+                wheelAccumulator = 0; 
             }
         }, {passive: false});
-        // ----------------------------------------------
 
         colDiv.addEventListener('touchstart', onStart, {passive: false});
         colDiv.addEventListener('touchmove', onMove, {passive: false});
