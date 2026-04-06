@@ -109,7 +109,7 @@ if ('serviceWorker' in navigator) {
 }
 
 // =========================================================
-// CUSTOM ROLODEX SYSTEM (INFINITE LOOP & HAPTIC ENGINE)
+// CUSTOM ROLODEX SYSTEM (INFINITE & FINITE HYBRID)
 // =========================================================
 window.openRolodex = function(title, columns, onSaveCallback) {
     let existing = document.getElementById('rolodex-modal');
@@ -120,25 +120,31 @@ window.openRolodex = function(title, columns, onSaveCallback) {
     backdrop.className = 'bottom-sheet-backdrop';
     
     let colsHtml = '';
-    
-    // Core Infinite Setup
     const NUM_SETS = 7; 
     const CENTER_SET = 3; 
 
     columns.forEach(col => {
-        // Inject the explicit Visual Indicator Divider at the end of each cycle
-        const cycleItems =[...col.items, { value: 'DIVIDER', label: '•••', isDivider: true }];
-        col.cycleLength = cycleItems.length;
-        col.centerOffset = CENTER_SET * col.cycleLength;
-        
-        let allItems =[];
-        for (let i = 0; i < NUM_SETS; i++) {
-            allItems.push(...cycleItems);
+        col.isInfinite = col.infinite !== false; // Default to true unless explicitly disabled
+
+        if (col.isInfinite) {
+            const cycleItems =[...col.items, { value: 'DIVIDER', label: '•••', isDivider: true }];
+            col.cycleLength = cycleItems.length;
+            col.centerOffset = CENTER_SET * col.cycleLength;
+            
+            let allItems =[];
+            for (let i = 0; i < NUM_SETS; i++) {
+                allItems.push(...cycleItems);
+            }
+            col.renderedItems = allItems;
+        } else {
+            // Finite mode (e.g., AM/PM) - just use the basic items with no offsets or dividers
+            col.renderedItems = col.items;
+            col.cycleLength = col.items.length;
+            col.centerOffset = 0;
         }
-        col.renderedItems = allItems;
 
         let itemsHtml = '';
-        col.renderedItems.forEach((item, idx) => {
+        col.renderedItems.forEach((item) => {
             const opacityStyle = item.isDivider ? 'opacity: 0.15; font-size: 1rem; letter-spacing: 2px;' : '';
             itemsHtml += `<div class="rolodex-item" style="${opacityStyle}" data-value="${item.value}">${item.label}</div>`;
         });
@@ -190,7 +196,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         let localTarget = col.items.findIndex(i => i.value == col.selectedValue);
         if (localTarget === -1) localTarget = 0;
 
-        // Start them perfectly in the middle set
         let targetIndex = col.centerOffset + localTarget;
         let currentY = -targetIndex * itemHeight;
         track.style.transform = `translateY(${currentY}px)`;
@@ -246,9 +251,9 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             targetIndex = Math.round(-currentY / itemHeight);
             targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
             
-            // Prevent naturally landing exactly on the visual divider
-            if (col.renderedItems[targetIndex].isDivider) {
+            if (col.isInfinite && col.renderedItems[targetIndex].isDivider) {
                 targetIndex += (lastDelta < 0 ? 1 : -1);
+                targetIndex = Math.max(0, Math.min(targetIndex, maxIndex));
             }
             
             currentY = -targetIndex * itemHeight;
@@ -256,16 +261,17 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             track.style.transform = `translateY(${currentY}px)`;
             updateActive(targetIndex);
 
-            // SILENT RECENTER: Seamlessly jumps them back to the center of the infinite track
-            setTimeout(() => {
-                const offset = targetIndex % col.cycleLength;
-                targetIndex = col.centerOffset + offset;
-                currentY = -targetIndex * itemHeight;
-                track.style.transition = 'none';
-                track.offsetHeight; // Force reflow to prevent flickering
-                track.style.transform = `translateY(${currentY}px)`;
-                updateActive(targetIndex);
-            }, 260); 
+            if (col.isInfinite) {
+                setTimeout(() => {
+                    const offset = targetIndex % col.cycleLength;
+                    targetIndex = col.centerOffset + offset;
+                    currentY = -targetIndex * itemHeight;
+                    track.style.transition = 'none';
+                    track.offsetHeight; 
+                    track.style.transform = `translateY(${currentY}px)`;
+                    updateActive(targetIndex);
+                }, 260); 
+            }
         }
 
         colDiv.addEventListener('wheel', (e) => {
@@ -277,9 +283,9 @@ window.openRolodex = function(title, columns, onSaveCallback) {
                 let newIndex = targetIndex + direction;
                 newIndex = Math.max(0, Math.min(newIndex, maxIndex));
                 
-                // Skip the divider on wheel ticks
-                if (col.renderedItems[newIndex] && col.renderedItems[newIndex].isDivider) {
+                if (col.isInfinite && col.renderedItems[newIndex] && col.renderedItems[newIndex].isDivider) {
                     newIndex += direction; 
+                    newIndex = Math.max(0, Math.min(newIndex, maxIndex));
                 }
                 
                 if (newIndex !== targetIndex) {
@@ -291,16 +297,18 @@ window.openRolodex = function(title, columns, onSaveCallback) {
                     if (navigator.vibrate) navigator.vibrate(30);
                     updateActive(targetIndex);
 
-                    clearTimeout(col.recenterTimeout);
-                    col.recenterTimeout = setTimeout(() => {
-                        const offset = targetIndex % col.cycleLength;
-                        targetIndex = col.centerOffset + offset;
-                        currentY = -targetIndex * itemHeight;
-                        track.style.transition = 'none';
-                        track.offsetHeight; 
-                        track.style.transform = `translateY(${currentY}px)`;
-                        updateActive(targetIndex);
-                    }, 160);
+                    if (col.isInfinite) {
+                        clearTimeout(col.recenterTimeout);
+                        col.recenterTimeout = setTimeout(() => {
+                            const offset = targetIndex % col.cycleLength;
+                            targetIndex = col.centerOffset + offset;
+                            currentY = -targetIndex * itemHeight;
+                            track.style.transition = 'none';
+                            track.offsetHeight; 
+                            track.style.transform = `translateY(${currentY}px)`;
+                            updateActive(targetIndex);
+                        }, 160);
+                    }
                 }
                 wheelAccumulator = 0; 
             }
@@ -328,6 +336,14 @@ window.openRolodex = function(title, columns, onSaveCallback) {
     });
 
     document.getElementById('rolo-save-btn').addEventListener('click', () => {
+        columns.forEach(col => {
+            const colDiv = document.getElementById(`rolo-col-${col.id}`);
+            const track = document.getElementById(`rolo-track-${col.id}`);
+            let y = parseFloat(track.style.transform.replace('translateY(','').replace('px)',''));
+            const index = Math.round(-y / 44);
+            const activeItem = track.children[index];
+            if (activeItem) results[col.id] = activeItem.dataset.value;
+        });
         onSaveCallback(results);
         closeRolodex();
     });
