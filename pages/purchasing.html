@@ -53,9 +53,7 @@
                 </div>
 
                 <div class="items-container" style="flex: none; flex-shrink: 0; gap: 6px;">
-                    <label style="font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
-                        <span style="font-size: 1.2rem;">🛒</span> I want to buy:
-                    </label>
+                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">🛒 I want to buy:</label>
                     
                     <div id="items-list" style="height: 142px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; padding-right: 4px; -webkit-overflow-scrolling: touch;">
                         <div class="item-row" style="margin-bottom: 0;">
@@ -81,7 +79,7 @@
                         Amount to pay cashier:
                         <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
                     </p>
-                    <h2 id="pay-amount-text" style="margin: 0; font-size: 1.8rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
+                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                     <div class="payment-graphics-container" id="give-cashier-graphics">
                         <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
                     </div>
@@ -112,7 +110,7 @@
                 <div class="wallet-grid" id="change-grid-container"></div>
             </div>
             <div class="step-footer">
-                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
+                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Check Change</button>
             </div>
         </div>
 
@@ -168,7 +166,6 @@
         const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
         const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
 
-        // CRITICAL UI UPGRADE: Massive, bold SVGs instead of text characters for + and -
         const minusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
         const plusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
 
