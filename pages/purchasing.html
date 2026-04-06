@@ -40,26 +40,24 @@
             </div>
         </div>
 
-        <!-- STEP 2: PAY CASHIER (CONTINUOUS SCROLL FIX) -->
+        <!-- STEP 2: PAY CASHIER -->
         <div id="step-2" class="flow-step">
-            <div class="content-body" id="step-2-body">
+            <div class="content-body" style="padding-bottom: 0; gap: 8px;">
                 
-                <!-- STICKY AFFORDABILITY BANNER -->
-                <div id="affordability-banner" class="affordability-banner safe">✅ CAN BUY</div>
-
-                <div style="background-color: var(--card-bg); border: 2px solid var(--card-border); padding: 0.8rem; border-radius: 8px; margin-bottom: 1.2rem; text-align: center; flex-shrink: 0; display:flex; flex-direction:column; align-items:center;">
-                    <p style="margin: 0; font-size: 1rem; opacity: 0.8; display:flex; align-items:center; gap:6px;">
+                <div class="summary-box summary-box-safe" style="flex: none; flex-shrink: 0; padding: 0.4rem;">
+                    <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                         I have in my wallet: 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
                     </p>
-                    <h2 style="margin: 0; font-size: 1.6rem;">$<span id="step2-wallet-total">0.00</span></h2>
+                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
                 </div>
 
-                <div class="items-container" style="flex: none; flex-shrink: 0;">
-                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.2rem;">🛒 I want to buy (cost):</label>
+                <div class="items-container" style="flex: none; flex-shrink: 0; gap: 6px;">
+                    <label style="font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
+                        <span style="font-size: 1.2rem;">🛒</span> I want to buy:
+                    </label>
                     
-                    <!-- UNLOCKED LIST: Allows the whole page to scroll as items are added -->
-                    <div id="items-list" style="display: flex; flex-direction: column; gap: 8px; flex-shrink: 0;">
+                    <div id="items-list" style="height: 142px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; padding-right: 4px; -webkit-overflow-scrolling: touch;">
                         <div class="item-row" style="margin-bottom: 0;">
                             <div class="currency-wrapper">
                                 <span class="currency-symbol">$</span>
@@ -70,31 +68,23 @@
                             </button>
                         </div>
                     </div>
-                    <button class="add-item-btn" onclick="addItem()" style="margin-top: 8px; padding: 0.8rem;">➕ Add Another Item</button>
-                </div>
-
-                <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 1rem; margin-bottom: 1.5rem; flex-shrink: 0;">
-                    <p style="font-size: 1.1rem; margin: 0;">Total Cost <span style="font-size: 1.2rem;">🛒</span></p>
-                    <h2 id="total-cost-display" style="font-size: 1.6rem; margin: 0;">$0.00</h2>
-                </div>
-
-                <!-- NORMAL PAYMENT SECTION -->
-                <div id="payment-section" style="text-align: center; flex-shrink: 0; display: flex; flex-direction: column; padding-bottom: 10px;">
-                    <p style="margin: 0 0 5px 0; font-weight:bold; font-size: 1.1rem; display:flex; align-items:center; justify-content:center; gap:6px;">
-                        Amount to pay cashier:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-                    </p>
-                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color);">$0.00</h2>
-                    <div class="payment-graphics-container" id="give-cashier-graphics">
-                        <p style="opacity: 0.5; margin: auto; font-size: 1rem;">Enter cost...</p>
+                    <button class="add-item-btn" onclick="addItem()" style="margin: 0; padding: 0.4rem;">➕ Add Another Item</button>
+                    
+                    <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0.5rem 0.8rem; margin: 0;">
+                        <p style="font-size: 1rem; margin: 0;">Total Cost <span style="font-size: 1.1rem;">🛒</span></p>
+                        <h2 id="total-cost-display" style="font-size: 1.4rem; margin: 0;">$0.00</h2>
                     </div>
                 </div>
 
-                <!-- INLINE ERROR SECTION (Replaces the Payment Section seamlessly) -->
-                <div id="inline-error-box" class="inline-error-box">
-                    <div class="giant-icon">❌</div>
-                    <h2>Not Enough Money</h2>
-                    <p>Choose Cheaper Items</p>
+                <div style="text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0; margin-top: 4px;">
+                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
+                        Amount to pay cashier:
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+                    </p>
+                    <h2 id="pay-amount-text" style="margin: 0; font-size: 1.8rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
+                    <div class="payment-graphics-container" id="give-cashier-graphics">
+                        <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
+                    </div>
                 </div>
             </div>
             
@@ -102,6 +92,13 @@
                 <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
                     I have paid Cashier
                 </button>
+            </div>
+
+            <!-- ERROR OVERLAY -->
+            <div id="error-payment-section" class="error-payment-section">
+                <div style="font-size: 4rem; line-height: 1; margin-bottom: 10px;">❌</div>
+                <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">Not Enough Money</h2>
+                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Choose Cheaper Items</p>
             </div>
         </div>
 
@@ -171,6 +168,10 @@
         const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
         const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
 
+        // CRITICAL UI UPGRADE: Massive, bold SVGs instead of text characters for + and -
+        const minusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
+        const plusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
+
         function renderGrid(containerId, countsObj, totalElemId) {
             const container = document.getElementById(containerId);
             container.innerHTML = '';
@@ -181,9 +182,9 @@
                 item.innerHTML = `
                     ${graphic}
                     <div class="wallet-controls">
-                        <button class="control-btn minus" onclick="updateCount(${d.val}, -1, '${containerId}', '${totalElemId}')">-</button>
+                        <button class="control-btn minus" onclick="updateCount(${d.val}, -1, '${containerId}', '${totalElemId}')">${minusSvg}</button>
                         <span class="control-count" id="count-${containerId}-${d.val}">${countsObj[d.val]}</span>
-                        <button class="control-btn plus" onclick="updateCount(${d.val}, 1, '${containerId}', '${totalElemId}')">+</button>
+                        <button class="control-btn plus" onclick="updateCount(${d.val}, 1, '${containerId}', '${totalElemId}')">${plusSvg}</button>
                     </div>
                 `;
                 container.appendChild(item);
@@ -243,6 +244,7 @@
             const list = document.getElementById('items-list');
             const row = document.createElement('div');
             row.className = 'item-row';
+            row.style.marginBottom = '0';
             row.innerHTML = `
                 <div class="currency-wrapper">
                     <span class="currency-symbol">$</span>
@@ -254,10 +256,7 @@
             `;
             list.appendChild(row);
             row.querySelector('.item-cost').focus(); 
-            
-            // Scroll entire body down
-            const body = document.getElementById('step-2-body');
-            body.scrollTop = body.scrollHeight;
+            list.scrollTop = list.scrollHeight;
         }
 
         function removeItem(btn) {
@@ -280,46 +279,25 @@
 
             const walletCents = Math.round(parseFloat(totalWallet) * 100);
             
-            // UI Elements
-            const affordBanner = document.getElementById('affordability-banner');
             const costBox = document.getElementById('cost-indicator-box');
+            const errorOverlay = document.getElementById('error-payment-section');
             const costDisplay = document.getElementById('total-cost-display');
-            const paymentSection = document.getElementById('payment-section');
-            const inlineError = document.getElementById('inline-error-box');
-            const paidBtn = document.getElementById('btn-paid-cashier');
             
             costDisplay.innerText = `$${(totalCostCents / 100).toFixed(2)}`;
 
-            // --- INLINE ERROR LOGIC ---
             if (totalCostCents > walletCents) {
-                affordBanner.className = 'affordability-banner danger';
-                affordBanner.innerText = '❌ CANNOT BUY';
                 costBox.classList.remove('summary-box-safe');
                 costBox.classList.add('summary-box-danger');
-                
-                // Swap the normal payment view for the giant error block
-                paymentSection.style.display = 'none';
-                inlineError.style.display = 'flex';
-                paidBtn.disabled = true;
-                
-                // Scroll to ensure the error is visible
-                const body = document.getElementById('step-2-body');
-                body.scrollTop = body.scrollHeight;
-                return;
+                errorOverlay.style.display = 'flex'; 
             } else {
-                affordBanner.className = 'affordability-banner safe';
-                affordBanner.innerText = '✅ CAN BUY';
                 costBox.classList.remove('summary-box-danger');
                 costBox.classList.add('summary-box-safe');
-                
-                // Restore normal view
-                inlineError.style.display = 'none';
-                paymentSection.style.display = 'flex';
+                errorOverlay.style.display = 'none'; 
             }
 
-            // --- NORMAL PAYMENT CALCULATION ---
             const graphicsContainer = document.getElementById('give-cashier-graphics');
             const payText = document.getElementById('pay-amount-text');
+            const paidBtn = document.getElementById('btn-paid-cashier');
 
             if (totalCostCents <= 0) {
                 payText.innerText = '$0.00';
@@ -329,10 +307,17 @@
                 return;
             }
 
+            if (totalCostCents > walletCents) {
+                payText.innerText = "Insufficient Funds";
+                graphicsContainer.innerHTML = '';
+                paidBtn.disabled = true;
+                return;
+            }
+
             const bestPaymentArray = calculateOptimalPayment(totalCostCents);
             
             if (bestPaymentArray.length === 0) {
-                payText.innerText = "Cannot calculate exact payment";
+                payText.innerText = "Cannot make exact payment";
                 payText.style.color = "var(--error-color)";
                 graphicsContainer.innerHTML = '';
                 paidBtn.disabled = true;
