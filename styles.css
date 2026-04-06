@@ -1,422 +1,307 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Purchasing | LifeCount</title>
-    <link rel="stylesheet" href="../styles.css">
-</head>
-<body>
-    <header class="top-bar">
-        <button class="back-btn" onclick="goBack()" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-            Back
-        </button>
-        <h1 id="header-title">
-            Wallet 
-            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-        </h1>
-        <div class="header-actions">
-            <a href="../index.html" class="header-icon-btn" aria-label="Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </a>
-            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
-        </div>
-    </header>
+/* CSS Variables for seamless Light/Dark Mode */
+:root {
+    --bg-color: #f4f7f6;
+    --text-color: #333333;
+    --card-bg: #ffffff;
+    --card-border: #e0e0e0;
+    --primary-color: #4a90e2;
+    --success-color: #4CAF50; 
+    --error-color: #F44336;   
+    --time-block-bg: #E06666; 
+    --app-height: 100vh; 
+}[data-theme="dark"] {
+    --bg-color: #121212;
+    --text-color: #e0e0e0;
+    --card-bg: #1e1e1e;
+    --card-border: #333333;
+    --primary-color: #64b5f6;
+    --success-color: #81C784;
+    --error-color: #E57373;
+    --time-block-bg: #D32F2F;
+}
 
-    <main class="page-content">
+/* Bulletproof Viewport Lock */
+html, body {
+    margin: 0; padding: 0; width: 100vw; 
+    overflow: hidden; position: fixed; touch-action: none; 
+}
 
-        <!-- STEP 1: WALLET SETUP -->
-        <div id="step-1" class="flow-step active">
-            <div class="content-body">
-                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
-                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
-                </div>
-                <div class="wallet-grid" id="wallet-grid-container"></div>
-            </div>
-            <div class="step-footer">
-                <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
-            </div>
-        </div>
+body {
+    height: var(--app-height); 
+    background-color: var(--bg-color); color: var(--text-color);
+    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    transition: background-color 0.3s, color 0.3s;
+    display: flex; flex-direction: column;
+}
 
-        <!-- STEP 2: PAY CASHIER -->
-        <div id="step-2" class="flow-step">
-            <div class="content-body" id="step-2-body" style="padding-bottom: 0; gap: 8px;">
-                
-                <!-- DYNAMIC TOP BANNER -->
-                <div id="affordability-banner" class="affordability-banner safe">✅ CAN BUY</div>
+.top-bar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 0.6rem 1.5rem; background-color: var(--card-bg);
+    border-bottom: 2px solid var(--card-border); flex-shrink: 0; z-index: 10;
+}
+.top-bar h1 { margin: 0; font-size: 1.3rem; text-align: center; flex-grow: 1; display: flex; justify-content: center; align-items: center; gap: 8px; }
+.back-btn {
+    display: flex; align-items: center; gap: 0.25rem; text-decoration: none;
+    color: var(--primary-color); font-weight: 600; font-size: 1.1rem; white-space: nowrap; 
+    background: none; border: none; padding: 0; cursor: pointer; font-family: inherit;
+}
+.header-actions { display: flex; align-items: center; gap: 15px; }
+.header-icon-btn {
+    background: none; border: none; padding: 0; cursor: pointer; 
+    color: var(--text-color); display: flex; align-items: center; justify-content: center;
+}
+.inline-icon { width: 24px; height: 24px; display: inline-block; vertical-align: bottom; }
 
-                <div class="summary-box summary-box-safe" style="flex: none; flex-shrink: 0; padding: 0.4rem;">
-                    <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                        I have in my wallet: 
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                    </p>
-                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
-                </div>
+/* --- ANIMATIONS & TOAST MESSAGES --- */
+@keyframes spin { 100% { transform: rotate(360deg); } }
+.spin { animation: spin 1s linear infinite; }
+@keyframes popIn { 0% { transform: scale(0.8); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
 
-                <div class="items-container" style="flex: none; flex-shrink: 0; gap: 6px;">
-                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem; flex-shrink: 0;">🛒 I want to buy:</label>
-                    <div id="items-list" style="height: 142px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; padding-right: 4px; -webkit-overflow-scrolling: touch;">
-                        <div class="item-row" style="margin-bottom: 0;">
-                            <div class="currency-wrapper">
-                                <span class="currency-symbol">$</span>
-                                <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
-                            </div>
-                            <button class="remove-item-btn" onclick="removeItem(this)">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                            </button>
-                        </div>
-                    </div>
-                    <button class="add-item-btn" onclick="addItem()" style="margin: 0; padding: 0.4rem;">➕ Add Another Item</button>
-                    
-                    <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0.5rem 0.8rem; margin: 0;">
-                        <p style="font-size: 1rem; margin: 0;">Total Cost <span style="font-size: 1.1rem;">🛒</span></p>
-                        <h2 id="total-cost-display" style="font-size: 1.4rem; margin: 0;">$0.00</h2>
-                    </div>
-                </div>
+.toast {
+    visibility: hidden; min-width: 250px; background-color: var(--success-color); color: #fff;
+    text-align: center; border-radius: 8px; padding: 16px; position: fixed; z-index: 10000;
+    left: 50%; bottom: max(30px, env(safe-area-inset-bottom, 20px)); transform: translateX(-50%) translateY(20px);
+    font-size: 1.1rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    opacity: 0; transition: opacity 0.3s ease, transform 0.3s ease, visibility 0.3s;
+}
+.toast.show { visibility: visible; opacity: 1; transform: translateX(-50%) translateY(0); }
 
-                <div style="text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0; margin-top: 4px;">
-                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
-                        Amount to pay cashier:
-                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-                    </p>
-                    <h2 id="pay-amount-text" style="margin: 0; font-size: 1.8rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
-                    <div class="payment-graphics-container" id="give-cashier-graphics">
-                        <p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="step-footer">
-                <button class="primary-btn" id="btn-paid-cashier" style="background-color: var(--success-color);" onclick="goToStep3()" disabled>
-                    I have paid Cashier
-                </button>
+/* --- CONTENT CONTAINERS --- */
+.menu-container, .page-content {
+    flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; position: relative;
+}
+.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; justify-content: center; }
 
-                <!-- DYNAMIC ERROR BUTTON (Swaps perfectly into the footer) -->
-                <div id="btn-not-enough" class="primary-btn" style="background-color: #E57373 !important; display: none; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 0.4rem; height: auto;">
-                    <span style="font-size: 1.2rem; font-weight: bold; color: white;">❌ Not Enough Money</span>
-                    <span style="font-size: 0.95rem; font-weight: normal; color: white;">Choose Cheaper Items</span>
-                </div>
-            </div>
-        </div>
+.flow-step { 
+    display: none; position: absolute; top:0; left:0; width:100%; height: 100%;
+    flex-direction: column; box-sizing: border-box; overflow: hidden;
+}
+.flow-step.active { display: flex; animation: popIn 0.2s ease-out; }
 
-        <!-- STEP 3: CHANGE RECEIVED -->
-        <div id="step-3" class="flow-step">
-            <div class="content-body">
-                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
-                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
-                </div>
-                <div class="wallet-grid" id="change-grid-container"></div>
-            </div>
-            <div class="step-footer">
-                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">Is it correct?</button>
-            </div>
-        </div>
+.content-body {
+    flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; 
+    overflow-y: auto; scrollbar-width: none; padding: 1rem; padding-bottom: 0; 
+    -webkit-overflow-scrolling: touch; 
+}
+.content-body::-webkit-scrollbar { display: none; }
 
-    </main>
+.step-footer {
+    flex-shrink: 0; padding: 10px 1rem; 
+    padding-bottom: max(1rem, env(safe-area-inset-bottom, 15px));
+    background-color: var(--bg-color); 
+}
 
-    <!-- STEP 4: BIG BOTTOM SHEET NOTIFICATION -->
-    <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
-    <div class="bottom-sheet" id="result-sheet">
-        <div id="sheet-content-correct" style="display:none; flex-direction: column; align-items: center;">
-            <div class="giant-icon">✅</div>
-            <h2>Correct Change!</h2>
-            <p>You received the right amount.</p>
-        </div>
-        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
-            <div class="giant-icon">❌</div>
-            <h2>Wrong Change</h2>
-            <p>
-                Please inform the cashier
-                <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-            </p>
-        </div>
-        <div class="sheet-btn-group" style="margin-top: 15px;">
-            <button class="primary-btn" id="sheet-home-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0; display:flex; align-items:center; justify-content:center; gap:8px;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-                Main Menu
-            </button>
-            <button class="primary-btn" id="retry-btn" onclick="retryChange()" style="background-color: #9C27B0; color: #ffffff; border: none; padding:0.8rem; margin:0;">
-                Check New Change
-            </button>
-        </div>
-    </div>
+.menu-card, .action-btn {
+    display: flex; align-items: center; padding: 1.5rem; background-color: var(--card-bg);
+    border: 2px solid var(--card-border); border-radius: 12px; text-decoration: none;
+    color: var(--text-color); box-shadow: 0 4px 6px rgba(0,0,0,0.05); flex-shrink: 0;
+}
+.menu-card .icon { font-size: 2.5rem; margin-right: 1.5rem; }
+.menu-card h2 { margin: 0; font-size: 1.3rem; }
+.money-card { border-left: 8px solid var(--success-color); }
+.time-card { border-left: 8px solid var(--primary-color); }
+.other-card { border-left: 8px solid #FF9800; }
 
-    <script src="../app.js"></script>
-    <script>
-        const denominations =[
-            { val: 50, img: '../assets/note-50.png', label: '$50', type: 'note' },
-            { val: 10, img: '../assets/note-10.png', label: '$10', type: 'note' },
-            { val: 5,  img: '../assets/note-5.png',  label: '$5',  type: 'note' },
-            { val: 2,  img: '../assets/note-2.png',  label: '$2',  type: 'note' },
-            { val: 1,  img: '../assets/coin-1.png',  label: '$1',  type: 'coin' },
-            { val: 0.5,img: '../assets/coin-50c.png',label: '50¢', type: 'coin' },
-            { val: 0.2,img: '../assets/coin-20c.png',label: '20¢', type: 'coin' },
-            { val: 0.1,img: '../assets/coin-10c.png',label: '10¢', type: 'coin' },
-            { val: 0.05,img: '../assets/coin-5c.png',label: '5¢',  type: 'coin' }
-        ];
+.input-group { margin-bottom: 0.8rem; display: flex; flex-direction: column; gap: 0.3rem; flex-shrink: 0; }
+.input-group label { font-size: 1.1rem; font-weight: 600; display: flex; align-items: center; gap: 6px; }
 
-        let walletCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
-        let changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
-        let totalWallet = 0;
-        let expectedChange = 0; 
-        let currentStep = 1;
+.large-input {
+    font-size: 1.5rem; padding: 0.5rem; flex-grow: 1; border: 2px solid var(--card-border); 
+    border-radius: 8px; background-color: var(--card-bg); color: var(--text-color); width: 100%; box-sizing: border-box;
+}
 
-        const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-        const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
+/* --- HARDCODED DARK MODE BANNERS FOR BOTH THEMES --- */
+.affordability-banner {
+    position: sticky; top: -1rem; margin: -1rem -1rem 0.8rem -1rem; padding: 0.8rem;
+    text-align: center; font-size: 1.4rem; font-weight: 900; color: #ffffff;
+    z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.2); text-transform: uppercase; letter-spacing: 1px;
+}
+.affordability-banner.safe { background-color: #81C784 !important; }
+.affordability-banner.danger { background-color: #E57373 !important; }
 
-        const minusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
-        const plusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
+.summary-box {
+    flex: 1; border: 2px solid; border-radius: 8px; padding: 0.6rem; text-align: center;
+    transition: all 0.3s ease; box-sizing: border-box; display: flex; flex-direction: column; justify-content: center;
+}
+.summary-box p { margin: 0; font-size: 0.85rem; font-weight: bold; opacity: 0.9; }
+.summary-box h2 { margin: 0; font-size: 1.5rem; }
+.summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
+.summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
 
-        function renderGrid(containerId, countsObj, totalElemId) {
-            const container = document.getElementById(containerId);
-            container.innerHTML = '';
-            denominations.forEach(d => {
-                const item = document.createElement('div');
-                item.className = 'wallet-item';
-                const graphic = `<img src="${d.img}" alt="${d.label}" class="currency-img ${d.type}">`;
-                item.innerHTML = `
-                    ${graphic}
-                    <div class="wallet-controls">
-                        <button class="control-btn minus" onclick="updateCount(${d.val}, -1, '${containerId}', '${totalElemId}')">${minusSvg}</button>
-                        <span class="control-count" id="count-${containerId}-${d.val}">${countsObj[d.val]}</span>
-                        <button class="control-btn plus" onclick="updateCount(${d.val}, 1, '${containerId}', '${totalElemId}')">${plusSvg}</button>
-                    </div>
-                `;
-                container.appendChild(item);
-            });
-        }
+.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 5px;}
+.item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; height: 42px; }
+.currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; height: 100%; }
+.currency-symbol { position: absolute; left: 12px; font-size: 1.4rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
+.currency-wrapper .large-input { padding-left: 32px; margin: 0; height: 100%; font-size: 1.3rem; }
+.remove-item-btn { 
+    background: transparent; color: var(--error-color); border: 2px solid var(--error-color); 
+    border-radius: 8px; width: 42px; height: 42px; cursor: pointer; display: flex; 
+    justify-content: center; align-items: center; flex-shrink: 0; transition: background 0.2s;
+}
+.remove-item-btn:active { background: var(--error-color); color: white; }
+.add-item-btn { 
+    background: transparent; border: 2px dashed var(--primary-color); color: var(--primary-color); 
+    padding: 0.4rem; border-radius: 8px; font-weight: bold; font-size: 1rem; cursor: pointer; 
+    width: 100%; flex-shrink: 0; margin-bottom: 6px; display: flex; justify-content: center; align-items: center; gap: 8px;
+}
 
-        function updateCount(val, delta, containerId, totalElemId) {
-            let countsObj = containerId === 'wallet-grid-container' ? walletCounts : changeCounts;
-            if (countsObj[val] + delta >= 0) {
-                countsObj[val] += delta;
-                document.getElementById(`count-${containerId}-${val}`).innerText = countsObj[val];
-                recalcTotal(countsObj, totalElemId);
-            }
-        }
+.time-picker-wrapper { position: relative; width: 100%; display: flex; align-items: center; }
+.time-picker-display { cursor: pointer; }
+.time-picker-native { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; z-index: 2; cursor: pointer; -webkit-appearance: none; }
 
-        function recalcTotal(countsObj, totalElemId) {
-            let totalCents = 0;
-            for (const[val, count] of Object.entries(countsObj)) {
-                totalCents += Math.round(parseFloat(val) * 100) * count;
-            }
-            const totalDollars = (totalCents / 100).toFixed(2);
-            document.getElementById(totalElemId).innerText = totalDollars;
-            if (totalElemId === 'wallet-total') totalWallet = totalDollars;
-        }
+.primary-btn {
+    background-color: var(--primary-color); color: white; border: none; border-radius: 8px;
+    padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: bold; width: 100%; box-sizing: border-box;
+    text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: block; cursor: pointer; width: 100%;
+    flex-shrink: 0 !important; margin-top: auto !important; 
+}
+.primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
-        renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
-        renderGrid('change-grid-container', changeCounts, 'change-total');
+.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
+.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
+.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
+.time-block input {
+    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
+    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
+}
 
-        function goBack() {
-            if (currentStep === 3) goToStep2();
-            else if (currentStep === 2) goToStep1();
-            else window.location.href = '../index.html';
-        }
+/* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
+.wallet-grid { 
+    display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
+    grid-template-rows: repeat(5, minmax(0, 1fr)); gap: 4px; flex: 1 1 0%; min-height: 0; height: 100%;
+}
+.wallet-item {
+    border: 1px solid var(--card-border); padding: 4px; display: flex; flex-direction: column; 
+    align-items: center; justify-content: space-evenly; background-color: var(--card-bg); 
+    min-height: 0; overflow: hidden; border-radius: 8px;
+}
+.wallet-controls { display: flex; align-items: center; justify-content: center; gap: 16px; width: 100%; flex-shrink: 0; }
+.control-btn {
+    width: 36px; height: 36px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
+    display: flex; align-items: center; justify-content: center; cursor: pointer; 
+    flex-shrink: 0; padding: 4px; margin: 0;
+}
+.control-btn svg { width: 100%; height: 100%; }
+.control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
+.control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
+.control-count { font-size: 1.2rem; font-weight: bold; width: 24px; text-align: center; color: var(--text-color); }
 
-        function switchStep(stepNum, titleHtml) {
-            currentStep = stepNum;
-            document.querySelectorAll('.flow-step').forEach(el => el.classList.remove('active'));
-            document.getElementById(`step-${stepNum}`).classList.add('active');
-            document.getElementById('header-title').innerHTML = titleHtml;
-        }
+.currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-height: 100%; max-width: 90%; }
 
-        function goToStep1() { switchStep(1, `Wallet ${walletSvg}`); }
+.payment-graphics-container {
+    display: flex; flex-wrap: wrap; justify-content: center; align-items: center; align-content: center; gap: 8px; margin-top: 5px;
+    padding: 10px; background-color: rgba(0,0,0,0.03); border-radius: 8px; 
+    flex: none; min-height: 50px; 
+}[data-theme="dark"] .payment-graphics-container { background-color: rgba(255,255,255,0.05); }
 
-        function goToStep2() {
-            if (parseFloat(totalWallet) === 0) {
-                alert("Your wallet is empty! Please add money first.");
-                return;
-            }
-            document.getElementById('step2-wallet-total').innerText = totalWallet;
-            calculateTotalCost(); 
-            switchStep(2, `Pay Cashier ${cashierSvg}`);
-        }
+.payment-img { object-fit: contain; box-shadow: 0 3px 6px rgba(0,0,0,0.2); margin: 4px; }
+.payment-img.note { width: 140px; height: auto; border-radius: 6px; }
+.payment-img.coin { width: 70px; height: auto; border-radius: 50%; }
 
-        function goToStep3() { switchStep(3, "Check Change 💵"); }
+@media (max-height: 700px) {
+    .wallet-item { flex-direction: row; justify-content: space-evenly; gap: 4px; padding: 2px 4px; }
+    .wallet-controls { margin-top: 0; width: auto; gap: 12px; }
+    .control-btn { width: 34px; height: 34px; padding: 4px; }
+    .currency-img.note { width: 60px; height: 28px; }
+    .currency-img.coin { width: 28px; height: 28px; }
+    h1 { font-size: 1.5rem !important; }
+    h2 { font-size: 1.2rem !important; }
+    .primary-btn { padding: 0.6rem; font-size: 1.1rem; }
+    .payment-img.note { width: 100px; }
+    .payment-img.coin { width: 50px; }
+}
 
-        function addItem() {
-            const list = document.getElementById('items-list');
-            const row = document.createElement('div');
-            row.className = 'item-row';
-            row.style.marginBottom = '0';
-            row.innerHTML = `
-                <div class="currency-wrapper">
-                    <span class="currency-symbol">$</span>
-                    <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
-                </div>
-                <button class="remove-item-btn" onclick="removeItem(this)">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                </button>
-            `;
-            list.appendChild(row);
-            row.querySelector('.item-cost').focus(); 
-            list.scrollTop = list.scrollHeight;
-        }
+/* --- BOTTOM SHEET --- */
+.bottom-sheet-backdrop {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+    background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
+}
+.bottom-sheet {
+    position: fixed; bottom: 0; left: 0; width: 100%; height: 55vh; height: 55dvh;
+    background: var(--card-bg); border-top-left-radius: 30px; border-top-right-radius: 30px;
+    box-shadow: 0 -10px 25px rgba(0,0,0,0.2); z-index: 10000;
+    transform: translateY(100%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: 1rem; box-sizing: border-box; text-align: center;
+}
+.bottom-sheet-backdrop.show { display: block; opacity: 1; }
+.bottom-sheet.show { transform: translateY(0); }
+.bottom-sheet .giant-icon { font-size: 5rem; line-height: 1; margin-bottom: 5px; }
+.bottom-sheet h2 { font-size: 2.2rem; margin: 0 0 5px 0; }
+.bottom-sheet p { font-size: 1.1rem; margin: 0 0 15px 0; color: var(--text-color); opacity: 0.8; display: flex; align-items: center; justify-content: center; gap: 8px;}
+.bottom-sheet.correct h2 { color: var(--success-color); }
+.bottom-sheet.wrong h2 { color: var(--error-color); }
+.sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
 
-        function removeItem(btn) {
-            const list = document.getElementById('items-list');
-            if (list.children.length > 1) {
-                btn.parentElement.remove();
-                calculateTotalCost(); 
-            } else {
-                btn.previousElementSibling.querySelector('input').value = '';
-                calculateTotalCost();
-            }
-        }
+/* --- OBNOXIOUS NOTIFICATION STYLES --- */
+.obnoxious-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+    z-index: 999999; display: flex; flex-direction: column; justify-content: center;
+    align-items: center; text-align: center; padding: 1.5rem; box-sizing: border-box;
+    animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+}
+.obnoxious-overlay.good { background-color: #4CAF50; color: white; }
+.obnoxious-overlay.bad { background-color: #F44336; color: white; }
+.obnoxious-overlay .giant-icon { font-size: 10rem; margin-bottom: 1rem; line-height: 1; }
+.obnoxious-overlay h1 { font-size: 3.5rem; margin: 0 0 1rem 0; text-transform: uppercase; line-height: 1.1; }
+.obnoxious-overlay p { font-size: 1.8rem; margin: 0 0 3rem 0; font-weight: bold; }
+.obnoxious-btn {
+    background-color: rgba(255,255,255,0.3); border: 4px solid white; color: white;
+    font-size: 1.5rem; font-weight: bold; padding: 1.2rem 2rem; border-radius: 16px;
+    cursor: pointer; width: 100%; max-width: 350px; box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+}
+.obnoxious-btn:active { transform: scale(0.95); }
 
-        function calculateTotalCost() {
-            const inputs = document.querySelectorAll('.item-cost');
-            let totalCostCents = 0;
-            inputs.forEach(input => {
-                totalCostCents += Math.round(parseFloat(input.value || 0) * 100);
-            });
+.processing-overlay {
+    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
+    background: rgba(0,0,0,0.8); z-index: 999990; display: flex; flex-direction: column;
+    justify-content: center; align-items: center; color: white;
+}
+.processing-spinner { font-size: 5rem; animation: spin 1s linear infinite; margin-bottom: 20px; }
 
-            const walletCents = Math.round(parseFloat(totalWallet) * 100);
-            
-            // UI Elements
-            const affordBanner = document.getElementById('affordability-banner');
-            const costBox = document.getElementById('cost-indicator-box');
-            const costDisplay = document.getElementById('total-cost-display');
-            const paidBtn = document.getElementById('btn-paid-cashier');
-            const notEnoughBtn = document.getElementById('btn-not-enough');
-            const graphicsContainer = document.getElementById('give-cashier-graphics');
-            const payText = document.getElementById('pay-amount-text');
-            
-            costDisplay.innerText = `$${(totalCostCents / 100).toFixed(2)}`;
+/* --- ROLODEX PICKER --- */
+.rolodex-sheet { height: 320px; padding: 0; }
+.rolodex-header {
+    display: flex; justify-content: space-between; align-items: center; width: 100%;
+    padding: 15px 20px; box-sizing: border-box; border-bottom: 1px solid var(--card-border);
+    font-size: 1.2rem; font-weight: bold; background: var(--card-bg);
+    border-top-left-radius: 30px; border-top-right-radius: 30px; z-index: 10; position: relative;
+}
+.rolodex-cancel { color: var(--error-color); cursor: pointer; }
+.rolodex-title { color: var(--text-color); font-size: 1.3rem; }
+.rolodex-save { color: var(--success-color); cursor: pointer; }
 
-            // Reset Button State
-            paidBtn.style.display = 'block';
-            notEnoughBtn.style.display = 'none';
+.rolodex-body { display: flex; width: 100%; height: 220px; position: relative; background: var(--bg-color); overflow: hidden; }
 
-            if (totalCostCents > walletCents) {
-                affordBanner.className = 'affordability-banner danger';
-                affordBanner.innerText = '❌ CANNOT BUY';
-                costBox.classList.remove('summary-box-safe');
-                costBox.classList.add('summary-box-danger');
-                
-                paidBtn.style.display = 'none';
-                notEnoughBtn.style.display = 'flex';
-                
-                payText.innerText = "Insufficient Funds";
-                graphicsContainer.innerHTML = '';
-                
-                const body = document.getElementById('step-2-body');
-                body.scrollTop = body.scrollHeight;
-                return;
-            } else {
-                affordBanner.className = 'affordability-banner safe';
-                affordBanner.innerText = '✅ CAN BUY';
-                costBox.classList.remove('summary-box-danger');
-                costBox.classList.add('summary-box-safe');
-            }
+.rolodex-highlight {
+    position: absolute; top: 50%; left: 0; width: 100%; height: 44px; transform: translateY(-50%);
+    background: rgba(74, 144, 226, 0.15); border-top: 2px solid var(--primary-color); 
+    border-bottom: 2px solid var(--primary-color); pointer-events: none; z-index: 2;
+}
 
-            if (totalCostCents <= 0) {
-                payText.innerText = '$0.00';
-                payText.style.color = "var(--primary-color)";
-                graphicsContainer.innerHTML = '<p style="opacity: 0.5; margin: auto; font-size: 0.9rem;">Enter cost...</p>';
-                paidBtn.disabled = true;
-                return;
-            }
+.rolodex-col-wrapper { position: relative; display: flex; align-items: center; justify-content: center; height: 100%; }
 
-            const bestPaymentArray = calculateOptimalPayment(totalCostCents);
-            
-            if (bestPaymentArray.length === 0) {
-                payText.innerText = "Cannot make exact payment";
-                payText.style.color = "var(--error-color)";
-                graphicsContainer.innerHTML = '';
-                paidBtn.disabled = true;
-                return;
-            }
+.rolodex-col-wrapper:not(:last-child)::after {
+    content: ''; position: absolute; top: 15%; bottom: 15%; right: 0; width: 1px;
+    background-color: var(--card-border); z-index: 5;
+}
 
-            let paymentSumCents = 0;
-            graphicsContainer.innerHTML = '';
-            
-            bestPaymentArray.forEach(valCents => {
-                paymentSumCents += valCents;
-                const d = denominations.find(denom => Math.round(denom.val * 100) === valCents);
-                graphicsContainer.innerHTML += `<img src="${d.img}" alt="${d.label}" class="payment-img ${d.type}">`;
-            });
-
-            payText.innerText = `$${(paymentSumCents / 100).toFixed(2)}`;
-            payText.style.color = "var(--success-color)";
-            paidBtn.disabled = false;
-            expectedChange = paymentSumCents - totalCostCents;
-        }
-
-        function calculateOptimalPayment(costCents) {
-            let inventory =[];
-            denominations.forEach(d => {
-                let valCents = Math.round(d.val * 100);
-                for (let i = 0; i < walletCounts[d.val]; i++) inventory.push(valCents);
-            });
-            inventory.sort((a,b) => b - a);
-
-            let bestSum = Infinity;
-            let bestSubset =[];
-
-            function dfs(index, currentSubset, currentSum) {
-                if (currentSum >= costCents) {
-                    if (currentSum < bestSum || (currentSum === bestSum && currentSubset.length < bestSubset.length)) {
-                        bestSum = currentSum; bestSubset =[...currentSubset];
-                    }
-                    return;
-                }
-                if (index >= inventory.length) return;
-                currentSubset.push(inventory[index]);
-                dfs(index + 1, currentSubset, currentSum + inventory[index]);
-                currentSubset.pop();
-                dfs(index + 1, currentSubset, currentSum);
-            }
-
-            if (inventory.length <= 22) {
-                dfs(0,[], 0);
-            } else {
-                let sum = 0;
-                for (let v of inventory) {
-                    bestSubset.push(v);
-                    sum += v;
-                    if (sum >= costCents) break;
-                }
-            }
-            return bestSubset;
-        }
-
-        function checkChange() {
-            let actualChangeCents = 0;
-            for (const[val, count] of Object.entries(changeCounts)) {
-                actualChangeCents += Math.round(parseFloat(val) * 100) * count;
-            }
-
-            const isCorrect = actualChangeCents === expectedChange;
-            document.getElementById('sheet-backdrop').classList.add('show');
-            const sheet = document.getElementById('result-sheet');
-            
-            document.getElementById('sheet-content-correct').style.display = isCorrect ? 'flex' : 'none';
-            document.getElementById('sheet-content-wrong').style.display = isCorrect ? 'none' : 'flex';
-            
-            if (isCorrect) {
-                document.getElementById('sheet-home-btn').style.display = 'flex';
-                document.getElementById('retry-btn').style.display = 'none';
-            } else {
-                document.getElementById('sheet-home-btn').style.display = 'none';
-                document.getElementById('retry-btn').style.display = 'block';
-            }
-            
-            sheet.classList.remove('correct', 'wrong');
-            sheet.classList.add(isCorrect ? 'correct' : 'wrong');
-            sheet.classList.add('show');
-        }
-
-        function retryChange() {
-            document.getElementById('sheet-backdrop').classList.remove('show');
-            document.getElementById('result-sheet').classList.remove('show');
-            changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
-            renderGrid('change-grid-container', changeCounts, 'change-total');
-        }
-    </script>
-</body>
-</html>
+.rolodex-col {
+    flex: 1; position: relative; z-index: 1; width: 100%; height: 100%;
+    touch-action: none; cursor: grab;
+}
+.rolodex-col:active { cursor: grabbing; }
+.rolodex-col-inner { padding: 88px 0; margin: 0; display: flex; flex-direction: column; width: 100%; }
+.rolodex-col.has-suffix .rolodex-item { padding-right: 50px; }
+.rolodex-static-label {
+    position: absolute; top: 50%; transform: translateY(-50%); 
+    left: calc(50% + 5px); 
+    font-size: 1.1rem; font-weight: 800; color: var(--primary-color);
+    pointer-events: none; z-index: 3; text-align: left;
+}
+.rolodex-item {
+    height: 44px; display: flex; align-items: center; justify-content: center;
+    color: var(--text-color); opacity: 0.3; transition: opacity 0.2s ease, font-size 0.2s ease;
+    user-select: none; white-space: nowrap; font-size: 1.2rem; flex-shrink: 0;
+}
+.rolodex-item.active { opacity: 1; font-weight: 900; color: var(--primary-color); font-size: clamp(1.1rem, 4.5vw, 1.5rem); }
