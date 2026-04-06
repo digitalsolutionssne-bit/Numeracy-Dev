@@ -44,7 +44,6 @@
         <div id="step-2" class="flow-step">
             <div class="content-body" style="padding-bottom: 0; gap: 8px;">
                 
-                <!-- TOP BANNER (Wallet) -->
                 <div class="summary-box summary-box-safe" style="flex: none; flex-shrink: 0; padding: 0.4rem;">
                     <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                         I have in my wallet: 
@@ -53,13 +52,11 @@
                     <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
                 </div>
 
-                <!-- RIGID CART SECTION (Contains Item List + Add Button + Total Box) -->
                 <div class="items-container" style="flex: none; flex-shrink: 0; gap: 6px;">
                     <label style="font-weight: bold; font-size: 1.1rem; display: flex; align-items: center; gap: 4px; margin-bottom: 2px;">
                         <span style="font-size: 1.2rem;">🛒</span> I want to buy:
                     </label>
                     
-                    <!-- CRITICAL FIX: Height strictly locked to precisely 3 items. Automatically scrolls if > 3 -->
                     <div id="items-list" style="height: 142px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; padding-right: 4px; -webkit-overflow-scrolling: touch;">
                         <div class="item-row" style="margin-bottom: 0;">
                             <div class="currency-wrapper">
@@ -80,7 +77,6 @@
                     </div>
                 </div>
 
-                <!-- CASHIER GRAPHICS SECTION (Expands to fill remaining bottom space) -->
                 <div style="text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0; margin-top: 4px;">
                     <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
                         Amount to pay cashier:
@@ -103,7 +99,7 @@
             <div id="error-payment-section" class="error-payment-section">
                 <div style="font-size: 4rem; line-height: 1; margin-bottom: 10px;">❌</div>
                 <h2 style="margin: 0 0 5px 0; font-size: 1.8rem;">Not Enough Money</h2>
-                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Reduce cost by removing items or choosing cheaper items</p>
+                <p style="margin: 0; font-size: 1.1rem; opacity: 0.9;">Choose Cheaper Items</p>
             </div>
         </div>
 
