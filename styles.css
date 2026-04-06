@@ -23,8 +23,7 @@
 /* Bulletproof Viewport Lock */
 html, body {
     margin: 0; padding: 0; width: 100vw; 
-    overflow: hidden; position: fixed; 
-    overscroll-behavior-y: none; 
+    overflow: hidden; position: fixed; touch-action: none; 
 }
 
 body {
@@ -71,18 +70,7 @@ body {
 .menu-container, .page-content {
     flex: 1 1 0%; min-height: 0; display: flex; flex-direction: column; position: relative;
 }
-
-/* ========================================================================= */
-/* CRITICAL FIX: Ensures Menu Pages always populate vertically from the center */
-/* ========================================================================= */
-.menu-container { 
-    gap: 1rem; 
-    padding: 1.5rem; 
-    overflow-y: auto; 
-    -webkit-overflow-scrolling: touch; 
-    justify-content: center; /* This centers the items! */
-}
-/* ========================================================================= */
+.menu-container { gap: 1rem; padding: 1.5rem; overflow-y: auto; justify-content: center; }
 
 .flow-step { 
     display: none; position: absolute; top:0; left:0; width:100%; height: 100%;
@@ -131,10 +119,7 @@ body {
 .summary-box-safe { background-color: rgba(76, 175, 80, 0.15); border-color: var(--success-color); color: var(--success-color); }
 .summary-box-danger { background-color: rgba(244, 67, 54, 0.15); border-color: var(--error-color); color: var(--error-color); }
 
-.items-container { 
-    flex: 1 1 0%; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; 
-    display: flex; flex-direction: column; padding-right: 5px;
-}
+.items-container { flex: 1 1 0%; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; padding-right: 5px;}
 .item-row { display: flex; gap: 8px; margin-bottom: 8px; align-items: center; flex-shrink: 0; }
 .currency-wrapper { position: relative; flex-grow: 1; display: flex; align-items: center; }
 .currency-symbol { position: absolute; left: 12px; font-size: 1.5rem; font-weight: bold; color: var(--text-color); pointer-events: none; }
@@ -159,6 +144,14 @@ body {
 }
 .primary-btn:disabled { background-color: #aaa; cursor: not-allowed; }
 
+.time-block-container { display: flex; gap: 1rem; flex-shrink: 0; }
+.time-block { flex: 1; display: flex; flex-direction: column; text-align: center; gap: 5px; }
+.time-block label { font-size: 1rem; font-weight: bold; color: var(--text-color); }
+.time-block input {
+    background-color: var(--time-block-bg); color: white; border: none; border-radius: 8px; 
+    padding: 0.8rem; font-size: 1.5rem; text-align: center; font-weight: bold; width: 100%; box-sizing: border-box;
+}
+
 /* --- IMAGE BASED SINGAPORE MONEY GRAPHICS --- */
 .wallet-grid { 
     display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); 
@@ -170,14 +163,16 @@ body {
     min-height: 0; overflow: hidden; border-radius: 8px;
 }
 .wallet-controls { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; flex-shrink: 0; }
+
+/* CRITICAL UPDATE: 50% larger +/- buttons */
 .control-btn {
-    width: 24px; height: 24px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
-    font-size: 1.2rem; font-weight: bold; display: flex; align-items: center; justify-content: center; 
-    cursor: pointer; line-height: 1; flex-shrink: 0;
+    width: 36px; height: 36px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
+    font-size: 1.8rem; font-weight: bold; display: flex; align-items: center; justify-content: center; 
+    cursor: pointer; line-height: 1; flex-shrink: 0; padding: 0; margin: 0;
 }
 .control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
 .control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
-.control-count { font-size: 1.1rem; font-weight: bold; width: 18px; text-align: center; color: var(--text-color); }
+.control-count { font-size: 1.3rem; font-weight: bold; width: 22px; text-align: center; color: var(--text-color); }
 
 .currency-img { object-fit: contain; flex: 1 1 0%; min-height: 0; max-height: 100%; max-width: 90%; }
 .currency-img.note { width: auto; height: auto; }
@@ -193,10 +188,12 @@ body {
 .payment-img.note { width: 140px; height: auto; border-radius: 6px; }
 .payment-img.coin { width: 70px; height: auto; border-radius: 50%; }
 
+/* Small Screen Handling */
 @media (max-height: 700px) {
     .wallet-item { flex-direction: row; justify-content: space-evenly; gap: 4px; padding: 2px 4px; }
     .wallet-controls { margin-top: 0; width: auto; gap: 6px; }
-    .control-btn { width: 24px; height: 24px; font-size: 1rem; }
+    /* Up to +50% larger on small screens too */
+    .control-btn { width: 34px; height: 34px; font-size: 1.5rem; }
     .currency-img.note { width: 60px; height: 28px; }
     .currency-img.coin { width: 28px; height: 28px; }
     h1 { font-size: 1.5rem !important; }
@@ -206,7 +203,7 @@ body {
     .payment-img.coin { width: 50px; }
 }
 
-/* --- BOTTOM SHEET --- */
+/* --- BOTTOM SHEET & OBNOXIOUS OVERLAYS --- */
 .bottom-sheet-backdrop {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     background: rgba(0,0,0,0.6); z-index: 9999; display: none; opacity: 0; transition: opacity 0.3s;
@@ -228,7 +225,6 @@ body {
 .bottom-sheet.wrong h2 { color: var(--error-color); }
 .sheet-btn-group { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; }
 
-/* --- OBNOXIOUS NOTIFICATION STYLES --- */
 .obnoxious-overlay {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh;
     z-index: 999999; display: flex; flex-direction: column; justify-content: center;
