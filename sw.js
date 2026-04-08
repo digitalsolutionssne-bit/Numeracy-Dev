@@ -1,4 +1,4 @@
-const CACHE_NAME = 'numpal-cache-v65';
+const CACHE_NAME = 'numpal-cache-v66';
 
 const urlsToCache =[
    './',
