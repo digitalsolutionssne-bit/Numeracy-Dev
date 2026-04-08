@@ -1,46 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LifeCount</title>
-    <link rel="manifest" href="manifest.json">
-    <link rel="stylesheet" href="styles.css">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <title>NumPal</title>
+   <link rel="manifest" href="manifest.json">
+   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header class="top-bar">
-        <button id="force-update-btn" aria-label="Force Update App" style="background:none; border:none; padding: 0; cursor: pointer; color: var(--primary-color); display: flex; align-items: center;">
-            <svg class="update-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
-                <path d="M21 3v5h-5"></path>
-            </svg>
-        </button>
-        
-        <h1>LifeCount</h1>
-        
-        <div class="header-actions">
-            <a href="index.html" class="header-icon-btn" aria-label="Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </a>
-            <button id="theme-toggle" class="header-icon-btn" aria-label="Toggle Dark Mode" style="font-size:1.5rem;">🌗</button>
-        </div>
-    </header>
+   <header class="top-bar">
+       <button id="force-update-btn" aria-label="Force Update App" style="background:none; border:none; padding: 0; cursor: pointer; color: var(--primary-color); display: flex; align-items: center;">
+           <svg class="update-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+               <path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"></path>
+               <path d="M21 3v5h-5"></path>
+           </svg>
+       </button>
+       
+       <h1>NumPal</h1>
+       
+       <div class="header-actions">
+           <a href="index.html" class="header-icon-btn" aria-label="Home">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+           </a>
+           <button id="theme-toggle" class="header-icon-btn" aria-label="Toggle Dark Mode" style="font-size:1.5rem;">🌗</button>
+       </div>
+   </header>
 
-    <main class="menu-container">
-        <a href="pages/purchasing.html" class="menu-card money-card">
-            <span class="icon">🛒</span>
-            <h2>Purchasing</h2>
-        </a>
-        <a href="pages/time-menu.html" class="menu-card time-card">
-            <span class="icon">⌚</span>
-            <h2>Time</h2>
-        </a>
-        <a href="pages/expiry.html" class="menu-card other-card">
-            <span class="icon">📅</span>
-            <h2>Expiration Date</h2>
-        </a>
-    </main>
+   <main class="menu-container">
+       <a href="pages/purchasing.html" class="menu-card money-card">
+           <span class="icon">🛒</span>
+           <h2>Purchasing 1</h2>
+       </a>
+       <a href="pages/purchasing2.html" class="menu-card money-card">
+           <span class="icon">🛍️</span>
+           <h2>Purchasing 2</h2>
+       </a>
+       <a href="pages/time-menu.html" class="menu-card time-card">
+           <span class="icon">⌚</span>
+           <h2>Time</h2>
+       </a>
+       <a href="pages/expiry.html" class="menu-card other-card">
+           <span class="icon">📅</span>
+           <h2>Expiration Date</h2>
+       </a>
+   </main>
 
-    <script src="app.js"></script>
+   <script src="app.js"></script>
 </body>
 </html>
