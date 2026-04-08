@@ -54,7 +54,7 @@
 
    <main class="page-content">
 
-       <!-- STEP 1: WALLET SETUP (Identical logic to Purchasing 1) -->
+       <!-- STEP 1: WALLET SETUP -->
        <div id="step-1" class="flow-step active">
            <div class="content-body">
                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
@@ -87,11 +87,12 @@
            </div>
            
            <!-- Scrolling Main Body -->
-           <div class="content-body" style="flex: 1 1 0%; padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
+           <div class="content-body" style="flex: 1 1 0%; padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
                
                <!-- Items to buy -->
-               <div class="items-container" style="flex-shrink: 0; overflow: visible;">
+               <div class="items-container" style="flex: 0 0 auto; overflow: visible; display: flex; flex-direction: column;">
                    <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem;">I want to buy (cost of items)</label>
+                   
                    <div id="items-list" style="display: flex; flex-direction: column; gap: 8px;">
                        <div class="item-row" style="margin-bottom: 0;">
                            <div class="currency-wrapper">
@@ -103,17 +104,18 @@
                            </button>
                        </div>
                    </div>
+                   
                    <button class="add-item-btn" onclick="addItem()" style="margin-top: 8px; padding: 0.4rem;">⊕ ADD ITEM</button>
                </div>
 
                <!-- Total Cost summary (Left aligned) -->
-               <div class="p2-cost-row">
+               <div class="p2-cost-row" style="flex: 0 0 auto;">
                    <span style="font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Total cost</span>
                    <span style="font-size: 2.2rem; font-weight: bold;">$<span id="total-cost-display">0.00</span></span>
                </div>
 
                <!-- Give Cashier graphics (Only visible if CAN BUY, distinct visual style) -->
-               <div id="give-cashier-section" style="display: none; flex-direction: column; flex-shrink: 0; border-top: 3px dashed var(--card-border); padding-top: 15px;">
+               <div id="give-cashier-section" style="display: none; flex-direction: column; flex: 0 0 auto; border-top: 3px dashed var(--card-border); padding-top: 15px;">
                    <h3 style="color: var(--primary-color); font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0;">Give Cashier</h3>
                    <div class="payment-graphics-container" id="give-cashier-graphics" style="background: rgba(74, 144, 226, 0.05); border: 2px solid rgba(74, 144, 226, 0.2); padding: 15px; border-radius: 8px; justify-content: flex-start; align-items: flex-start;">
                    </div>
@@ -130,7 +132,7 @@
            </div>
        </div>
 
-       <!-- STEP 3: CHECK MONEY (Purchasing 2 Header layout) -->
+       <!-- STEP 3: CHECK MONEY -->
        <div id="step-3" class="flow-step">
            <div class="content-body">
                <div class="check-money-header">
@@ -275,7 +277,7 @@
        }
 
        function goToStep1() { 
-           switchStep(1, `Wallet`); 
+           switchStep(1, `Purchasing`); 
        }
 
        function goToStep2() {
@@ -289,7 +291,7 @@
        }
 
        function goToStep3() { 
-           switchStep(3, "Check Money"); 
+           switchStep(3, "Purchasing"); 
        }
 
        function addItem() {
@@ -308,6 +310,12 @@
            `;
            list.appendChild(row);
            row.querySelector('.item-cost').focus(); 
+           
+           // Auto-scroll the content body down when adding a new item
+           setTimeout(() => {
+               const contentBody = document.querySelector('#step-2 .content-body');
+               contentBody.scrollTo({ top: contentBody.scrollHeight, behavior: 'smooth' });
+           }, 50);
        }
 
        function removeItem(btn) {
