@@ -6,32 +6,30 @@
    <title>Purchasing 2 | NumPal</title>
    <link rel="stylesheet" href="../styles.css">
    <style>
-       /* Specific Layout Styles for Purchasing 2 Workflow */
-       .status-sidebar {
-           width: 48px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-           color: white; font-weight: bold; font-size: 1.2rem; letter-spacing: 1px;
-           writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase;
-           transition: background-color 0.3s;
+       /* Purchasing 2 Layout specific styling */
+       .status-banner {
+           display: flex; align-items: center; justify-content: center; gap: 10px;
+           padding: 12px; color: white; font-weight: bold; font-size: 1.2rem; letter-spacing: 1px;
+           text-transform: uppercase; transition: background-color 0.3s; flex-shrink: 0;
+           width: 100%; box-sizing: border-box;
        }
-       .status-sidebar.can-buy { background-color: var(--success-color); }
-       .status-sidebar.cannot-buy { background-color: var(--error-color); }
-       .status-sidebar.neutral { background-color: #9e9e9e; }
-       [data-theme="dark"] .status-sidebar.neutral { background-color: #555; }
+       .status-banner.can-buy { background-color: var(--success-color); }
+       .status-banner.cannot-buy { background-color: var(--error-color); }
        
        .p2-header-box {
            display: flex; justify-content: space-between; align-items: center; 
-           padding: 0.8rem; border-radius: 8px; border: 2px solid var(--card-border); 
-           background-color: var(--card-bg); margin-bottom: 10px;
+           padding: 0.6rem 1rem; border-bottom: 2px solid var(--card-border); 
+           background-color: var(--card-bg); flex-shrink: 0;
        }
        .p2-cost-row {
-           display: flex; justify-content: space-between; align-items: center; 
-           border-top: 2px solid var(--card-border); padding-top: 10px; margin-top: 5px;
+           display: flex; align-items: center; justify-content: flex-start; gap: 15px;
+           border-top: 3px solid var(--card-border); padding-top: 15px; margin-top: 5px;
        }
        
        /* Split Top Header for Step 3 */
        .check-money-header {
            display: flex; justify-content: space-between; align-items: center; 
-           margin-bottom: 15px; padding: 0 10px;
+           margin-bottom: 15px; padding: 0 10px; flex-shrink: 0;
        }
        .check-money-header > div { text-align: center; width: 48%; }
        .check-money-header p { margin: 0; font-weight: bold; font-size: 1rem; }
@@ -70,74 +68,69 @@
            </div>
        </div>
 
-       <!-- STEP 2: VIDEO WORKFLOW LAYOUT -->
+       <!-- STEP 2: DYNAMIC LAYOUT -->
        <div id="step-2" class="flow-step">
-           <div style="display: flex; height: 100%; width: 100%;">
-               <!-- Dynamic Left Sidebar -->
-               <div id="status-sidebar" class="status-sidebar neutral">
-                   <span id="status-icon" style="transform: rotate(90deg); margin-bottom: 15px;">
-                       <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>
-                   </span>
-                   <span id="status-text">ENTER COST</span>
+           
+           <!-- Dynamic Top Status Banner -->
+           <div id="status-banner" class="status-banner" style="display: none;">
+               <span id="status-icon"></span>
+               <span id="status-text"></span>
+           </div>
+
+           <!-- Non-Scrolling Compact Header Area -->
+           <div class="p2-header-box">
+               <div style="display: flex; align-items: center; gap: 8px;">
+                   <span style="font-size: 0.9rem; font-weight: bold; opacity: 0.8;">I have:</span>
+                   <span style="font-size: 1.4rem; font-weight: bold;">$<span id="step2-wallet-total">0.00</span></span>
                </div>
+               <button class="primary-btn" style="width: auto; padding: 0.4rem 0.8rem; margin: 0 !important; font-size: 0.85rem; background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color);" onclick="goToStep1()">VIEW WALLET</button>
+           </div>
+           
+           <!-- Scrolling Main Body -->
+           <div class="content-body" style="flex: 1 1 0%; padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
                
-               <!-- Main Body -->
-               <div style="display: flex; flex-direction: column; flex: 1; min-width: 0;">
-                   <div class="content-body" style="padding-bottom: 0; gap: 6px;">
-                       
-                       <!-- Header box (I have / View Wallet) -->
-                       <div class="p2-header-box">
-                           <div>
-                               <div style="font-size: 0.9rem; font-weight: bold; opacity: 0.8;">I have</div>
-                               <div style="font-size: 1.5rem; font-weight: bold;">$<span id="step2-wallet-total">0.00</span></div>
+               <!-- Items to buy -->
+               <div class="items-container" style="flex-shrink: 0; overflow: visible;">
+                   <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem;">I want to buy (cost of items)</label>
+                   <div id="items-list" style="display: flex; flex-direction: column; gap: 8px;">
+                       <div class="item-row" style="margin-bottom: 0;">
+                           <div class="currency-wrapper">
+                               <span class="currency-symbol">$</span>
+                               <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
                            </div>
-                           <button class="primary-btn" style="width: auto; padding: 0.5rem 1rem; margin: 0 !important; font-size: 0.9rem; background-color: var(--primary-color);" onclick="goToStep1()">VIEW WALLET</button>
-                       </div>
-
-                       <!-- Items to buy -->
-                       <div class="items-container" style="flex: none; flex-shrink: 0;">
-                           <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem;">I want to buy (cost of items)</label>
-                           <div id="items-list" style="max-height: 142px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; scrollbar-width: none; padding-right: 4px;">
-                               <div class="item-row" style="margin-bottom: 0;">
-                                   <div class="currency-wrapper">
-                                       <span class="currency-symbol">$</span>
-                                       <input type="number" class="large-input item-cost" placeholder="0.00" step="0.01" min="0" oninput="calculateTotalCost()">
-                                   </div>
-                                   <button class="remove-item-btn" onclick="removeItem(this)">
-                                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
-                                   </button>
-                               </div>
-                           </div>
-                           <button class="add-item-btn" onclick="addItem()" style="margin-top: 8px; padding: 0.4rem;">⊕ ADD ITEM</button>
-                       </div>
-
-                       <!-- Total Cost summary -->
-                       <div class="p2-cost-row">
-                           <span style="font-weight: bold; font-size: 1.1rem;">Total cost</span>
-                           <span style="font-size: 2rem; font-weight: bold;">$<span id="total-cost-display">0.00</span></span>
-                       </div>
-
-                       <!-- Give Cashier graphics (Only visible if CAN BUY) -->
-                       <div id="give-cashier-section" style="display: none; flex-direction: column; flex: 1; min-height: 0;">
-                           <span style="font-weight: bold; font-size: 1rem; margin-bottom: 5px;">Give cashier</span>
-                           <div class="payment-graphics-container" id="give-cashier-graphics" style="flex: 1; align-items: flex-start; justify-content: flex-start; padding: 5px; background: transparent; border: 1px dashed var(--card-border);">
-                           </div>
+                           <button class="remove-item-btn" onclick="removeItem(this)">
+                               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/><line x1="10" x2="10" y1="11" y2="17"/><line x1="14" x2="14" y1="11" y2="17"/></svg>
+                           </button>
                        </div>
                    </div>
-                   
-                   <!-- Footer for Step 2 -->
-                   <div class="step-footer" id="step2-footer" style="display: none; justify-content: space-between; align-items: center; padding: 10px 1rem; background-color: var(--card-bg); border-top: 2px solid var(--card-border);">
-                       <div style="display: flex; flex-direction: column;">
-                           <span style="font-weight: bold; font-size: 0.9rem;">Change amount</span>
-                           <span style="font-size: 1.5rem; font-weight: bold; color: var(--success-color);">$<span id="change-amount-display">0.00</span></span>
-                       </div>
-                       <button class="primary-btn" id="btn-check-money" style="width: auto; margin: 0 !important; background-color: var(--primary-color);" onclick="goToStep3()">CHECK MONEY</button>
+                   <button class="add-item-btn" onclick="addItem()" style="margin-top: 8px; padding: 0.4rem;">⊕ ADD ITEM</button>
+               </div>
+
+               <!-- Total Cost summary (Left aligned) -->
+               <div class="p2-cost-row">
+                   <span style="font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Total cost</span>
+                   <span style="font-size: 2.2rem; font-weight: bold;">$<span id="total-cost-display">0.00</span></span>
+               </div>
+
+               <!-- Give Cashier graphics (Only visible if CAN BUY, distinct visual style) -->
+               <div id="give-cashier-section" style="display: none; flex-direction: column; flex-shrink: 0; border-top: 3px dashed var(--card-border); padding-top: 15px;">
+                   <h3 style="color: var(--primary-color); font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0;">Give Cashier</h3>
+                   <div class="payment-graphics-container" id="give-cashier-graphics" style="background: rgba(74, 144, 226, 0.05); border: 2px solid rgba(74, 144, 226, 0.2); padding: 15px; border-radius: 8px; justify-content: flex-start; align-items: flex-start;">
                    </div>
                </div>
            </div>
+           
+           <!-- Non-Scrolling Footer -->
+           <div class="step-footer" id="step2-footer" style="display: none; justify-content: space-between; align-items: center; padding: 10px 1rem; background-color: var(--card-bg); border-top: 2px solid var(--card-border);">
+               <div style="display: flex; flex-direction: column;">
+                   <span style="font-weight: bold; font-size: 0.9rem;">Change amount</span>
+                   <span style="font-size: 1.6rem; font-weight: bold; color: var(--success-color);">$<span id="change-amount-display">0.00</span></span>
+               </div>
+               <button class="primary-btn" id="btn-check-money" style="width: auto; margin: 0 !important; background-color: var(--primary-color);" onclick="goToStep3()">CHECK MONEY</button>
+           </div>
        </div>
 
-       <!-- STEP 3: CHECK MONEY (Purchasing 1 UI + Purchasing 2 Header layout) -->
+       <!-- STEP 3: CHECK MONEY (Purchasing 2 Header layout) -->
        <div id="step-3" class="flow-step">
            <div class="content-body">
                <div class="check-money-header">
@@ -145,7 +138,7 @@
                        <p>Change Amount</p>
                        <h2>$<span id="step3-expected-change">0.00</span></h2>
                    </div>
-                   <div>
+                   <div id="cashier-gave-box" style="padding: 10px; border-radius: 8px; transition: background-color 0.3s;">
                        <p>Cashier Gave</p>
                        <h2>$<span id="change-total">0.00</span></h2>
                    </div>
@@ -170,9 +163,9 @@
        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
            <div class="giant-icon">❌</div>
            <h2>Wrong Change</h2>
-           <p>
+           <p style="text-align: center; display: flex; flex-direction: column; gap: 8px;">
                Please inform the cashier
-               <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+               <strong style="font-size: 1.2rem; color: var(--text-color);">Say "Sorry, wrong change"</strong>
            </p>
        </div>
        <div class="sheet-btn-group" style="margin-top: 15px;">
@@ -207,6 +200,7 @@
        let currentStep = 1;
 
        const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
+
        const minusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
        const plusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
 
@@ -245,7 +239,23 @@
            }
            const totalDollars = (totalCents / 100).toFixed(2);
            document.getElementById(totalElemId).innerText = totalDollars;
-           if (totalElemId === 'wallet-total') totalWallet = totalDollars;
+           
+           if (totalElemId === 'wallet-total') {
+               totalWallet = totalDollars;
+           }
+
+           if (totalElemId === 'change-total') {
+               const cashierBox = document.getElementById('cashier-gave-box');
+               if (cashierBox) {
+                   if (totalCents > expectedChange) {
+                       cashierBox.style.backgroundColor = 'rgba(244, 67, 54, 0.15)'; 
+                       cashierBox.style.color = 'var(--error-color)';
+                   } else {
+                       cashierBox.style.backgroundColor = 'transparent';
+                       cashierBox.style.color = 'inherit';
+                   }
+               }
+           }
        }
 
        renderGrid('wallet-grid-container', walletCounts, 'wallet-total');
@@ -298,7 +308,6 @@
            `;
            list.appendChild(row);
            row.querySelector('.item-cost').focus(); 
-           list.scrollTop = list.scrollHeight;
        }
 
        function removeItem(btn) {
@@ -323,7 +332,7 @@
            const costDisplay = document.getElementById('total-cost-display');
            costDisplay.innerText = (totalCostCents / 100).toFixed(2);
 
-           const sidebar = document.getElementById('status-sidebar');
+           const banner = document.getElementById('status-banner');
            const statusIcon = document.getElementById('status-icon');
            const statusText = document.getElementById('status-text');
            
@@ -346,19 +355,16 @@
            }
 
            if (totalCostCents === 0) {
-               sidebar.className = 'status-sidebar neutral';
-               statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="16"></line><line x1="8" y1="12" x2="16" y2="12"></line></svg>`;
-               statusIcon.style.transform = 'rotate(90deg)';
-               statusText.innerText = 'ENTER COST';
+               banner.style.display = 'none';
                giveCashierSection.style.display = 'none';
                step2Footer.style.display = 'none';
                return;
            }
 
            if (canBuy) {
-               sidebar.className = 'status-sidebar can-buy';
-               statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><path d="M20 6L9 17l-5-5"></path></svg>`;
-               statusIcon.style.transform = 'rotate(90deg)';
+               banner.style.display = 'flex';
+               banner.className = 'status-banner can-buy';
+               statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3" fill="none"><path d="M20 6L9 17l-5-5"></path></svg>`;
                statusText.innerText = 'CAN BUY';
                
                graphicsContainer.innerHTML = '';
@@ -375,9 +381,9 @@
                giveCashierSection.style.display = 'flex';
                step2Footer.style.display = 'flex';
            } else {
-               sidebar.className = 'status-sidebar cannot-buy';
-               statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
-               statusIcon.style.transform = 'rotate(90deg)';
+               banner.style.display = 'flex';
+               banner.className = 'status-banner cannot-buy';
+               statusIcon.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="3" fill="none"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>`;
                statusText.innerText = 'CANNOT BUY';
                
                giveCashierSection.style.display = 'none';
@@ -454,6 +460,7 @@
            document.getElementById('result-sheet').classList.remove('show');
            changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
            renderGrid('change-grid-container', changeCounts, 'change-total');
+           recalcTotal(changeCounts, 'change-total');
        }
    </script>
 </body>
