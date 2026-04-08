@@ -9,7 +9,7 @@
        /* Purchasing 2 Layout specific styling */
        .status-banner {
            display: flex; align-items: center; justify-content: center; gap: 10px;
-           padding: 12px; color: white; font-weight: bold; font-size: 1.2rem; letter-spacing: 1px;
+           padding: 8px; color: white; font-weight: bold; font-size: 1.5rem; letter-spacing: 1px;
            text-transform: uppercase; transition: background-color 0.3s; flex-shrink: 0;
            width: 100%; box-sizing: border-box;
        }
@@ -18,23 +18,33 @@
        
        .p2-header-box {
            display: flex; justify-content: space-between; align-items: center; 
-           padding: 0.6rem 1rem; border-bottom: 2px solid var(--card-border); 
-           background-color: var(--card-bg); flex-shrink: 0;
+           padding: 0.4rem 0.8rem; border-bottom: 2px solid var(--card-border); 
+           background-color: var(--card-bg); flex-shrink: 0; width: 100%; box-sizing: border-box;
        }
        .p2-cost-row {
            display: flex; align-items: center; justify-content: flex-start; gap: 15px;
-           border-top: 3px solid var(--card-border); padding-top: 15px; margin-top: 5px;
+           border-top: 3px solid var(--card-border); padding-top: 8px; margin-top: 0;
        }
        
        /* Split Top Header for Step 3 */
        .check-money-header {
            display: flex; justify-content: space-between; align-items: center; 
-           margin-bottom: 15px; padding: 0 10px; flex-shrink: 0;
+           margin-bottom: 5px; padding: 0 5px; flex-shrink: 0;
        }
        .check-money-header > div { text-align: center; width: 48%; }
        .check-money-header p { margin: 0; font-weight: bold; font-size: 1rem; }
        .check-money-header h2 { margin: 0; font-size: 1.8rem; }
        .expected-change-col p, .expected-change-col h2 { color: var(--success-color); }
+
+       /* Settings Row for bottom sheet */
+       .setting-row { 
+           display: flex; justify-content: space-between; align-items: center;
+           padding: 15px 0; border-bottom: 1px solid var(--card-border); 
+           font-size: 1.1rem; font-weight: bold; cursor: pointer; color: var(--text-color);
+       }
+       .setting-row input[type="checkbox"] {
+           width: 24px; height: 24px; accent-color: var(--primary-color);
+       }
    </style>
 </head>
 <body>
@@ -45,6 +55,8 @@
        </button>
        <h1 id="header-title">Wallet</h1>
        <div class="header-actions">
+           <!-- New Settings Icon specific to Purchasing 2 -->
+           <button onclick="openSettings()" class="header-icon-btn" aria-label="Settings" style="font-size:1.5rem;">⚙️</button>
            <a href="../index.html" class="header-icon-btn" aria-label="Home">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
            </a>
@@ -56,14 +68,14 @@
 
        <!-- STEP 1: WALLET SETUP -->
        <div id="step-1" class="flow-step active">
-           <div class="content-body">
-               <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
+           <div class="content-body" style="padding-bottom: 10px; gap: 5px;">
+               <div style="text-align: center; flex-shrink: 0; margin-bottom: 0;">
                    <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
                </div>
-               <div class="wallet-grid" id="wallet-grid-container"></div>
+               <div class="wallet-grid" id="wallet-grid-container" style="gap: 2px;"></div>
            </div>
-           <div class="step-footer">
+           <div class="step-footer" style="padding-top: 5px;">
                <button class="primary-btn" id="btn-next-step" onclick="goToStep2()">Next</button>
            </div>
        </div>
@@ -71,29 +83,37 @@
        <!-- STEP 2: DYNAMIC LAYOUT -->
        <div id="step-2" class="flow-step">
            
-           <!-- Dynamic Top Status Banner -->
-           <div id="status-banner" class="status-banner" style="display: none;">
-               <span id="status-icon"></span>
-               <span id="status-text"></span>
-           </div>
-
-           <!-- Non-Scrolling Compact Header Area -->
-           <div class="p2-header-box">
-               <div style="display: flex; align-items: center; gap: 8px;">
-                   <span style="font-size: 0.9rem; font-weight: bold; opacity: 0.8;">I have:</span>
-                   <span style="font-size: 1.4rem; font-weight: bold;">$<span id="step2-wallet-total">0.00</span></span>
+           <!-- ZONE FOR NON-SCROLLING TOP ELEMENTS -->
+           <div id="sticky-top-zone" style="flex: none; display: flex; flex-direction: column;">
+               
+               <!-- Dynamic Top Status Banner -->
+               <div id="status-banner" class="status-banner" style="display: none;">
+                   <span id="status-icon"></span>
+                   <span id="status-text"></span>
                </div>
-               <button class="primary-btn" style="width: auto; padding: 0.4rem 0.8rem; margin: 0 !important; font-size: 0.85rem; background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color);" onclick="goToStep1()">VIEW WALLET</button>
+
+               <!-- Compact Header Area (I have / View Wallet) -->
+               <div id="p2-header-box-id" class="p2-header-box">
+                   <div style="display: flex; align-items: center; gap: 8px;">
+                       <span style="font-size: 1.2rem; font-weight: bold; opacity: 0.8;">I have:</span>
+                       <span style="font-size: 1.8rem; font-weight: bold;">$<span id="step2-wallet-total">0.00</span></span>
+                   </div>
+                   <button class="primary-btn" style="width: auto; padding: 0.4rem 0.8rem; margin: 0 !important; font-size: 0.85rem; background-color: transparent; color: var(--primary-color); border: 2px solid var(--primary-color);" onclick="goToStep1()">VIEW WALLET</button>
+               </div>
+
            </div>
            
            <!-- Scrolling Main Body -->
-           <div class="content-body" style="flex: 1 1 0%; padding-bottom: 20px; display: flex; flex-direction: column; gap: 15px; overflow-y: auto;">
+           <div class="content-body" style="flex: 1 1 0%; padding-bottom: 10px; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
                
-               <!-- Items to buy -->
-               <div class="items-container" style="flex: 0 0 auto; overflow: visible; display: flex; flex-direction: column;">
-                   <label style="margin-bottom: 8px; display: block; font-weight: bold; font-size: 1.1rem;">I want to buy (cost of items)</label>
+               <!-- ZONE FOR SCROLLING TOP ELEMENTS -->
+               <div id="scroll-top-zone" style="flex: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;"></div>
+
+               <!-- Items to buy (flex: none prevents iOS squishing) -->
+               <div style="flex: none; display: flex; flex-direction: column;">
+                   <label style="margin-bottom: 6px; display: block; font-weight: bold; font-size: 1.1rem;">I want to buy (cost of items)</label>
                    
-                   <div id="items-list" style="display: flex; flex-direction: column; gap: 8px;">
+                   <div id="items-list" style="display: flex; flex-direction: column; gap: 6px;">
                        <div class="item-row" style="margin-bottom: 0;">
                            <div class="currency-wrapper">
                                <span class="currency-symbol">$</span>
@@ -105,54 +125,90 @@
                        </div>
                    </div>
                    
-                   <button class="add-item-btn" onclick="addItem()" style="margin-top: 8px; padding: 0.4rem;">⊕ ADD ITEM</button>
+                   <button class="add-item-btn" onclick="addItem()" style="margin-top: 6px; padding: 0.4rem; flex: none;">⊕ ADD ITEM</button>
                </div>
 
-               <!-- Total Cost summary (Left aligned) -->
-               <div class="p2-cost-row" style="flex: 0 0 auto;">
-                   <span style="font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Total cost</span>
-                   <span style="font-size: 2.2rem; font-weight: bold;">$<span id="total-cost-display">0.00</span></span>
+               <!-- Total Cost summary (Left aligned, flex: none prevents squishing) -->
+               <div class="p2-cost-row" style="flex: none;">
+                   <span style="font-weight: bold; font-size: 1.5rem; opacity: 0.8;">Total cost</span>
+                   <span style="font-size: 2.8rem; font-weight: bold;">$<span id="total-cost-display">0.00</span></span>
                </div>
 
-               <!-- Give Cashier graphics (Only visible if CAN BUY, distinct visual style) -->
-               <div id="give-cashier-section" style="display: none; flex-direction: column; flex: 0 0 auto; border-top: 3px dashed var(--card-border); padding-top: 15px;">
-                   <h3 style="color: var(--primary-color); font-size: 1.6rem; font-weight: 900; margin: 0 0 10px 0;">Give Cashier</h3>
-                   <div class="payment-graphics-container" id="give-cashier-graphics" style="background: rgba(74, 144, 226, 0.05); border: 2px solid rgba(74, 144, 226, 0.2); padding: 15px; border-radius: 8px; justify-content: flex-start; align-items: flex-start;">
+               <!-- Give Cashier graphics (Only visible if CAN BUY, flex: none prevents squishing) -->
+               <div id="give-cashier-section" style="display: none; flex-direction: column; flex: none; border-top: 3px dashed var(--card-border); padding-top: 8px;">
+                   <h3 style="color: var(--primary-color); font-size: 1.6rem; font-weight: 900; margin: 0 0 5px 0;">Give Cashier</h3>
+                   <div class="payment-graphics-container" id="give-cashier-graphics" style="background: rgba(74, 144, 226, 0.05); border: 2px solid rgba(74, 144, 226, 0.2); padding: 10px; border-radius: 8px; justify-content: flex-start; align-items: flex-start;">
                    </div>
                </div>
+
+               <!-- ZONE FOR SCROLLING BOTTOM ELEMENTS -->
+               <div id="scroll-bottom-zone" style="flex: none; display: flex; flex-direction: column; margin-top: 5px;"></div>
            </div>
            
-           <!-- Non-Scrolling Footer -->
-           <div class="step-footer" id="step2-footer" style="display: none; justify-content: space-between; align-items: center; padding: 10px 1rem; background-color: var(--card-bg); border-top: 2px solid var(--card-border);">
-               <div style="display: flex; flex-direction: column;">
-                   <span style="font-weight: bold; font-size: 0.9rem;">Change amount</span>
-                   <span style="font-size: 1.6rem; font-weight: bold; color: var(--success-color);">$<span id="change-amount-display">0.00</span></span>
+           <!-- ZONE FOR NON-SCROLLING BOTTOM ELEMENTS -->
+           <div id="sticky-bottom-zone" style="flex: none; display: flex; flex-direction: column;">
+               
+               <!-- Non-Scrolling Footer -->
+               <div class="step-footer" id="step2-footer" style="display: none; justify-content: space-between; align-items: center; padding: 10px 1rem; background-color: var(--card-bg); border-top: 2px solid var(--card-border); width: 100%; box-sizing: border-box;">
+                   <div style="display: flex; flex-direction: column;">
+                       <span style="font-weight: bold; font-size: 0.9rem;">Change amount</span>
+                       <span style="font-size: 1.6rem; font-weight: bold; color: var(--success-color);">$<span id="change-amount-display">0.00</span></span>
+                   </div>
+                   <button class="primary-btn" id="btn-check-money" style="width: auto; margin: 0 !important; background-color: var(--primary-color);" onclick="goToStep3()">CHECK MONEY</button>
                </div>
-               <button class="primary-btn" id="btn-check-money" style="width: auto; margin: 0 !important; background-color: var(--primary-color);" onclick="goToStep3()">CHECK MONEY</button>
+
            </div>
+
        </div>
 
        <!-- STEP 3: CHECK MONEY -->
        <div id="step-3" class="flow-step">
-           <div class="content-body">
+           <div class="content-body" style="padding-bottom: 10px; gap: 5px;">
                <div class="check-money-header">
                    <div class="expected-change-col">
                        <p>Change Amount</p>
                        <h2>$<span id="step3-expected-change">0.00</span></h2>
                    </div>
-                   <div id="cashier-gave-box" style="padding: 10px; border-radius: 8px; transition: background-color 0.3s;">
+                   <div id="cashier-gave-box" style="padding: 5px; border-radius: 8px; transition: background-color 0.3s;">
                        <p>Cashier Gave</p>
                        <h2>$<span id="change-total">0.00</span></h2>
                    </div>
                </div>
-               <div class="wallet-grid" id="change-grid-container"></div>
+               <div class="wallet-grid" id="change-grid-container" style="gap: 2px;"></div>
            </div>
-           <div class="step-footer">
+           <div class="step-footer" style="padding-top: 5px;">
                <button class="primary-btn" id="btn-check-change" onclick="checkChange()">DONE</button>
            </div>
        </div>
 
    </main>
+
+   <!-- SETTINGS BOTTOM SHEET -->
+   <div class="bottom-sheet-backdrop" id="settings-backdrop"></div>
+   <div class="bottom-sheet" id="settings-sheet" style="height: auto; padding-bottom: 2rem;">
+       <div class="rolodex-header" style="justify-content: center; border: none; padding-bottom: 5px;">
+           <span class="rolodex-title" style="font-size: 1.6rem;">Scroll Settings</span>
+       </div>
+       <div style="width: 100%; padding: 0 1rem; text-align: left; box-sizing: border-box;">
+           <p style="margin-top: 0; margin-bottom: 1rem; opacity: 0.8;">Choose which sections scroll dynamically with the page:</p>
+           
+           <label class="setting-row">
+               <span>"Can Buy" Notification</span>
+               <input type="checkbox" id="setting-scroll-banner" onchange="toggleSetting('p2-scroll-banner', this.checked)">
+           </label>
+           
+           <label class="setting-row">
+               <span>"View Wallet" Section</span>
+               <input type="checkbox" id="setting-scroll-wallet" onchange="toggleSetting('p2-scroll-wallet', this.checked)">
+           </label>
+           
+           <label class="setting-row" style="border-bottom: none;">
+               <span>"Check Money" Section</span>
+               <input type="checkbox" id="setting-scroll-footer" onchange="toggleSetting('p2-scroll-footer', this.checked)">
+           </label>
+       </div>
+       <button class="primary-btn" style="margin-top: 15px; width: 100%;" onclick="closeSettings()">Done</button>
+   </div>
 
    <!-- STEP 4: BIG BOTTOM SHEET NOTIFICATION -->
    <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
@@ -201,11 +257,69 @@
        let expectedChange = 0; 
        let currentStep = 1;
 
-       const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-
        const minusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
        const plusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
 
+       // SETTINGS LOGIC
+       function applyScrollSettings() {
+           const scrollBanner = localStorage.getItem('p2-scroll-banner') === 'true';
+           const scrollWallet = localStorage.getItem('p2-scroll-wallet') === 'true';
+           const scrollFooter = localStorage.getItem('p2-scroll-footer') === 'true';
+
+           document.getElementById('setting-scroll-banner').checked = scrollBanner;
+           document.getElementById('setting-scroll-wallet').checked = scrollWallet;
+           document.getElementById('setting-scroll-footer').checked = scrollFooter;
+
+           const scrollTopZone = document.getElementById('scroll-top-zone');
+           const stickyTopZone = document.getElementById('sticky-top-zone');
+           const scrollBottomZone = document.getElementById('scroll-bottom-zone');
+           const stickyBottomZone = document.getElementById('sticky-bottom-zone');
+
+           const banner = document.getElementById('status-banner');
+           const wallet = document.getElementById('p2-header-box-id');
+           const footer = document.getElementById('step2-footer');
+
+           // Detach to maintain predictable order when re-attaching
+           banner.remove();
+           wallet.remove();
+           footer.remove();
+
+           // Reattach. Order: Banner on top, Wallet below it.
+           if (scrollBanner) scrollTopZone.appendChild(banner);
+           else stickyTopZone.appendChild(banner);
+           
+           if (scrollWallet) scrollTopZone.appendChild(wallet);
+           else stickyTopZone.appendChild(wallet);
+           
+           if (scrollFooter) scrollBottomZone.appendChild(footer);
+           else stickyBottomZone.appendChild(footer);
+       }
+
+       // Run settings initialization immediately
+       if (localStorage.getItem('p2-scroll-banner') === null) {
+           localStorage.setItem('p2-scroll-banner', 'false');
+           localStorage.setItem('p2-scroll-wallet', 'false');
+           localStorage.setItem('p2-scroll-footer', 'false');
+       }
+       applyScrollSettings();
+
+       function openSettings() {
+           document.getElementById('settings-backdrop').classList.add('show');
+           document.getElementById('settings-sheet').classList.add('show');
+       }
+
+       function closeSettings() {
+           document.getElementById('settings-backdrop').classList.remove('show');
+           document.getElementById('settings-sheet').classList.remove('show');
+       }
+
+       function toggleSetting(key, isChecked) {
+           localStorage.setItem(key, isChecked);
+           applyScrollSettings();
+       }
+
+
+       // WALLET LOGIC
        function renderGrid(containerId, countsObj, totalElemId) {
            const container = document.getElementById(containerId);
            container.innerHTML = '';
