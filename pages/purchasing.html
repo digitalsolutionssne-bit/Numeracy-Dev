@@ -12,9 +12,9 @@
            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
            Back
        </button>
-       <h1 id="header-title">
-           Wallet 
+       <h1 id="header-title" style="display:flex; align-items:center; justify-content:center; gap:8px;">
            <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+           Wallet
        </h1>
        <div class="header-actions">
            <a href="../index.html" class="header-icon-btn" aria-label="Home">
@@ -30,7 +30,7 @@
        <div id="step-1" class="flow-step active">
            <div class="content-body">
                <div style="text-align: center; flex-shrink: 0; margin-bottom: 5px;">
-                   <p style="margin: 0; font-weight: bold; font-size: 1rem;">Total Amount 💰</p>
+                   <p style="margin: 0; font-weight: bold; font-size: 1rem;">💰 Total Amount</p>
                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
                </div>
                <div class="wallet-grid" id="wallet-grid-container"></div>
@@ -46,8 +46,8 @@
                
                <div class="summary-box summary-box-safe" style="flex: none; flex-shrink: 0; padding: 0.4rem;">
                    <p style="display: flex; justify-content: center; align-items: center; gap: 5px;">
-                       I have in my wallet: 
                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
+                       I have in my wallet: 
                    </p>
                    <h2 style="margin: 0; font-size: 1.4rem;">$<span id="step2-wallet-total">0.00</span></h2>
                </div>
@@ -69,15 +69,15 @@
                    <button class="add-item-btn" onclick="addItem()" style="margin: 0; padding: 0.4rem;">➕ Add Another Item</button>
                    
                    <div id="cost-indicator-box" class="summary-box summary-box-safe" style="flex: none; flex-direction: row; justify-content: space-between; align-items: center; padding: 0.5rem 0.8rem; margin: 0;">
-                       <p style="font-size: 1rem; margin: 0;">Total Cost <span style="font-size: 1.1rem;">🛒</span></p>
+                       <p style="font-size: 1rem; margin: 0;">🛒 Total Cost</p>
                        <h2 id="total-cost-display" style="font-size: 1.4rem; margin: 0;">$0.00</h2>
                    </div>
                </div>
 
                <div style="text-align: center; flex: 1 1 0%; display: flex; flex-direction: column; min-height: 0; margin-top: 4px;">
                    <p style="margin: 0 0 2px 0; font-weight:bold; font-size: 1rem; flex-shrink: 0; display:flex; align-items:center; justify-content:center; gap:6px;">
-                       Amount to pay cashier:
                        <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+                       Amount to pay cashier:
                    </p>
                    <h2 id="pay-amount-text" style="margin: 0; font-size: 2rem; color: var(--primary-color); flex-shrink: 0;">$0.00</h2>
                    <div class="payment-graphics-container" id="give-cashier-graphics">
@@ -104,7 +104,7 @@
        <div id="step-3" class="flow-step">
            <div class="content-body">
                <div id="cashier-gave-box" style="text-align: center; flex-shrink: 0; margin-bottom: 5px; padding: 10px; border-radius: 8px; transition: background-color 0.3s;">
-                   <p style="margin: 0; font-weight: bold; font-size: 1rem;">Change Cashier Gave Me 💵</p>
+                   <p style="margin: 0; font-weight: bold; font-size: 1rem;">💵 Change Cashier Gave Me</p>
                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="change-total">0.00</span></h1>
                </div>
                <div class="wallet-grid" id="change-grid-container"></div>
@@ -239,7 +239,7 @@
            document.getElementById('header-title').innerHTML = titleHtml;
        }
 
-       function goToStep1() { switchStep(1, `Wallet ${walletSvg}`); }
+       function goToStep1() { switchStep(1, `<div style="display:flex; align-items:center; justify-content:center; gap:8px;">${walletSvg} Wallet</div>`); }
 
        function goToStep2() {
            if (parseFloat(totalWallet) === 0) {
@@ -248,10 +248,10 @@
            }
            document.getElementById('step2-wallet-total').innerText = totalWallet;
            calculateTotalCost(); 
-           switchStep(2, `Pay Cashier ${cashierSvg}`);
+           switchStep(2, `<div style="display:flex; align-items:center; justify-content:center; gap:8px;">${cashierSvg} Pay Cashier</div>`);
        }
 
-       function goToStep3() { switchStep(3, "Check Change 💵"); }
+       function goToStep3() { switchStep(3, "💵 Check Change"); }
 
        function addItem() {
            const list = document.getElementById('items-list');
