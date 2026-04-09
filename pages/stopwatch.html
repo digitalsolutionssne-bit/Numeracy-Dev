@@ -1,105 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Stop Watch | LifeCount</title>
-    <link rel="stylesheet" href="../styles.css">
-    <style>
-        .stopwatch-container {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; gap: 2.5rem; 
-        }
-        .time-display { display: flex; align-items: flex-start; justify-content: center; gap: 8px; }
-        .time-segment { display: flex; flex-direction: column; align-items: center; width: 85px; }
-        .digits { font-size: 4.5rem; color: var(--primary-color); font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
-        .colon { color: var(--primary-color); font-size: 4.5rem; font-weight: 300; line-height: 1; transform: translateY(-4px); }
-        .time-label { font-size: 1rem; color: #888; margin-top: 8px; font-weight: normal; }
-        
-        .controls-group { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; }
-        .reset-btn { background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); border-radius: 8px; padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: 600; cursor: pointer; width: 100%; box-sizing: border-box; text-align: center; visibility: hidden; }
-    </style>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <title>Stop Watch | NumPal</title>
+   <link rel="stylesheet" href="../styles.css">
+   <style>
+       .stopwatch-container {
+           display: flex; flex-direction: column; align-items: center;
+           justify-content: center; gap: 2.5rem; 
+       }
+       .time-display { display: flex; align-items: flex-start; justify-content: center; gap: 8px; }
+       .time-segment { display: flex; flex-direction: column; align-items: center; width: 85px; }
+       .digits { font-size: 4.5rem; color: var(--primary-color); font-weight: 300; line-height: 1; font-variant-numeric: tabular-nums; }
+       .colon { color: var(--primary-color); font-size: 4.5rem; font-weight: 300; line-height: 1; transform: translateY(-4px); }
+       .time-label { font-size: 1rem; color: #888; margin-top: 8px; font-weight: normal; }
+       
+       .controls-group { display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 320px; }
+       .reset-btn { background-color: transparent; color: var(--text-color); border: 2px solid var(--card-border); border-radius: 8px; padding: 0.8rem 1rem; font-size: 1.2rem; font-weight: 600; cursor: pointer; width: 100%; box-sizing: border-box; text-align: center; visibility: hidden; }
+   </style>
 </head>
 <body>
-    <header class="top-bar">
-        <a href="time-menu.html" class="back-btn" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
-        </a>
-        <h1>Stop Watch ⏱️</h1>
-        <div class="header-actions">
-            <a href="../index.html" class="header-icon-btn" aria-label="Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </a>
-            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
-        </div>
-    </header>
+   <header class="top-bar">
+       <a href="time-menu.html" class="back-btn" aria-label="Go back">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+       </a>
+       <h1>⏱️ Stop Watch</h1>
+       <div class="header-actions">
+           <a href="../index.html" class="header-icon-btn" aria-label="Home">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+           </a>
+           <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
+       </div>
+   </header>
 
-    <main class="page-content">
-        <div class="content-body" style="justify-content: center;">
-            <div class="stopwatch-container">
-                <div class="time-display">
-                    <div class="time-segment"><span id="sw-hours" class="digits">00</span><span class="time-label">hours</span></div>
-                    <span class="colon">:</span>
-                    <div class="time-segment"><span id="sw-minutes" class="digits">00</span><span class="time-label">minutes</span></div>
-                    <span class="colon">:</span>
-                    <div class="time-segment"><span id="sw-seconds" class="digits">00</span><span class="time-label">seconds</span></div>
-                </div>
-                <!-- Buttons dynamically sit under the timer -->
-                <div class="controls-group">
-                    <button class="primary-btn" id="start-stop-btn" style="margin: 0 !important;">▷ START</button>
-                    <button class="reset-btn" id="reset-btn">↺ RESET</button>
-                </div>
-            </div>
-        </div>
-    </main>
+   <main class="page-content">
+       <div class="content-body" style="justify-content: center;">
+           <div class="stopwatch-container">
+               <div class="time-display">
+                   <div class="time-segment"><span id="sw-hours" class="digits">00</span><span class="time-label">hours</span></div>
+                   <span class="colon">:</span>
+                   <div class="time-segment"><span id="sw-minutes" class="digits">00</span><span class="time-label">minutes</span></div>
+                   <span class="colon">:</span>
+                   <div class="time-segment"><span id="sw-seconds" class="digits">00</span><span class="time-label">seconds</span></div>
+               </div>
+               <div class="controls-group">
+                   <button class="primary-btn" id="start-stop-btn" style="margin: 0 !important;">▷ START</button>
+                   <button class="reset-btn" id="reset-btn">↺ RESET</button>
+               </div>
+           </div>
+       </div>
+   </main>
 
-    <script src="../app.js"></script>
-    <script>
-        let timerInterval = null;
-        let totalSeconds = 0;
-        let isRunning = false;
-        const hoursDisplay = document.getElementById('sw-hours');
-        const minutesDisplay = document.getElementById('sw-minutes');
-        const secondsDisplay = document.getElementById('sw-seconds');
-        const startStopBtn = document.getElementById('start-stop-btn');
-        const resetBtn = document.getElementById('reset-btn');
+   <script src="../app.js"></script>
+   <script>
+       let timerInterval = null;
+       let totalSeconds = 0;
+       let isRunning = false;
+       const hoursDisplay = document.getElementById('sw-hours');
+       const minutesDisplay = document.getElementById('sw-minutes');
+       const secondsDisplay = document.getElementById('sw-seconds');
+       const startStopBtn = document.getElementById('start-stop-btn');
+       const resetBtn = document.getElementById('reset-btn');
 
-        function updateDisplay() {
-            const h = Math.floor(totalSeconds / 3600);
-            const m = Math.floor((totalSeconds % 3600) / 60);
-            const s = totalSeconds % 60;
-            hoursDisplay.textContent = h.toString().padStart(2, '0');
-            minutesDisplay.textContent = m.toString().padStart(2, '0');
-            secondsDisplay.textContent = s.toString().padStart(2, '0');
-        }
+       function updateDisplay() {
+           const h = Math.floor(totalSeconds / 3600);
+           const m = Math.floor((totalSeconds % 3600) / 60);
+           const s = totalSeconds % 60;
+           hoursDisplay.textContent = h.toString().padStart(2, '0');
+           minutesDisplay.textContent = m.toString().padStart(2, '0');
+           secondsDisplay.textContent = s.toString().padStart(2, '0');
+       }
 
-        function toggleTimer() {
-            if (isRunning) {
-                clearInterval(timerInterval);
-                startStopBtn.innerHTML = "▷ START";
-                startStopBtn.style.backgroundColor = "var(--primary-color)";
-                resetBtn.style.visibility = "visible"; 
-            } else {
-                timerInterval = setInterval(() => { totalSeconds++; updateDisplay(); }, 1000);
-                startStopBtn.innerHTML = "⏸ STOP";
-                startStopBtn.style.backgroundColor = "var(--error-color)"; 
-                resetBtn.style.visibility = "hidden";
-            }
-            isRunning = !isRunning;
-        }
+       function toggleTimer() {
+           if (isRunning) {
+               clearInterval(timerInterval);
+               startStopBtn.innerHTML = "▷ START";
+               startStopBtn.style.backgroundColor = "var(--primary-color)";
+               resetBtn.style.visibility = "visible"; 
+           } else {
+               timerInterval = setInterval(() => { totalSeconds++; updateDisplay(); }, 1000);
+               startStopBtn.innerHTML = "⏸ STOP";
+               startStopBtn.style.backgroundColor = "var(--error-color)"; 
+               resetBtn.style.visibility = "hidden";
+           }
+           isRunning = !isRunning;
+       }
 
-        function resetTimer() {
-            clearInterval(timerInterval);
-            totalSeconds = 0;
-            isRunning = false;
-            updateDisplay();
-            startStopBtn.innerHTML = "▷ START";
-            startStopBtn.style.backgroundColor = "var(--primary-color)";
-            resetBtn.style.visibility = "hidden";
-        }
+       function resetTimer() {
+           clearInterval(timerInterval);
+           totalSeconds = 0;
+           isRunning = false;
+           updateDisplay();
+           startStopBtn.innerHTML = "▷ START";
+           startStopBtn.style.backgroundColor = "var(--primary-color)";
+           resetBtn.style.visibility = "hidden";
+       }
 
-        startStopBtn.addEventListener('click', toggleTimer);
-        resetBtn.addEventListener('click', resetTimer);
-    </script>
+       startStopBtn.addEventListener('click', toggleTimer);
+       resetBtn.addEventListener('click', resetTimer);
+   </script>
 </body>
 </html>
