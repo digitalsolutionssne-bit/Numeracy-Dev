@@ -1,98 +1,97 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Duration | LifeCount</title>
-    <link rel="stylesheet" href="../styles.css">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <title>Duration | NumPal</title>
+   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <header class="top-bar">
-        <a href="time-menu.html" class="back-btn" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
-        </a>
-        <h1>Duration ⏳</h1>
-        <div class="header-actions">
-            <a href="../index.html" class="header-icon-btn" aria-label="Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </a>
-            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
-        </div>
-    </header>
+   <header class="top-bar">
+       <a href="time-menu.html" class="back-btn" aria-label="Go back">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+       </a>
+       <h1>⏳ Duration</h1>
+       <div class="header-actions">
+           <a href="../index.html" class="header-icon-btn" aria-label="Home">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+           </a>
+           <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
+       </div>
+   </header>
 
-    <main class="page-content">
-        <div class="content-body time-content">
-            
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <div class="time-card-box">
-                    <h3 class="time-card-header">▶️ Start Time</h3>
-                    <p id="start-time-display" class="time-card-display" onclick="openTimePicker('start')">Tap to set time</p>
-                </div>
+   <main class="page-content">
+       <div class="content-body time-content">
+           
+           <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+               <div class="time-card-box">
+                   <h3 class="time-card-header">▶️ Start Time</h3>
+                   <p id="start-time-display" class="time-card-display" onclick="openTimePicker('start')">Tap to set time</p>
+               </div>
 
-                <div class="time-card-box">
-                    <h3 class="time-card-header">⏹️ End Time</h3>
-                    <p id="end-time-display" class="time-card-display" onclick="openTimePicker('end')">Tap to set time</p>
-                </div>
-            </div>
+               <div class="time-card-box">
+                   <h3 class="time-card-header">⏹️ End Time</h3>
+                   <p id="end-time-display" class="time-card-display" onclick="openTimePicker('end')">Tap to set time</p>
+               </div>
+           </div>
 
-            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
-                <button class="primary-btn" onclick="calculateDuration()" style="margin: 0 !important;">Calculate Duration</button>
+           <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+               <button class="primary-btn" onclick="calculateDuration()" style="margin: 0 !important;">Calculate Duration</button>
 
-                <div class="time-result-box" style="background-color: var(--success-color);">
-                    <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity: 0.9;">Time spent ⌛</p>
-                    <h2 id="duration-result" style="color: #ffffff;">--</h2>
-                </div>
-            </div>
+               <div class="time-result-box" style="background-color: var(--success-color);">
+                   <p style="margin: 0 0 5px 0; font-weight:bold; font-size:1.2rem; opacity: 0.9;">⌛ Time spent</p>
+                   <h2 id="duration-result" style="color: #ffffff;">--</h2>
+               </div>
+           </div>
 
-        </div>
-    </main>
+       </div>
+   </main>
 
-    <script src="../app.js"></script>
-    <script>
-        let state = { start: null, end: null }; 
+   <script src="../app.js"></script>
+   <script>
+       let state = { start: null, end: null }; 
 
-        function openTimePicker(type) {
-            const isStart = type === 'start';
-            const title = isStart ? "Select Start Time" : "Select End Time";
-            
-            window.openRolodex(title,[
-                { id: 'hr', items: window.RoloGen.hours12(), selectedValue: 12 },
-                { id: 'min', items: window.RoloGen.mins60(), selectedValue: 0 },
-                // CRITICAL FIX: Disabled infinite scrolling solely for AM/PM
-                { id: 'ampm', items: window.RoloGen.ampm(), selectedValue: 'PM', infinite: false }
-            ], (res) => {
-                const hr = parseInt(res.hr);
-                const min = parseInt(res.min);
-                const ampm = res.ampm;
-                
-                let hr24 = hr;
-                if (ampm === 'PM' && hr !== 12) hr24 += 12;
-                if (ampm === 'AM' && hr === 12) hr24 = 0;
+       function openTimePicker(type) {
+           const isStart = type === 'start';
+           const title = isStart ? "Select Start Time" : "Select End Time";
+           
+           window.openRolodex(title,[
+               { id: 'hr', items: window.RoloGen.hours12(), selectedValue: 12 },
+               { id: 'min', items: window.RoloGen.mins60(), selectedValue: 0 },
+               { id: 'ampm', items: window.RoloGen.ampm(), selectedValue: 'PM', infinite: false }
+           ], (res) => {
+               const hr = parseInt(res.hr);
+               const min = parseInt(res.min);
+               const ampm = res.ampm;
+               
+               let hr24 = hr;
+               if (ampm === 'PM' && hr !== 12) hr24 += 12;
+               if (ampm === 'AM' && hr === 12) hr24 = 0;
 
-                state[type] = { hr24, min };
-                
-                const displayStr = `${hr.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')} ${ampm}`;
-                document.getElementById(`${type}-time-display`).innerText = displayStr;
-            });
-        }
+               state[type] = { hr24, min };
+               
+               const displayStr = `${hr.toString().padStart(2,'0')}:${min.toString().padStart(2,'0')} ${ampm}`;
+               document.getElementById(`${type}-time-display`).innerText = displayStr;
+           });
+       }
 
-        function calculateDuration() {
-            if(!state.start || !state.end) return alert("Please set both times first.");
+       function calculateDuration() {
+           if(!state.start || !state.end) return alert("Please set both times first.");
 
-            const startD = new Date(); startD.setHours(state.start.hr24, state.start.min, 0);
-            const endD = new Date(); endD.setHours(state.end.hr24, state.end.min, 0);
-            
-            if (endD < startD) endD.setDate(endD.getDate() + 1); 
-            
-            const diffMs = endD - startD;
-            const diffHrs = Math.floor(diffMs / 3600000);
-            const diffMins = Math.floor((diffMs % 3600000) / 60000);
-            
-            const hrStr = diffHrs === 1 ? 'hour' : 'hours';
-            const minStr = diffMins === 1 ? 'minute' : 'minutes';
-            
-            document.getElementById('duration-result').innerText = `${diffHrs} ${hrStr} ${diffMins} ${minStr}`;
-        }
-    </script>
+           const startD = new Date(); startD.setHours(state.start.hr24, state.start.min, 0);
+           const endD = new Date(); endD.setHours(state.end.hr24, state.end.min, 0);
+           
+           if (endD < startD) endD.setDate(endD.getDate() + 1); 
+           
+           const diffMs = endD - startD;
+           const diffHrs = Math.floor(diffMs / 3600000);
+           const diffMins = Math.floor((diffMs % 3600000) / 60000);
+           
+           const hrStr = diffHrs === 1 ? 'hour' : 'hours';
+           const minStr = diffMins === 1 ? 'minute' : 'minutes';
+           
+           document.getElementById('duration-result').innerText = `${diffHrs} ${hrStr} ${diffMins} ${minStr}`;
+       }
+   </script>
 </body>
 </html>
