@@ -1,191 +1,190 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expiration | LifeCount</title>
-    <link rel="stylesheet" href="../styles.css">
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+   <title>Expiration | NumPal</title>
+   <link rel="stylesheet" href="../styles.css">
 </head>
 <body>
-    <header class="top-bar">
-        <a href="../index.html" class="back-btn" aria-label="Go back">
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
-        </a>
-        <h1>Expiration Date 📅</h1>
-        <div class="header-actions">
-            <a href="../index.html" class="header-icon-btn" aria-label="Home">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-            </a>
-            <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
-        </div>
-    </header>
+   <header class="top-bar">
+       <a href="../index.html" class="back-btn" aria-label="Go back">
+           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg> Back
+       </a>
+       <h1>📅 Expiration Date</h1>
+       <div class="header-actions">
+           <a href="../index.html" class="header-icon-btn" aria-label="Home">
+               <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+           </a>
+           <button id="theme-toggle" class="header-icon-btn" style="font-size:1.5rem;">🌗</button>
+       </div>
+   </header>
 
-    <main class="page-content">
-        <div class="content-body" style="gap: 1.5rem; justify-content: space-evenly;">
-            
-            <div style="text-align: center; flex-shrink: 0;">
-                <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
-                <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
-            </div>
-            
-            <label style="background-color: #9C27B0 !important; color: #ffffff !important; border-radius: 12px !important; padding: 1.5rem !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; cursor: pointer !important; box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important; flex-shrink: 0 !important; width: 100% !important; box-sizing: border-box !important;">
-                <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                <span style="font-weight: bold !important; font-size: 1.4rem !important;">Scan Expiration Date</span>
-                <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
-            </label>
+   <main class="page-content">
+       <div class="content-body" style="gap: 1.5rem; justify-content: space-evenly;">
+           
+           <div style="text-align: center; flex-shrink: 0;">
+               <p style="margin: 0; font-weight: bold; font-size: 1.2rem; opacity: 0.8;">Today is:</p>
+               <h2 id="today-date-display" style="margin: 5px 0 0 0; font-size: 2.2rem; color: var(--primary-color);"></h2>
+           </div>
+           
+           <label style="background-color: #9C27B0 !important; color: #ffffff !important; border-radius: 12px !important; padding: 1.5rem !important; display: flex !important; align-items: center !important; justify-content: center !important; gap: 10px !important; cursor: pointer !important; box-shadow: 0 4px 6px rgba(0,0,0,0.15) !important; flex-shrink: 0 !important; width: 100% !important; box-sizing: border-box !important;">
+               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+               <span style="font-weight: bold !important; font-size: 1.4rem !important;">Scan Expiration Date</span>
+               <input type="file" accept="image/*" capture="environment" id="camera-input" style="display:none;">
+           </label>
 
-            <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
+           <hr style="border: 0; border-top: 2px dashed var(--card-border); width: 100%; opacity: 0.5;">
 
-            <div style="text-align: center; flex-shrink: 0; width: 100%;">
-                <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
-                <p id="manual-date-display" class="time-card-display" onclick="openDatePicker()" style="margin-bottom: 15px;">Tap to select date</p>
-            </div>
+           <div style="text-align: center; flex-shrink: 0; width: 100%;">
+               <p style="font-weight: bold; margin: 0 0 10px 0; opacity: 0.8; font-size: 1rem;">Not able to scan? Key in Expiration Date below:</p>
+               <p id="manual-date-display" class="time-card-display" onclick="openDatePicker()" style="margin-bottom: 15px;">Tap to select date</p>
+           </div>
 
-        </div>
+       </div>
 
-        <div class="step-footer">
-            <button class="primary-btn" id="manual-check-btn">Check Date</button>
-        </div>
+       <div class="step-footer">
+           <button class="primary-btn" id="manual-check-btn">Check Date</button>
+       </div>
 
-    </main>
+   </main>
 
-    <!-- Processing State Overlay -->
-    <div id="processing-screen" class="processing-overlay" style="display: none;">
-        <div class="processing-spinner">⏳</div>
-        <h2 style="font-size: 2rem;">AI is checking...</h2>
-    </div>
+   <!-- Processing State Overlay -->
+   <div id="processing-screen" class="processing-overlay" style="display: none;">
+       <div class="processing-spinner">⏳</div>
+       <h2 style="font-size: 2rem;">AI is checking...</h2>
+   </div>
 
-    <!-- Obnoxious Overlays -->
-    <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
-        <div class="giant-icon">✅</div>
-        <h1>SAFE!</h1>
-        <p>You can eat/use this.</p>
-        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
-    </div>
+   <!-- Obnoxious Overlays -->
+   <div id="obnoxious-good" class="obnoxious-overlay good" style="display: none;">
+       <div class="giant-icon">✅</div>
+       <h1>SAFE!</h1>
+       <p>You can eat/use this.</p>
+       <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+   </div>
 
-    <div id="obnoxious-bad" class="obnoxious-overlay bad" style="display: none;">
-        <div class="giant-icon">❌</div>
-        <h1>EXPIRED!</h1>
-        <p>DO NOT eat/use this!</p>
-        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
-    </div>
+   <div id="obnoxious-bad" class="obnoxious-overlay bad" style="display: none;">
+       <div class="giant-icon">❌</div>
+       <h1>EXPIRED!</h1>
+       <p>DO NOT eat/use this!</p>
+       <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+   </div>
 
-    <script src="../app.js"></script>
-    <script>
-        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
-        const cameraInput = document.getElementById('camera-input');
-        const manualCheckBtn = document.getElementById('manual-check-btn');
-        const manualDateDisplay = document.getElementById('manual-date-display');
-        const processingScreen = document.getElementById('processing-screen');
-        const goodOverlay = document.getElementById('obnoxious-good');
-        const badOverlay = document.getElementById('obnoxious-bad');
+   <script src="../app.js"></script>
+   <script>
+       const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
+       const cameraInput = document.getElementById('camera-input');
+       const manualCheckBtn = document.getElementById('manual-check-btn');
+       const manualDateDisplay = document.getElementById('manual-date-display');
+       const processingScreen = document.getElementById('processing-screen');
+       const goodOverlay = document.getElementById('obnoxious-good');
+       const badOverlay = document.getElementById('obnoxious-bad');
 
-        const today = new Date();
-        const options = { day: 'numeric', month: 'long', year: 'numeric' };
-        document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
+       const today = new Date();
+       const options = { day: 'numeric', month: 'long', year: 'numeric' };
+       document.getElementById('today-date-display').innerText = today.toLocaleDateString('en-GB', options);
 
-        let selectedManualDate = null; 
+       let selectedManualDate = null; 
 
-        function openDatePicker() {
-            const currYear = today.getFullYear();
-            
-            window.openRolodex("Select Date",[
-                { id: 'day', items: window.RoloGen.days31(), selectedValue: today.getDate() },
-                { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 },
-                // CRITICAL UPDATE: Bounds are dynamically constructed from Current Year (-6 to +12, which totals 19 years)
-                { id: 'year', items: window.RoloGen.years(currYear - 6, 19), selectedValue: currYear }
-            ], (res) => {
-                const year = parseInt(res.year);
-                const month = parseInt(res.month) - 1; 
-                const day = parseInt(res.day);
-                
-                selectedManualDate = new Date(year, month, day);
-                manualDateDisplay.innerText = selectedManualDate.toLocaleDateString('en-GB', options);
-            });
-        }
+       function openDatePicker() {
+           const currYear = today.getFullYear();
+           
+           window.openRolodex("Select Date",[
+               { id: 'day', items: window.RoloGen.days31(), selectedValue: today.getDate() },
+               { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 },
+               { id: 'year', items: window.RoloGen.years(currYear - 6, 19), selectedValue: currYear }
+           ], (res) => {
+               const year = parseInt(res.year);
+               const month = parseInt(res.month) - 1; 
+               const day = parseInt(res.day);
+               
+               selectedManualDate = new Date(year, month, day);
+               manualDateDisplay.innerText = selectedManualDate.toLocaleDateString('en-GB', options);
+           });
+       }
 
-        manualCheckBtn.addEventListener('click', () => {
-            if (!selectedManualDate) {
-                showToast("Please tap to select a date first.", true);
-                return;
-            }
-            processingScreen.style.display = 'flex';
+       manualCheckBtn.addEventListener('click', () => {
+           if (!selectedManualDate) {
+               showToast("Please tap to select a date first.", true);
+               return;
+           }
+           processingScreen.style.display = 'flex';
 
-            setTimeout(() => {
-                processingScreen.style.display = 'none';
-                const checkDate = new Date(selectedManualDate);
-                checkDate.setHours(0,0,0,0);
-                const compareToday = new Date(today);
-                compareToday.setHours(0,0,0,0);
+           setTimeout(() => {
+               processingScreen.style.display = 'none';
+               const checkDate = new Date(selectedManualDate);
+               checkDate.setHours(0,0,0,0);
+               const compareToday = new Date(today);
+               compareToday.setHours(0,0,0,0);
 
-                if (checkDate < compareToday) badOverlay.style.display = 'flex';
-                else goodOverlay.style.display = 'flex'; 
-            }, 800); 
-        });
+               if (checkDate < compareToday) badOverlay.style.display = 'flex';
+               else goodOverlay.style.display = 'flex'; 
+           }, 800); 
+       });
 
-        cameraInput.addEventListener('change', async function(e) {
-            if(e.target.files.length > 0) {
-                if (!navigator.onLine) {
-                    showToast("Currently Offline. Cannot use AI Scanner.", true);
-                    cameraInput.value = ''; 
-                    return;
-                }
+       cameraInput.addEventListener('change', async function(e) {
+           if(e.target.files.length > 0) {
+               if (!navigator.onLine) {
+                   showToast("Currently Offline. Cannot use AI Scanner.", true);
+                   cameraInput.value = ''; 
+                   return;
+               }
 
-                const file = e.target.files[0];
-                processingScreen.style.display = 'flex';
+               const file = e.target.files[0];
+               processingScreen.style.display = 'flex';
 
-                try {
-                    const base64Image = await compressImage(file);
-                    const response = await fetch(GAS_URL, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
-                        body: JSON.stringify({ image: base64Image })
-                    });
+               try {
+                   const base64Image = await compressImage(file);
+                   const response = await fetch(GAS_URL, {
+                       method: 'POST',
+                       headers: { 'Content-Type': 'text/plain;charset=utf-8' }, 
+                       body: JSON.stringify({ image: base64Image })
+                   });
 
-                    const result = await response.json();
-                    processingScreen.style.display = 'none';
+                   const result = await response.json();
+                   processingScreen.style.display = 'none';
 
-                    if (result.error) {
-                        showToast("Failed to read date. Please try again.", true);
-                    } else if (result.foundDate === false) {
-                        showToast("No expiration date found in photo.", true);
-                    } else {
-                        if (result.isExpired) badOverlay.style.display = 'flex';
-                        else goodOverlay.style.display = 'flex';
-                    }
-                } catch (err) {
-                    processingScreen.style.display = 'none';
-                    showToast("Connection error. Try again.", true);
-                } finally {
-                    cameraInput.value = ''; 
-                }
-            }
-        });
+                   if (result.error) {
+                       showToast("Failed to read date. Please try again.", true);
+                   } else if (result.foundDate === false) {
+                       showToast("No expiration date found in photo.", true);
+                   } else {
+                       if (result.isExpired) badOverlay.style.display = 'flex';
+                       else goodOverlay.style.display = 'flex';
+                   }
+               } catch (err) {
+                   processingScreen.style.display = 'none';
+                   showToast("Connection error. Try again.", true);
+               } finally {
+                   cameraInput.value = ''; 
+               }
+           }
+       });
 
-        function compressImage(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.readAsDataURL(file);
-                reader.onload = event => {
-                    const img = new Image();
-                    img.src = event.target.result;
-                    img.onload = () => {
-                        const canvas = document.createElement('canvas');
-                        const MAX_WIDTH = 800; 
-                        let scaleSize = 1;
-                        if (img.width > MAX_WIDTH) scaleSize = MAX_WIDTH / img.width;
-                        canvas.width = img.width * scaleSize;
-                        canvas.height = img.height * scaleSize;
-                        
-                        const ctx = canvas.getContext('2d');
-                        ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-                        resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
-                    };
-                    img.onerror = error => reject(error);
-                };
-                reader.onerror = error => reject(error);
-            });
-        }
-    </script>
+       function compressImage(file) {
+           return new Promise((resolve, reject) => {
+               const reader = new FileReader();
+               reader.readAsDataURL(file);
+               reader.onload = event => {
+                   const img = new Image();
+                   img.src = event.target.result;
+                   img.onload = () => {
+                       const canvas = document.createElement('canvas');
+                       const MAX_WIDTH = 800; 
+                       let scaleSize = 1;
+                       if (img.width > MAX_WIDTH) scaleSize = MAX_WIDTH / img.width;
+                       canvas.width = img.width * scaleSize;
+                       canvas.height = img.height * scaleSize;
+                       
+                       const ctx = canvas.getContext('2d');
+                       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                       resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+                   };
+                   img.onerror = error => reject(error);
+               };
+               reader.onerror = error => reject(error);
+           });
+       }
+   </script>
 </body>
 </html>
