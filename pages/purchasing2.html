@@ -72,7 +72,7 @@
        <div id="step-1" class="flow-step active">
            <div class="content-body" style="padding-bottom: 10px; gap: 5px;">
                <div style="text-align: center; flex-shrink: 0; margin-bottom: 0;">
-                   <p style="margin: 0; font-weight: bold; font-size: 1rem;">💰 Total Amount</p>
+                   <p style="margin: 0; font-weight: bold; font-size: 1rem; display:flex; align-items:center; justify-content:center; gap:6px;">💰 Total Amount</p>
                    <h1 style="margin: 0; font-size: 2.2rem;">$<span id="wallet-total">0.00</span></h1>
                </div>
                <div class="wallet-grid" id="wallet-grid-container" style="gap: 2px;"></div>
@@ -113,7 +113,7 @@
 
                <!-- Items to buy -->
                <div style="flex: none; display: flex; flex-direction: column;">
-                   <label style="margin-bottom: 6px; display: block; font-weight: bold; font-size: 1.1rem;">🛒 I want to buy (cost of items):</label>
+                   <label style="margin-bottom: 6px; display: flex; align-items:center; gap: 6px; font-weight: bold; font-size: 1.1rem;">🛒 I want to buy (cost of items):</label>
                    
                    <div id="items-list" style="display: flex; flex-direction: column; gap: 6px;">
                        <div class="item-row" style="margin-bottom: 0;">
@@ -174,9 +174,9 @@
                        <p>💵 Change Amount:</p>
                        <h2>$<span id="step3-expected-change">0.00</span></h2>
                    </div>
-                   <div id="cashier-gave-box" style="padding: 5px; border-radius: 8px; transition: background-color 0.3s;">
+                   <div id="cashier-gave-box" style="padding: 5px; border-radius: 8px; transition: background-color 0.3s, color 0.3s;">
                        <p style="display:flex; align-items:center; justify-content:center; gap:6px;">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:18px;height:18px;"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
+                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
                            Cashier Gave
                        </p>
                        <h2>$<span id="change-total">0.00</span></h2>
@@ -374,12 +374,12 @@
            if (totalElemId === 'change-total') {
                const cashierBox = document.getElementById('cashier-gave-box');
                if (cashierBox) {
-                   if (totalCents > expectedChange) {
+                   if (totalCents !== expectedChange) {
                        cashierBox.style.backgroundColor = 'rgba(244, 67, 54, 0.15)'; 
                        cashierBox.style.color = 'var(--error-color)';
                    } else {
-                       cashierBox.style.backgroundColor = 'transparent';
-                       cashierBox.style.color = 'inherit';
+                       cashierBox.style.backgroundColor = 'rgba(76, 175, 80, 0.15)';
+                       cashierBox.style.color = 'var(--success-color)';
                    }
                }
            }
@@ -416,7 +416,9 @@
        }
 
        function goToStep3() { 
-           switchStep(3, `💵 Check Change`); 
+           switchStep(3, `💵 Check Change`);
+           // Ensure red logic runs immediately when entering screen
+           recalcTotal(changeCounts, 'change-total');
        }
 
        function addItem() {
