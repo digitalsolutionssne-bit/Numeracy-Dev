@@ -1,4 +1,4 @@
-const CACHE_NAME = 'numpal-cache-v69';
+const CACHE_NAME = 'numpal-cache-v71';
 
 const urlsToCache =[
    './',
@@ -6,7 +6,6 @@ const urlsToCache =[
    './styles.css',
    './app.js',
    './manifest.json',
-   './pages/purchasing.html',
    './pages/purchasing2.html',
    './pages/time-menu.html',
    './pages/stopwatch.html',
