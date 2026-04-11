@@ -3,7 +3,7 @@
 <head>
    <meta charset="UTF-8">
    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <title>Purchasing 2 | NumPal</title>
+   <title>Purchasing | NumPal</title>
    <link rel="stylesheet" href="../styles.css">
    <style>
        /* Purchasing 2 Layout specific styling */
@@ -35,16 +35,6 @@
        .check-money-header p { margin: 0; font-weight: bold; font-size: 1rem; }
        .check-money-header h2 { margin: 0; font-size: 1.8rem; }
        .expected-change-col p, .expected-change-col h2 { color: var(--success-color); }
-
-       /* Settings Row for bottom sheet */
-       .setting-row { 
-           display: flex; justify-content: space-between; align-items: center;
-           padding: 15px 0; border-bottom: 1px solid var(--card-border); 
-           font-size: 1.1rem; font-weight: bold; cursor: pointer; color: var(--text-color);
-       }
-       .setting-row input[type="checkbox"] {
-           width: 24px; height: 24px; accent-color: var(--primary-color);
-       }
    </style>
 </head>
 <body>
@@ -54,11 +44,9 @@
            Back
        </button>
        <h1 id="header-title" style="display:flex; align-items:center; justify-content:center; gap:8px;">
-           <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-           Wallet
+           👛 Wallet
        </h1>
        <div class="header-actions">
-           <button onclick="openSettings()" class="header-icon-btn" aria-label="Settings" style="font-size:1.5rem;">⚙️</button>
            <a href="../index.html" class="header-icon-btn" aria-label="Home">
                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
            </a>
@@ -86,7 +74,7 @@
        <div id="step-2" class="flow-step">
            
            <!-- ZONE FOR NON-SCROLLING TOP ELEMENTS -->
-           <div id="sticky-top-zone" style="flex: none; display: flex; flex-direction: column;">
+           <div style="flex: none; display: flex; flex-direction: column;">
                
                <!-- Dynamic Top Status Banner -->
                <div id="status-banner" class="status-banner" style="display: none;"></div>
@@ -95,8 +83,7 @@
                <div id="p2-header-box-id" class="p2-header-box">
                    <div style="display: flex; align-items: center; gap: 6px;">
                        <span style="font-size: 1.1rem; font-weight: bold; opacity: 0.8; display:flex; align-items:center; gap: 4px;">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>
-                           I have:
+                           👛 I have:
                        </span>
                        <span style="font-size: 1.6rem; font-weight: bold;">$<span id="step2-wallet-total">0.00</span></span>
                    </div>
@@ -107,9 +94,6 @@
            
            <!-- Scrolling Main Body -->
            <div class="content-body" style="flex: 1 1 0%; padding: 5px 1rem 10px 1rem; display: flex; flex-direction: column; gap: 8px; overflow-y: auto;">
-               
-               <!-- ZONE FOR SCROLLING TOP ELEMENTS -->
-               <div id="scroll-top-zone" style="flex: none; display: flex; flex-direction: column; gap: 4px; margin-bottom: 4px;"></div>
 
                <!-- Items to buy -->
                <div style="flex: none; display: flex; flex-direction: column;">
@@ -139,31 +123,22 @@
                <!-- Give Cashier graphics -->
                <div id="give-cashier-section" style="display: none; flex-direction: column; flex: none; border-top: 3px dashed var(--card-border); padding-top: 8px;">
                    <h3 style="color: var(--primary-color); font-size: 1.6rem; font-weight: 900; margin: 0 0 5px 0; display:flex; align-items:center; gap:6px;">
-                       <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-                       Give Cashier
+                       🧑‍💼 Give Cashier
                    </h3>
                    <div class="payment-graphics-container" id="give-cashier-graphics" style="background: rgba(74, 144, 226, 0.05); border: 2px solid rgba(74, 144, 226, 0.2); padding: 10px; border-radius: 8px; justify-content: flex-start; align-items: flex-start;">
                    </div>
                </div>
 
-               <!-- ZONE FOR SCROLLING BOTTOM ELEMENTS -->
-               <div id="scroll-bottom-zone" style="flex: none; display: flex; flex-direction: column; margin-top: 5px;"></div>
-           </div>
-           
-           <!-- ZONE FOR NON-SCROLLING BOTTOM ELEMENTS -->
-           <div id="sticky-bottom-zone" style="flex: none; display: flex; flex-direction: column;">
-               
-               <!-- Non-Scrolling Footer -->
-               <div class="step-footer" id="step2-footer" style="display: none; justify-content: space-between; align-items: center; padding: 10px 1rem; background-color: var(--card-bg); border-top: 2px solid var(--card-border); width: 100%; box-sizing: border-box;">
+               <!-- Check Change Box (Scrolls with the content body) -->
+               <div id="step2-footer" style="display: none; justify-content: space-between; align-items: center; padding: 10px 1rem; background-color: var(--card-bg); border: 2px solid var(--card-border); border-radius: 8px; margin-top: 15px; flex: none;">
                    <div style="display: flex; flex-direction: column;">
                        <span style="font-weight: bold; font-size: 0.9rem;">💵 Change Amount:</span>
                        <span style="font-size: 1.6rem; font-weight: bold; color: var(--success-color);">$<span id="change-amount-display">0.00</span></span>
                    </div>
                    <button class="primary-btn" id="btn-check-money" style="width: auto; margin: 0 !important; background-color: var(--primary-color);" onclick="goToStep3()">CHECK CHANGE</button>
                </div>
-
+               
            </div>
-
        </div>
 
        <!-- STEP 3: CHECK MONEY -->
@@ -175,9 +150,8 @@
                        <h2>$<span id="step3-expected-change">0.00</span></h2>
                    </div>
                    <div id="cashier-gave-box" style="padding: 5px; border-radius: 8px; transition: background-color 0.3s, color 0.3s;">
-                       <p style="display:flex; align-items:center; justify-content:center; gap:6px;">
-                           <svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>
-                           Cashier Gave
+                       <p style="display:flex; align-items:center; justify-content:center; gap:6px; margin: 0; font-weight: bold; font-size: 1rem;">
+                           🧑‍💼 Cashier Gave
                        </p>
                        <h2>$<span id="change-total">0.00</span></h2>
                    </div>
@@ -191,45 +165,21 @@
 
    </main>
 
-   <!-- SETTINGS BOTTOM SHEET -->
-   <div class="bottom-sheet-backdrop" id="settings-backdrop"></div>
-   <div class="bottom-sheet" id="settings-sheet" style="height: auto; padding-bottom: 2rem;">
-       <div class="rolodex-header" style="justify-content: center; border: none; padding-bottom: 5px;">
-           <span class="rolodex-title" style="font-size: 1.6rem;">Scroll Settings</span>
-       </div>
-       <div style="width: 100%; padding: 0 1rem; text-align: left; box-sizing: border-box;">
-           <p style="margin-top: 0; margin-bottom: 1rem; opacity: 0.8;">Choose which sections scroll dynamically with the page:</p>
-           
-           <label class="setting-row">
-               <span>"Can Buy" Notification</span>
-               <input type="checkbox" id="setting-scroll-banner" onchange="toggleSetting('p2-scroll-banner', this.checked)">
-           </label>
-           
-           <label class="setting-row">
-               <span>"View Wallet" Section</span>
-               <input type="checkbox" id="setting-scroll-wallet" onchange="toggleSetting('p2-scroll-wallet', this.checked)">
-           </label>
-           
-           <label class="setting-row" style="border-bottom: none;">
-               <span>"Check Change" Section</span>
-               <input type="checkbox" id="setting-scroll-footer" onchange="toggleSetting('p2-scroll-footer', this.checked)">
-           </label>
-       </div>
-       <button class="primary-btn" style="margin-top: 15px; width: 100%;" onclick="closeSettings()">Done</button>
-   </div>
-
    <!-- STEP 4: BIG BOTTOM SHEET NOTIFICATION -->
    <div class="bottom-sheet-backdrop" id="sheet-backdrop"></div>
    <div class="bottom-sheet" id="result-sheet">
        <div id="sheet-content-correct" style="display:none; flex-direction: column; align-items: center;">
            <div class="giant-icon">✅</div>
            <h2>Correct Change!</h2>
-           <p>You received the right amount.</p>
+           <p style="text-align: center; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
+               <strong style="font-size: 1.2rem; color: var(--text-color);">Say "Thank You"</strong>
+               <strong style="font-size: 1.2rem; color: var(--text-color);">Take your item/s</strong>
+           </p>
        </div>
        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
            <div class="giant-icon">❌</div>
            <h2>Wrong Change</h2>
-           <p style="text-align: center; display: flex; flex-direction: column; gap: 8px;">
+           <p style="text-align: center; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
                Please inform the cashier
                <strong style="font-size: 1.2rem; color: var(--text-color);">Say "Sorry, wrong change"</strong>
            </p>
@@ -265,72 +215,12 @@
        let expectedChange = 0; 
        let currentStep = 1;
 
-       const walletSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12V7H5a2 2 0 0 1 0-4h14v4"/><path d="M3 5v14a2 2 0 0 0 2 2h16v-5"/><path d="M18 12a2 2 0 0 0 0 4h4v-4Z"/></svg>`;
-       const cashierSvg = `<svg xmlns="http://www.w3.org/2000/svg" class="inline-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 18H2v-4h20v4Z"/><path d="M18 14V6a2 2 0 0 0-2-2H8a2 2 0 0 0-2 2v8"/><path d="M12 10h.01"/><path d="M8 10h.01"/><path d="M16 10h.01"/><rect x="10" y="2" width="4" height="4"/></svg>`;
+       const walletSvg = `👛`;
+       const cashierSvg = `🧑‍💼`;
 
        const minusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
        const plusSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round"><line x1="12" y1="4" x2="12" y2="20"/><line x1="4" y1="12" x2="20" y2="12"/></svg>`;
 
-       // SETTINGS LOGIC
-       function applyScrollSettings() {
-           const scrollBanner = localStorage.getItem('p2-scroll-banner') === 'true';
-           const scrollWallet = localStorage.getItem('p2-scroll-wallet') === 'true';
-           const scrollFooter = localStorage.getItem('p2-scroll-footer') === 'true';
-
-           document.getElementById('setting-scroll-banner').checked = scrollBanner;
-           document.getElementById('setting-scroll-wallet').checked = scrollWallet;
-           document.getElementById('setting-scroll-footer').checked = scrollFooter;
-
-           const scrollTopZone = document.getElementById('scroll-top-zone');
-           const stickyTopZone = document.getElementById('sticky-top-zone');
-           const scrollBottomZone = document.getElementById('scroll-bottom-zone');
-           const stickyBottomZone = document.getElementById('sticky-bottom-zone');
-
-           const banner = document.getElementById('status-banner');
-           const wallet = document.getElementById('p2-header-box-id');
-           const footer = document.getElementById('step2-footer');
-
-           // Detach to maintain predictable order when re-attaching
-           banner.remove();
-           wallet.remove();
-           footer.remove();
-
-           // Reattach. Order: Banner on top, Wallet below it.
-           if (scrollBanner) scrollTopZone.appendChild(banner);
-           else stickyTopZone.appendChild(banner);
-           
-           if (scrollWallet) scrollTopZone.appendChild(wallet);
-           else stickyTopZone.appendChild(wallet);
-           
-           if (scrollFooter) scrollBottomZone.appendChild(footer);
-           else stickyBottomZone.appendChild(footer);
-       }
-
-       // Run settings initialization immediately
-       if (localStorage.getItem('p2-scroll-banner') === null) {
-           localStorage.setItem('p2-scroll-banner', 'false');
-           localStorage.setItem('p2-scroll-wallet', 'false');
-           localStorage.setItem('p2-scroll-footer', 'false');
-       }
-       applyScrollSettings();
-
-       function openSettings() {
-           document.getElementById('settings-backdrop').classList.add('show');
-           document.getElementById('settings-sheet').classList.add('show');
-       }
-
-       function closeSettings() {
-           document.getElementById('settings-backdrop').classList.remove('show');
-           document.getElementById('settings-sheet').classList.remove('show');
-       }
-
-       function toggleSetting(key, isChecked) {
-           localStorage.setItem(key, isChecked);
-           applyScrollSettings();
-       }
-
-
-       // WALLET LOGIC
        function renderGrid(containerId, countsObj, totalElemId) {
            const container = document.getElementById(containerId);
            container.innerHTML = '';
