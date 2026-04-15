@@ -109,9 +109,9 @@ if ('serviceWorker' in navigator) {
 }
 
 // =========================================================
-// CUSTOM ROLODEX SYSTEM (INFINITE & FINITE HYBRID)
+// CUSTOM ROLODEX SYSTEM (INFINITE & FINITE HYBRID WITH REAL-TIME UPDATES)
 // =========================================================
-window.openRolodex = function(title, columns, onSaveCallback) {
+window.openRolodex = function(title, columns, onSaveCallback, onChangeCallback) {
     let existing = document.getElementById('rolodex-modal');
     if (existing) existing.remove();
 
@@ -122,9 +122,26 @@ window.openRolodex = function(title, columns, onSaveCallback) {
     let colsHtml = '';
     const NUM_SETS = 7; 
     const CENTER_SET = 3; 
+    const results = {};
+
+    // Allows dynamic rebuilding of a specific column array mid-scroll
+    window.activeRolodex = {
+        updateColumn: function(colId, newItems, snapValue) {
+            const col = columns.find(c => c.id === colId);
+            if (col && col.updateItems) col.updateItems(newItems, snapValue);
+        }
+    };
+
+    let notifyTimeout = null;
+    function triggerNotify() {
+        clearTimeout(notifyTimeout);
+        notifyTimeout = setTimeout(() => {
+            if (onChangeCallback) onChangeCallback(results, window.activeRolodex);
+        }, 50);
+    }
 
     columns.forEach(col => {
-        col.isInfinite = col.infinite !== false; // Default to true unless explicitly disabled
+        col.isInfinite = col.infinite !== false; 
 
         if (col.isInfinite) {
             const cycleItems =[...col.items, { value: 'DIVIDER', label: '•••', isDivider: true }];
@@ -137,7 +154,6 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             }
             col.renderedItems = allItems;
         } else {
-            // Finite mode (e.g., AM/PM) - just use the basic items with no offsets or dividers
             col.renderedItems = col.items;
             col.cycleLength = col.items.length;
             col.centerOffset = 0;
@@ -185,19 +201,56 @@ window.openRolodex = function(title, columns, onSaveCallback) {
         backdrop.querySelector('.rolodex-sheet').classList.add('show');
     });
 
-    const results = {};
-
     columns.forEach(col => {
         const colDiv = document.getElementById(`rolo-col-${col.id}`);
         const track = document.getElementById(`rolo-track-${col.id}`);
         const itemHeight = 44; 
-        const maxIndex = col.renderedItems.length - 1;
+        let maxIndex = col.renderedItems.length - 1;
+        let targetIndex = 0;
+        let currentY = 0;
+
+        // Dynamic rebuild function embedded inside column closure
+        col.updateItems = function(newItems, forceValue) {
+            col.items = newItems;
+            
+            if (col.isInfinite) {
+                const cycleItems =[...col.items, { value: 'DIVIDER', label: '•••', isDivider: true }];
+                col.cycleLength = cycleItems.length;
+                col.centerOffset = CENTER_SET * col.cycleLength;
+                let allItems =[];
+                for (let i = 0; i < NUM_SETS; i++) allItems.push(...cycleItems);
+                col.renderedItems = allItems;
+            } else {
+                col.renderedItems = col.items;
+                col.cycleLength = col.items.length;
+                col.centerOffset = 0;
+            }
+            
+            maxIndex = col.renderedItems.length - 1;
+
+            let itemsHtml = '';
+            col.renderedItems.forEach((item) => {
+                const opacityStyle = item.isDivider ? 'opacity: 0.15; font-size: 1rem; letter-spacing: 2px;' : '';
+                itemsHtml += `<div class="rolodex-item" style="${opacityStyle}" data-value="${item.value}">${item.label}</div>`;
+            });
+            track.innerHTML = itemsHtml;
+            
+            let localTarget = col.items.findIndex(i => i.value == forceValue);
+            if (localTarget === -1) localTarget = col.items.length - 1; 
+            
+            targetIndex = col.centerOffset + localTarget;
+            currentY = -targetIndex * itemHeight;
+            
+            track.style.transition = 'transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1)';
+            track.style.transform = `translateY(${currentY}px)`;
+            updateActive(targetIndex);
+        };
         
         let localTarget = col.items.findIndex(i => i.value == col.selectedValue);
         if (localTarget === -1) localTarget = 0;
 
-        let targetIndex = col.centerOffset + localTarget;
-        let currentY = -targetIndex * itemHeight;
+        targetIndex = col.centerOffset + localTarget;
+        currentY = -targetIndex * itemHeight;
         track.style.transform = `translateY(${currentY}px)`;
         updateActive(targetIndex);
 
@@ -260,6 +313,7 @@ window.openRolodex = function(title, columns, onSaveCallback) {
             track.style.transition = 'transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1)';
             track.style.transform = `translateY(${currentY}px)`;
             updateActive(targetIndex);
+            triggerNotify();
 
             if (col.isInfinite) {
                 setTimeout(() => {
@@ -296,6 +350,7 @@ window.openRolodex = function(title, columns, onSaveCallback) {
                     
                     if (navigator.vibrate) navigator.vibrate(30);
                     updateActive(targetIndex);
+                    triggerNotify();
 
                     if (col.isInfinite) {
                         clearTimeout(col.recenterTimeout);
@@ -363,6 +418,7 @@ window.RoloGen = {
     mins60: () => Array.from({length:60}, (_,i) => ({ value: i, label: i.toString().padStart(2,'0') })),
     ampm: () =>[{value:'AM', label:'AM'}, {value:'PM', label:'PM'}],
     hours24: () => Array.from({length:24}, (_,i) => ({ value: i, label: i.toString() })),
+    days: (count) => Array.from({length:count}, (_,i) => ({ value: i+1, label: (i+1).toString() })),
     days31: () => Array.from({length:31}, (_,i) => ({ value: i+1, label: (i+1).toString() })),
     monthsSpec: () =>[
         {value:1, label:'1. January (Jan)'}, {value:2, label:'2. February (Feb)'}, {value:3, label:'3. March (Mar)'},
