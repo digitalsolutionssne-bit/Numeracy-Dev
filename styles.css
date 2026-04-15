@@ -172,10 +172,10 @@ body {
 .control-btn {
    width: 36px; height: 36px; border-radius: 50%; border: 2px solid transparent; background: transparent; 
    display: flex; align-items: center; justify-content: center; cursor: pointer; 
-   flex-shrink: 0; padding: 4px; /* Gives 4px breathing room so SVG doesn't hit the border */
+   flex-shrink: 0; padding: 4px; 
    margin: 0;
 }
-.control-btn svg { width: 100%; height: 100%; } /* Forces SVG to fill remaining interior space */
+.control-btn svg { width: 100%; height: 100%; } 
 .control-btn.minus { border-color: var(--error-color); color: var(--error-color); }
 .control-btn.plus { border-color: var(--primary-color); color: var(--primary-color); }
 
@@ -195,43 +195,16 @@ body {
 .payment-img.note { width: 140px; height: auto; border-radius: 6px; }
 .payment-img.coin { width: 70px; height: auto; border-radius: 50%; }
 
-/* PURCHASING 2 - STATUS SIDEBAR & LAYOUT */
-.status-sidebar {
-   width: 48px; flex-shrink: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-   color: white; font-weight: bold; font-size: 1.2rem; letter-spacing: 1px;
-   writing-mode: vertical-rl; transform: rotate(180deg); text-transform: uppercase;
-   transition: background-color 0.3s;
-}
-.status-sidebar.can-buy { background-color: var(--success-color); }
-.status-sidebar.cannot-buy { background-color: var(--error-color); }
-.status-sidebar.neutral { background-color: #9e9e9e; }
-[data-theme="dark"] .status-sidebar.neutral { background-color: #555; }
-
-.p2-header-box {
-   display: flex; justify-content: space-between; align-items: center; 
-   padding: 0.8rem; border-radius: 8px; border: 2px solid var(--card-border); 
-   background-color: var(--card-bg); margin-bottom: 10px;
-}
-.p2-cost-row {
-   display: flex; justify-content: space-between; align-items: center; 
-   border-top: 2px solid var(--card-border); padding-top: 10px; margin-top: 5px;
-}
-
-.check-money-header {
-   display: flex; justify-content: space-between; align-items: center; 
-   margin-bottom: 15px; padding: 0 10px;
-}
-.check-money-header > div { text-align: center; width: 48%; }
-.check-money-header p { margin: 0; font-weight: bold; font-size: 1rem; }
-.check-money-header h2 { margin: 0; font-size: 1.8rem; }
-.expected-change-col p, .expected-change-col h2 { color: var(--success-color); }
-
+/* --- RESPONSIVE FIXES FOR SHORT/NARROW SCREENS --- */
 @media (max-height: 700px) {
-   .wallet-item { flex-direction: row; justify-content: space-evenly; gap: 4px; padding: 2px 4px; }
-   .wallet-controls { margin-top: 0; width: auto; gap: 12px; }
-   .control-btn { width: 34px; height: 34px; padding: 4px; }
-   .currency-img.note { width: 60px; height: 28px; }
-   .currency-img.coin { width: 28px; height: 28px; }
+   /* Force column layout but allow images to shrink so +/- buttons don't overflow */
+   .wallet-item { flex-direction: column !important; justify-content: space-evenly; gap: 2px; padding: 2px; }
+   .wallet-controls { margin-top: 0; width: 100%; gap: 8px; }
+   .control-btn { width: 32px; height: 32px; padding: 2px; }
+   .control-count { width: 18px; font-size: 1.1rem; }
+   .currency-img.note { width: auto; max-height: 35px; }
+   .currency-img.coin { width: auto; max-height: 35px; }
+   
    h1 { font-size: 1.5rem !important; }
    h2 { font-size: 1.2rem !important; }
    .primary-btn { padding: 0.6rem; font-size: 1.1rem; }
@@ -380,4 +353,4 @@ body {
 .rolodex-item.active { 
    opacity: 1; font-weight: 900; color: var(--primary-color); 
    font-size: clamp(1.1rem, 4.5vw, 1.5rem); 
-}
+      }
