@@ -86,20 +86,47 @@
 
        let selectedManualDate = null; 
 
+       function getDaysInMonth(month, year) {
+           return new Date(year, month, 0).getDate();
+       }
+
        function openDatePicker() {
            const currYear = today.getFullYear();
            
+           const startD = selectedManualDate ? selectedManualDate.getDate() : today.getDate();
+           const startM = selectedManualDate ? selectedManualDate.getMonth() + 1 : today.getMonth() + 1;
+           const startY = selectedManualDate ? selectedManualDate.getFullYear() : currYear;
+           
+           window.currentMaxDays = getDaysInMonth(startM, startY);
+           
            window.openRolodex("Select Date",[
-               { id: 'day', items: window.RoloGen.days31(), selectedValue: today.getDate() },
-               { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: today.getMonth() + 1, flex: 1.8 },
-               { id: 'year', items: window.RoloGen.years(currYear - 6, 19), selectedValue: currYear }
-           ], (res) => {
+               { id: 'day', items: window.RoloGen.days(window.currentMaxDays), selectedValue: startD },
+               { id: 'month', items: window.RoloGen.monthsSpec(), selectedValue: startM, flex: 1.8 },
+               { id: 'year', items: window.RoloGen.years(currYear - 6, 19), selectedValue: startY }
+           ], 
+           (res) => {
+               // On Save Selection
                const year = parseInt(res.year);
                const month = parseInt(res.month) - 1; 
                const day = parseInt(res.day);
                
                selectedManualDate = new Date(year, month, day);
                manualDateDisplay.innerText = selectedManualDate.toLocaleDateString('en-GB', options);
+           },
+           (res, rolo) => {
+               // Dynamic onChange Hook
+               const y = parseInt(res.year);
+               const m = parseInt(res.month);
+               const currentD = parseInt(res.day);
+               
+               const maxDays = getDaysInMonth(m, y);
+               
+               if (window.currentMaxDays !== maxDays) {
+                   window.currentMaxDays = maxDays;
+                   // Snap back to bounds if the selected day exceeds the new month's length
+                   let safeDay = currentD > maxDays ? maxDays : currentD;
+                   rolo.updateColumn('day', window.RoloGen.days(maxDays), safeDay);
+               }
            });
        }
 
