@@ -519,7 +519,7 @@
        function playTTS() {
            window.speechSynthesis.cancel();
            const diffText = document.getElementById('wrong-change-diff').innerText;
-           const textToRead = `Wrong Change. ${diffText}. Please inform the cashier. Say, Sorry, wrong change.`;
+           const textToRead = `Sorry, wrong change. ${diffText}`;
            const utterance = new SpeechSynthesisUtterance(textToRead);
            window.speechSynthesis.speak(utterance);
        }
