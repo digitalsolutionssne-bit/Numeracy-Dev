@@ -183,10 +183,16 @@
        <div id="sheet-content-wrong" style="display:none; flex-direction: column; align-items: center;">
            <div class="giant-icon">❌</div>
            <h2>Wrong Change</h2>
+           <p id="wrong-change-diff" style="font-weight: 900; color: var(--error-color); font-size: 1.4rem; margin: 0; text-align: center;"></p>
            <p style="text-align: center; display: flex; flex-direction: column; gap: 8px; margin-top: 10px;">
                Please inform the cashier
                <strong style="font-size: 1.2rem; color: var(--text-color);">Say "Sorry, wrong change"</strong>
            </p>
+           <!-- TTS Button -->
+           <button onclick="playTTS()" style="background-color: #2196F3; color: white; border: none; border-radius: 8px; padding: 0.6rem 1rem; font-size: 1.1rem; font-weight: bold; margin-top: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path></svg>
+               Read Aloud
+           </button>
        </div>
        <div class="sheet-btn-group" style="margin-top: 15px;">
            <button class="primary-btn" id="sheet-home-btn" onclick="window.location.href='../index.html'" style="background-color: var(--primary-color); padding:0.8rem; margin:0; display:flex; align-items:center; justify-content:center; gap:8px;">
@@ -283,6 +289,7 @@
        renderGrid('change-grid-container', changeCounts, 'change-total');
 
        function goBack() {
+           window.speechSynthesis.cancel();
            if (currentStep === 3) goToStep2();
            else if (currentStep === 2) goToStep1();
            else window.location.href = '../index.html';
@@ -482,6 +489,15 @@
                document.getElementById('sheet-home-btn').style.display = 'flex';
                document.getElementById('retry-btn').style.display = 'none';
            } else {
+               const diffCents = expectedChange - actualChangeCents;
+               let diffStr = "";
+               if (diffCents > 0) {
+                   diffStr = `Still needed: $${(diffCents / 100).toFixed(2)}`;
+               } else {
+                   diffStr = `Overpaid by: $${(Math.abs(diffCents) / 100).toFixed(2)}`;
+               }
+               document.getElementById('wrong-change-diff').innerText = diffStr;
+
                document.getElementById('sheet-home-btn').style.display = 'none';
                document.getElementById('retry-btn').style.display = 'block';
            }
@@ -492,11 +508,20 @@
        }
 
        function retryChange() {
+           window.speechSynthesis.cancel();
            document.getElementById('sheet-backdrop').classList.remove('show');
            document.getElementById('result-sheet').classList.remove('show');
            changeCounts = { 50:0, 10:0, 5:0, 2:0, 1:0, 0.5:0, 0.2:0, 0.1:0, 0.05:0 };
            renderGrid('change-grid-container', changeCounts, 'change-total');
            recalcTotal(changeCounts, 'change-total');
+       }
+
+       function playTTS() {
+           window.speechSynthesis.cancel();
+           const diffText = document.getElementById('wrong-change-diff').innerText;
+           const textToRead = `Wrong Change. ${diffText}. Please inform the cashier. Say, Sorry, wrong change.`;
+           const utterance = new SpeechSynthesisUtterance(textToRead);
+           window.speechSynthesis.speak(utterance);
        }
    </script>
 </body>
