@@ -492,7 +492,7 @@
                const diffCents = expectedChange - actualChangeCents;
                let diffStr = "";
                if (diffCents > 0) {
-                   diffStr = `Still needed: $${(diffCents / 100).toFixed(2)}`;
+                   diffStr = `Still Need: $${(diffCents / 100).toFixed(2)}`;
                } else {
                    diffStr = `Overpaid by: $${(Math.abs(diffCents) / 100).toFixed(2)}`;
                }
