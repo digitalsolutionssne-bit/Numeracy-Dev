@@ -174,7 +174,7 @@
                    if (result.error) {
                        showToast("Failed to read date. Please try again.", true);
                    } else if (result.foundDate === false) {
-                       showToast("No expiration date found in photo.", true);
+                       showToast("No Expiry Date found. Take image again", true);
                    } else {
                        if (result.isExpired) badOverlay.style.display = 'flex';
                        else goodOverlay.style.display = 'flex';
