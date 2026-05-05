@@ -50,8 +50,10 @@ document.addEventListener('DOMContentLoaded', () => {
 window.closeOverlay = function() {
     const goodOverlay = document.getElementById('obnoxious-good');
     const badOverlay = document.getElementById('obnoxious-bad');
+    const notFoundOverlay = document.getElementById('obnoxious-not-found');
     if(goodOverlay) goodOverlay.style.display = 'none';
     if(badOverlay) badOverlay.style.display = 'none';
+    if(notFoundOverlay) notFoundOverlay.style.display = 'none';
 };
 
 const forceUpdateBtn = document.getElementById('force-update-btn');
