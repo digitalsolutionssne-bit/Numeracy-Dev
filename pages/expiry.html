@@ -70,6 +70,13 @@
        <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
    </div>
 
+   <div id="obnoxious-not-found" class="obnoxious-overlay" style="display: none; background-color: #FF9800; color: white;">
+       <div class="giant-icon">❓</div>
+       <h1 style="font-size: 3rem; margin-bottom: 0.5rem; text-transform: uppercase;">NOT FOUND</h1>
+       <p style="font-size: 2.2rem; font-weight: bold; line-height: 1.2; margin: 0 0 3rem 0;">No Expiry Date found.<br>Take image again</p>
+       <button class="obnoxious-btn" onclick="closeOverlay()">OKAY</button>
+   </div>
+
    <script src="../app.js"></script>
    <script>
        const GAS_URL = 'https://script.google.com/macros/s/AKfycbyBV9vBOLiHHe-Defjzkhf6g7xXw979RGEp-kl-h_teOUUpcL-R-YZWtbSQHPEgvFlRcg/exec';
@@ -79,6 +86,7 @@
        const processingScreen = document.getElementById('processing-screen');
        const goodOverlay = document.getElementById('obnoxious-good');
        const badOverlay = document.getElementById('obnoxious-bad');
+       const notFoundOverlay = document.getElementById('obnoxious-not-found');
 
        const today = new Date();
        const options = { day: 'numeric', month: 'long', year: 'numeric' };
@@ -174,7 +182,7 @@
                    if (result.error) {
                        showToast("Failed to read date. Please try again.", true);
                    } else if (result.foundDate === false) {
-                       showToast("No Expiry Date found. Take image again", true);
+                       notFoundOverlay.style.display = 'flex';
                    } else {
                        if (result.isExpired) badOverlay.style.display = 'flex';
                        else goodOverlay.style.display = 'flex';
