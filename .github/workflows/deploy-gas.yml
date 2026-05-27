@@ -1,0 +1,62 @@
+name: Deploy Google Apps Script
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'backend/**'
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Clasp
+        run: npm install -g @google/clasp
+
+      - name: Write Clasp Credentials
+        run: |
+          # The jq filter checks if the secret is in the custom tokens.default format.
+          # If it is, it parses and maps it to the standard clasp format. 
+          # Otherwise, it passes it through as-is.
+          echo '${{ secrets.CLASP_CREDENTIALS }}' | jq '
+            if .tokens.default then 
+              { 
+                token: { 
+                  access_token: .tokens.default.access_token, 
+                  refresh_token: .tokens.default.refresh_token, 
+                  token_type: "Bearer" 
+                }, 
+                oauth2ClientSettings: { 
+                  clientId: .tokens.default.client_id, 
+                  clientSecret: .tokens.default.client_secret, 
+                  redirectUri: "http://localhost" 
+                }, 
+                isLocalCreds: false 
+              } 
+            else 
+              . 
+            end
+          ' > ~/.clasprc.json
+
+      - name: Create Clasp Project Config
+        run: |
+          # Dynamically create the .clasp.json file using the GitHub secret
+          echo '{ "scriptId": "${{ secrets.GAS_SCRIPT_ID }}", "rootDir": "." }' > backend/.clasp.json
+
+      - name: Push and Deploy to Google Apps Script
+        run: |
+          cd backend
+          # Push the latest code to the Apps Script editor
+          clasp push -f
+          
+          # Deploy a new version and update the existing Web App URL
+          clasp deploy -i ${{ secrets.GAS_DEPLOYMENT_ID }} -d "Auto-deployed via GitHub Actions"
