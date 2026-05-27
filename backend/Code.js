@@ -1,4 +1,4 @@
-// Boilerplate Google Apps Script Backend for handling Expiry checking AP I. 
+// Boilerplate Google Apps Script Backend for handling Expiry checking API. 
 function doPost(e) {
   try {
     const data = JSON.parse(e.postData.contents);
