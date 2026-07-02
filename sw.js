@@ -1,4 +1,4 @@
-const CACHE_NAME = 'numpal-cache-v102-modular';
+const CACHE_NAME = 'numpal-cache-v103-modular';
 
 // Cache all modular files to ensure complete offline functionality
 // Removed references to non-existent files to prevent cache.addAll from failing entirely.
